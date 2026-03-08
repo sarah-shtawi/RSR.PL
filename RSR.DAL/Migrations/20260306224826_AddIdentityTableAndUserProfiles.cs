@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RSR.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityTablesAndUsers : Migration
+    public partial class AddIdentityTableAndUserProfiles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

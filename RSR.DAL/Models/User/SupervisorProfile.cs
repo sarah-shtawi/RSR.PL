@@ -12,7 +12,6 @@ namespace RSR.DAL.Models.User
         [Key]
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-
         public string SupervisorNumber { get; set; }
         public string Department { get; set; }
 

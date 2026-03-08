@@ -12,8 +12,8 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260306001142_IdentityTablesAndUsers")]
-    partial class IdentityTablesAndUsers
+    [Migration("20260306224826_AddIdentityTableAndUserProfiles")]
+    partial class AddIdentityTableAndUserProfiles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -406,17 +406,13 @@ namespace RSR.DAL.Migrations
 
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
-                    b.Navigation("CoordinatorProfile")
-                        .IsRequired();
+                    b.Navigation("CoordinatorProfile");
 
-                    b.Navigation("ExaminerProfile")
-                        .IsRequired();
+                    b.Navigation("ExaminerProfile");
 
-                    b.Navigation("StudentProfile")
-                        .IsRequired();
+                    b.Navigation("StudentProfile");
 
-                    b.Navigation("SupervisorProfile")
-                        .IsRequired();
+                    b.Navigation("SupervisorProfile");
                 });
 #pragma warning restore 612, 618
         }
