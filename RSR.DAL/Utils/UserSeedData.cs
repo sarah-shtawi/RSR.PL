@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RSR.DAL.Data;
 using RSR.DAL.Models.User;
 using System;
@@ -14,11 +15,13 @@ namespace RSR.DAL.Utils
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserSeedData(UserManager<ApplicationUser> userManager , ApplicationDbContext context)
+        public UserSeedData(UserManager<ApplicationUser> userManager , ApplicationDbContext context , IConfiguration configuration)
         {
             _userManager = userManager;
             _context = context;
+            _configuration = configuration;
         }
         public async Task DataSeed()
         {
@@ -26,14 +29,14 @@ namespace RSR.DAL.Utils
             {
                 var coordinator = new ApplicationUser
                 {
-                    FullName = "Anas Melhem",
-                    UserName = "AnasMelhem123",
-                    Email = "Anas@gmail.com",
+                    FullName = "Sarah Jalal Shtawi",
+                    UserName = "SarahJalal123",
+                    Email = "sarah.sht03@gmail.com",
                     IsActive = true,
                     EmailConfirmed = true   
                 };
                 // Add to Data Base 
-               var result =  await _userManager.CreateAsync(coordinator, "Anas@123");
+               var result =  await _userManager.CreateAsync(coordinator, _configuration["SeedData:Password"]);
                 if (result.Succeeded) 
                 {
                     // Add Role To Coordinator 
@@ -46,7 +49,7 @@ namespace RSR.DAL.Utils
                         Department = "Computer Engineering" 
                     };
                    await _context.Coordinators.AddAsync(coordinatorProfile);
-                    await _context.SaveChangesAsync();
+                   await _context.SaveChangesAsync();
                 }
                
             }

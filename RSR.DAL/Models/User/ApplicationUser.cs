@@ -16,8 +16,10 @@ namespace RSR.DAL.Models.User
         public bool IsActive { get; set; }
         public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
 
+        public string? CodeResetPassword { get; set; }
+        public DateTime? PasswordResetCodeExpiry { get; set; }
 
-       // Navigation Proparity 
+        // Navigation Proparity 
         public StudentProfile? StudentProfile {  get; set; }
         public SupervisorProfile? SupervisorProfile { get; set; }
         public CoordinatorProfile? CoordinatorProfile { get; set; }

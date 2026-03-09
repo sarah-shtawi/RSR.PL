@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Authentication;
 using RSR.DAL.DTOs.Request.Authentication;
+using RSR.DAL.DTOs.Request.AuthenticationRequest;
 using RSR.DAL.Models.User;
 
 namespace RSR.PL.Areas.Identity
@@ -30,6 +31,31 @@ namespace RSR.PL.Areas.Identity
                 return BadRequest(result);
             }
             return Ok(result);
-        }  
+        }
+
+
+        [HttpPost("send-code")]
+        public async Task<IActionResult> SendCode([FromBody] ForgetPasswordRequest Request)
+        {
+            var result = await _authenticationService.SendCode(Request);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task <IActionResult> ResetPassword([FromBody] ResetPasswordRequest Request)
+        {
+            var result = await _authenticationService.ResetPassword(Request);
+            if (!result.Success) 
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+
     }
 }

@@ -26,8 +26,7 @@ namespace RSR.PL
 
             // conecct with data base 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-            );
+             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -60,12 +59,12 @@ namespace RSR.PL
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();     
+                app.MapOpenApi();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
-
 
             // Seed Data
             using (var scope = app.Services.CreateScope())
