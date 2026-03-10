@@ -67,11 +67,18 @@ namespace RSR.BLL.Service.Authentication
                     };
                 }
                 var accessToken = await _tokenService.GeneraterAccessToken(user);
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+                user.RefreshToken = refreshToken;
+                await _userManager.UpdateAsync(user);
+
                 return new LoginResponse()
                 {
                     Success = true,
                     Message = "Login Successfully",
-                    AccessToken = accessToken
+                    AccessToken = accessToken ,
+                    RefreshToken = refreshToken 
                 };
             }     
             catch(Exception ex) {
@@ -156,5 +163,79 @@ namespace RSR.BLL.Service.Authentication
                Message = "Password Reset Successfully "
             };
         }
+
+        public async Task<BaseResponse> ChangePassword(ChangePasswordRequest request , string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user is null)
+            {
+                return new BaseResponse()
+                {
+                    Success = false ,
+                    Message = "user not found"
+                };
+            }
+            if(request.NewPassword != request.ConfirmPassword) 
+            {
+                return new BaseResponse()
+                {
+                    Success= false ,
+                    Message = "Passwords don't match"
+                };
+            }
+            var result = await _userManager.ChangePasswordAsync(user , request.CurrentPassword , request.NewPassword);
+            if (!result.Succeeded) 
+            {
+                return new BaseResponse()
+                {
+                    Success = false,
+                    Message = "Change Password failed ",
+                    Errors = result.Errors.Select(e => e.Description).ToList()
+                };
+            }
+            await _emailSender.sendEmail(user.Email, "Password Changed", "Your password has been changed successfully.");
+            return new BaseResponse()
+            {
+                Success = true,
+                Message = "Your Password is changed"
+            };
+        }
+
+        public async Task<LoginResponse> RefreshToken(TokenApiModel request)
+        {
+            var accessToken = request.AccessToken;
+            var refreshToken = request.RefreshToken;
+            var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+
+            var UserName = principal.Identity.Name;
+            var user = await _userManager.FindByNameAsync(UserName);
+
+            if(user is null || refreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return new LoginResponse()
+                {
+                    Success = false ,
+                    Message = "Invalid Client request"
+                };
+            }
+            var newAccessToken = await _tokenService.GeneraterAccessToken(user);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            await _userManager.UpdateAsync(user);
+
+            return new LoginResponse()
+            {
+                Success = true ,
+                Message = "Token Refreshed", 
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+            };
+        }
+
+
+
+
+
     }
 }

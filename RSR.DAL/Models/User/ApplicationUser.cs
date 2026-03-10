@@ -18,6 +18,9 @@ namespace RSR.DAL.Models.User
 
         public string? CodeResetPassword { get; set; }
         public DateTime? PasswordResetCodeExpiry { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
+               
 
         // Navigation Proparity 
         public StudentProfile? StudentProfile {  get; set; }

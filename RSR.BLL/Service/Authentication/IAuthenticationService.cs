@@ -16,5 +16,8 @@ namespace RSR.BLL.Service.Authentication
         Task<BaseResponse> SendCode(ForgetPasswordRequest Request);
 
         Task<BaseResponse> ResetPassword(ResetPasswordRequest request);
+
+        Task<BaseResponse> ChangePassword(ChangePasswordRequest request, string userId);
+        Task<LoginResponse> RefreshToken(TokenApiModel request);
     }
 }

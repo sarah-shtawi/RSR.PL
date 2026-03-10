@@ -6,6 +6,7 @@ using RSR.BLL.Service.Authentication;
 using RSR.DAL.DTOs.Request.Authentication;
 using RSR.DAL.DTOs.Request.AuthenticationRequest;
 using RSR.DAL.Models.User;
+using System.Security.Claims;
 
 namespace RSR.PL.Areas.Identity
 {
@@ -45,7 +46,7 @@ namespace RSR.PL.Areas.Identity
             return Ok(result);
         }
 
-        [HttpPost("ResetPassword")]
+        [HttpPost("reset-password")]
         public async Task <IActionResult> ResetPassword([FromBody] ResetPasswordRequest Request)
         {
             var result = await _authenticationService.ResetPassword(Request);
@@ -56,6 +57,28 @@ namespace RSR.PL.Areas.Identity
             return Ok(result);
         }
 
+        [HttpPatch("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest Request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _authenticationService.ChangePassword(Request, userId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
+        [HttpPatch("refresh-token")]
+        public async Task<IActionResult> RefreshToken(TokenApiModel Request)
+        {
+            var result = await _authenticationService.RefreshToken(Request);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
     }
 }
