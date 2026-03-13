@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.Models.User
 {
-    public class StudentProfile
+    public class StudentProfile : IUserProfile
     {
 
         [Key]
@@ -16,5 +16,7 @@ namespace RSR.DAL.Models.User
         public string StudentNumber { get; set; }
         public string College {  get; set; }
         public string Major {  get; set; }
+        public string? PictureProfileURL { get; set; }
+
     }
 }

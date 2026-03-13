@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.Models.User
 {
-    public class SupervisorProfile
+    public class SupervisorProfile : IUserProfile
     {
         [Key]
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public string SupervisorNumber { get; set; }
         public string Department { get; set; }
+        public string? PictureProfileURL { get; set; }
 
     }
 }

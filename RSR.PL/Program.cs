@@ -24,6 +24,18 @@ namespace RSR.PL
 
             builder.Services.AddOpenApi();
 
+            // cors policy 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
+
             // conecct with data base 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -63,7 +75,10 @@ namespace RSR.PL
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
+
+
+          //  app.UseHttpsRedirection();
             app.UseAuthorization();
 
             // Seed Data

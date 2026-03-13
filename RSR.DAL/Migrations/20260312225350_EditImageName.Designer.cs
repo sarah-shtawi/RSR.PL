@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260312225350_EditImageName")]
+    partial class EditImageName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,7 +263,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Coordinators", (string)null);
+                    b.ToTable("Coordinators");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.ExaminerProfile", b =>
@@ -281,7 +284,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Examiners", (string)null);
+                    b.ToTable("Examiners");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>
@@ -306,7 +309,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.SupervisorProfile", b =>
@@ -327,7 +330,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Supervisors", (string)null);
+                    b.ToTable("Supervisors");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

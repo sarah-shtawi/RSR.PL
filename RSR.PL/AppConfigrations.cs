@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Authentication;
 using RSR.BLL.Service.EmailSender;
+using RSR.BLL.Service.File;
 using RSR.BLL.Service.Token;
+using RSR.BLL.Service.Users;
 using RSR.DAL.Utils;
 
 namespace RSR.PL
@@ -16,6 +18,11 @@ namespace RSR.PL
             Services.AddScoped<IAuthenticationService, AuthenticationService>();
             Services.AddScoped<ITokenService, TokenService>();
             Services.AddScoped<IEmailSenderService, EmailSenderService>();
+            Services.AddScoped<IUserService , UserService>();
+            Services.AddScoped<IFileService, FileService>();
+
+
+
 
 
 
