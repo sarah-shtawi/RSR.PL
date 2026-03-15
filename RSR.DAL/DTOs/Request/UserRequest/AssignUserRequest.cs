@@ -13,7 +13,7 @@ namespace RSR.DAL.DTOs.Request.UserRequest
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public IFormFile? MainImage { get; set; }
+        public IFormFile MainImage { get; set; }
 
 
     }

@@ -21,7 +21,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="images\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\1d276bfa-82f8-49ac-961b-d1b13b797bf8.jpg" />
+    <None Include="wwwroot\images\5c0cbc38-6f50-47af-9533-e35e84576cac.jpg" />
+    <None Include="wwwroot\images\739870ef-118c-44ca-b2fb-ad729e47d575.jpg" />
+    <None Include="wwwroot\images\d35e4a6b-0a93-4704-8748-98054a5fc9b2.jpg" />
+    <None Include="wwwroot\images\d895643c-9d12-47c5-be48-bf951820d565.jpg" />
+    <None Include="wwwroot\images\f5c3bcfb-7476-4d19-8437-291851529eff.jpg" />
   </ItemGroup>
 
 </Project>

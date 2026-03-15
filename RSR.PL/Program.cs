@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RSR.BLL.mapsterConfigration;
 using RSR.DAL.Data;
 using RSR.DAL.Models.User;
 using RSR.DAL.Utils;
@@ -44,9 +45,15 @@ namespace RSR.PL
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+            // for deploy file on server 
+            builder.Services.AddHttpContextAccessor();
+
 
             // config 
             AppConfigrations.Config(builder.Services);
+
+            var mapster = new mapsterConfig(builder.Configuration);
+            mapster.MapterConfigRegiter();
 
             // jwt 
             builder.Services.AddAuthentication(opt =>
@@ -76,9 +83,10 @@ namespace RSR.PL
             }
 
             app.UseCors("AllowAll");
+            app.UseStaticFiles();
 
 
-          //  app.UseHttpsRedirection();
+            //  app.UseHttpsRedirection();
             app.UseAuthorization();
 
             // Seed Data

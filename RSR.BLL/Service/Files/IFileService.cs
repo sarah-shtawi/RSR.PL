@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RSR.BLL.Service.File
+namespace RSR.BLL.Service.Files
 {
     public  interface IFileService
     {

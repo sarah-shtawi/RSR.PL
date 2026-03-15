@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Authentication;
 using RSR.BLL.Service.EmailSender;
-using RSR.BLL.Service.File;
+using RSR.BLL.Service.Files;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
 using RSR.DAL.Utils;
