@@ -21,8 +21,8 @@ namespace RSR.BLL.mapsterConfigration
         }
         public  void MapterConfigRegiter()
         {
-            TypeAdapterConfig<StudentProfile, AssignUserRequest>.NewConfig()
-                .Map(dest => dest.MainImage, src => src.PictureProfileURL);
+            //TypeAdapterConfig<StudentProfile, AssignUserRequest>.NewConfig()
+            //    .Map(dest => dest.MainImage, src => src.PictureProfileURL);
 
             TypeAdapterConfig<StudentProfile, StudentGetResponse>.NewConfig()
            .Map(dest => dest.Id, src => src.User.Id)

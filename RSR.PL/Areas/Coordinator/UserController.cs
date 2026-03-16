@@ -1,9 +1,13 @@
-﻿using Mapster;
+﻿using Azure.Core;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Response.User;
+using RSR.DAL.Models.User;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RSR.PL.Areas.Coordinator
 {
@@ -21,7 +25,8 @@ namespace RSR.PL.Areas.Coordinator
         [HttpPost("AssignStudent")]
         public async Task <IActionResult> AssignStudent([FromForm] AssignStudentRequest Request)
         {
-            var result  = await _userService.AssignStudent(Request);
+            var result =  await _userService.AssignUserWithProfile<StudentProfile>(Request, "Student");
+            ;
             if (!result.Success) 
             {
             return BadRequest(result);
@@ -32,7 +37,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpPost("AssignSupervisor")]
         public async Task<IActionResult> AssignSupervisor([FromForm] AssignSupervisorRequest Request)
         {
-            var result = await _userService.AssignSupervisor(Request);
+            var result = await _userService.AssignUserWithProfile<SupervisorProfile>(Request, "Supervisor");
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -43,7 +48,8 @@ namespace RSR.PL.Areas.Coordinator
         [HttpPost("AssignCoordinater")]
         public async Task<IActionResult> AssignCoordinater([FromForm] AssignCoordinaterRequest Request)
         {
-            var result = await _userService.AssignCoordinator(Request);
+            var result = await _userService.AssignUserWithProfile<CoordinatorProfile>(Request, "Coordinator");
+
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -54,7 +60,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpPost("AssignExaminer")]
         public async Task<IActionResult> AssignExaminer([FromForm] AssignExaminerRequest Request)
         {
-            var result = await _userService.AssignExaminer(Request);
+            var result = await _userService.AssignUserWithProfile<ExaminerProfile>(Request, "Examiner"); ;
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -65,7 +71,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("students")]
         public async Task<IActionResult> getStudent()
         {
-            var students = await _userService.GetStudents();
+            var students = await _userService.GetAllUsersWithProfile<StudentProfile, StudentGetResponse>(); ;
             if (students == null)
             {
                 return BadRequest();
@@ -76,7 +82,8 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("coordinaters")]
         public async Task<IActionResult> getCoordinaters()
         {
-            var coordinaters = await _userService.GetCoordinators();
+            var coordinaters = await _userService.GetAllUsersWithProfile<CoordinatorProfile, CoordinatorGetResponse>();
+            ;
             if (coordinaters == null)
             {
                 return BadRequest();
@@ -86,7 +93,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("supervisors")]
         public async Task<IActionResult> getSupervisors()
         {
-            var supervisors = await _userService.GetSupervisors();
+            var supervisors = await _userService.GetAllUsersWithProfile<SupervisorProfile, SupervisorGetResponse>(); ;
             if (supervisors == null)
             {
                 return BadRequest();
@@ -97,7 +104,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("examiners")]
         public async Task<IActionResult> getExaminers()
         {
-            var examiners = await _userService.GetExaminers();
+            var examiners = await _userService.GetAllUsersWithProfile<ExaminerProfile, ExaminerGetResponse>();
             if (examiners == null)
             {
                 return BadRequest();
@@ -108,7 +115,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("student/{Id}")]
         public async Task<IActionResult> getStudentById([FromRoute] string id)
         {
-            var student = await _userService.GetStudentById(id);
+            var student = await _userService.GetUserById<StudentProfile, StudentGetResponse>(id); ;
             if (student == null)
             {
                 return NotFound();
@@ -116,35 +123,56 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", student });
 
         }
+
         [HttpGet("supervisor/{Id}")]
         public async Task<IActionResult> getSupervisorById([FromRoute] string id)
         {
-            var supervisor = await _userService.GetSupervisorById(id);
+            var supervisor = await _userService.GetUserById<SupervisorProfile, SupervisorGetResponse>(id);
             if (supervisor == null)
             {
                 return NotFound();
             }
             return Ok(new { message = "success", supervisor });
         }
+
         [HttpGet("coordinater/{Id}")]
         public async Task<IActionResult> getCoordinater([FromRoute] string id)
         {
-            var coordinater = await _userService.GetCoordinaterById(id);
+            var coordinater = await _userService.GetUserById<CoordinatorProfile, CoordinatorGetResponse>(id);
             if (coordinater == null)
             {
                 return NotFound();
             }
             return Ok(new { message = "success", coordinater });
         }
+
         [HttpGet("examiner/{Id}")]
         public async Task<IActionResult> getExaminer([FromRoute] string id)
         {
-            var Examiner = await _userService.GetExaminerById(id);
+            var Examiner = await _userService.GetUserById<ExaminerProfile, ExaminerGetResponse>(id); ;
             if (Examiner == null)
             {
                 return NotFound();
             }
             return Ok(new { message = "success", Examiner });
         }
+
+        [HttpPost("image-profile-coordinater/{id}")]
+        public async Task<IActionResult> AssignImageCoordinator([FromRoute] string id, UploadImageRequest image)
+        {
+            var result = await _userService.AssignImage<CoordinatorProfile>(image, id); ;
+            if (!result.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
+
+
+
+
+
+
     }
     }

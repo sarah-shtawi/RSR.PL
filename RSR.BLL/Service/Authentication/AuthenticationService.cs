@@ -8,6 +8,7 @@ using RSR.DAL.DTOs.Response.AuthenticationResponse;
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,6 +67,8 @@ namespace RSR.BLL.Service.Authentication
                         Message = "InValied Password"
                     };
                 }
+                var roles = await _userManager.GetRolesAsync(user);
+
                 var accessToken = await _tokenService.GeneraterAccessToken(user);
                 var refreshToken = _tokenService.GenerateRefreshToken();
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
@@ -78,7 +81,8 @@ namespace RSR.BLL.Service.Authentication
                     Success = true,
                     Message = "Login Successfully",
                     AccessToken = accessToken ,
-                    RefreshToken = refreshToken 
+                    RefreshToken = refreshToken ,
+                    roles = (List<string>)roles
                 };
             }     
             catch(Exception ex) {

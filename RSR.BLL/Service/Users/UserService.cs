@@ -1,6 +1,4 @@
 ﻿using Mapster;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,13 +10,7 @@ using RSR.DAL.DTOs.Response.AuthenticationResponse;
 using RSR.DAL.DTOs.Response.User;
 using RSR.DAL.Models;
 using RSR.DAL.Models.User;
-using System;
-using System.Collections.Generic;
-using System.Formats.Tar;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RSR.BLL.Service.Users
 {
@@ -36,103 +28,132 @@ namespace RSR.BLL.Service.Users
             _fileService = fileService;
             _configration = configration;
         }
+        public async Task<BaseResponse> AssignImage<TProfile>(UploadImageRequest request , string userId) where TProfile : class , IUserProfile , new()
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) 
+            {
+              return new BaseResponse
+              {
+                  Success = false,
+                  Message = "user not found"
+              };
+            }
+            var UserProfile = await _context.Set<TProfile>().FirstOrDefaultAsync(p=>p.UserId == userId);
+            if (UserProfile == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "profile not found"
+                };
+            }
+            if(request.MainImage == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "profile not found"
+                };
+            }
+            var fileName = await _fileService.UploadeImageFile(request.MainImage);
+            UserProfile.PictureProfileURL = fileName;
+            _context.Set<TProfile>().Update(UserProfile);
+            await _context.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Image uploaded successfully"
+            };
 
-        // Assign user 
-        public async Task<BaseResponse> AssignUserWithProfile<TProfile>(AssignUserRequest request, string Role)  where TProfile :class , IUserProfile , new() 
+        }
+       
+        public async Task<BaseResponse> AssignUserWithProfile<TProfile>(AssignUserRequest request, string Role)
+            where TProfile : class, IUserProfile, new()
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // add user to user table 
-                var user = request.Adapt<ApplicationUser>();
-                var result = await _userManager.CreateAsync(user, request.Password);
-                if (!result.Succeeded)
-                {
-                    return new BaseResponse()
-                    {
-                        Success = false,
-                        Message = "User Creation falid"
-                    };
-                }
-                var roleResult = await _userManager.AddToRoleAsync(user , Role);
-                if (!roleResult.Succeeded)
-                {
-                    return new BaseResponse()
-                    {
-                        Success = false,
-                        Message = "Adding Role falid"
-                    };
-                }
-                // add to profile 
-                var profile = request.Adapt<TProfile>();
-                profile.UserId = user.Id;
-                if (request.MainImage != null)
-                {
-                    var fileName = await _fileService.UploadeImageFile(request.MainImage);
-                    profile.PictureProfileURL = fileName;
-                }
-                await _context.Set<TProfile>().AddAsync(profile);
-                await _context.SaveChangesAsync();
+                var user = await _userManager.FindByNameAsync(request.UserName)
+                           ?? await _userManager.FindByEmailAsync(request.Email);
 
+                if (user == null)
+                {
+                    user = request.Adapt<ApplicationUser>();
+                    var result = await _userManager.CreateAsync(user, request.Password);
+                    if (!result.Succeeded)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "User creation failed",
+                            Errors = result.Errors.Select(e => e.Description).ToList()
+                        };
+                    }
+                }
+
+                if (!await _userManager.IsInRoleAsync(user, Role))
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(user, Role);
+                    if (!roleResult.Succeeded)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "Adding role failed",
+                            Errors = roleResult.Errors.Select(e => e.Description).ToList()
+                        };
+                    }
+                }
+
+                var existingProfile = await _context.Set<TProfile>()
+                                                    .FirstOrDefaultAsync(p => p.UserId == user.Id);
+                if (existingProfile == null)
+                {
+                    var profile = request.Adapt<TProfile>();
+                    profile.UserId = user.Id;
+                    await _context.Set<TProfile>().AddAsync(profile);
+                }
+                else
+                {
+                    _context.Set<TProfile>().Update(existingProfile);
+                }
+                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return new BaseResponse()
+
+                return new BaseResponse
                 {
                     Success = true,
                     Message = $"{Role} added successfully"
                 };
-            }catch (Exception ex)
-             {       
+            }
+            catch (DbUpdateException dbEx) when
+                  (dbEx.InnerException?.Message.Contains("PRIMARY KEY") == true
+                   || dbEx.InnerException?.Message.Contains("UNIQUE") == true)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "User or Profile already exists."
+                };
+            }
+            catch (Exception ex)
+            {
                 return new BaseResponse
                 {
                     Success = false,
                     Message = "Unexpected error",
-                    Errors = new List<string> { ex.Message },
-                   
+                    Errors = new List<string> { ex.Message }
                 };
-             }
+            }
         }
-        public async Task<BaseResponse> AssignStudent(AssignStudentRequest request)
-        {
-            return await AssignUserWithProfile<StudentProfile>(request , "Student");
-        }
-        public async Task<BaseResponse> AssignSupervisor(AssignSupervisorRequest request)
-        {
-            return await AssignUserWithProfile<SupervisorProfile>(request, "Supervisor");
-        }
-        public async Task<BaseResponse> AssignCoordinator(AssignCoordinaterRequest request)
-        {
-            return await AssignUserWithProfile<CoordinatorProfile>(request, "Coordinator");
-        }
-        public async Task<BaseResponse> AssignExaminer(AssignExaminerRequest request)
-        {
-            return await AssignUserWithProfile<ExaminerProfile>(request, "Examiner");
-        }
-
-        // get all user [ generic ] 
+          
         public async Task<List<TGetResponse>> GetAllUsersWithProfile<TProfile , TGetResponse>() where TProfile : class , IUserProfile
         {
             var usersProfile = await _context.Set<TProfile>().Include("User").ToListAsync();
             return usersProfile.Adapt<List<TGetResponse>>();
         }
-        public async Task<List<StudentGetResponse>> GetStudents()
-        {
-            return await  GetAllUsersWithProfile <StudentProfile, StudentGetResponse>();
-        }
-        public async Task<List<CoordinatorGetResponse>> GetCoordinators()
-        {
-            return await GetAllUsersWithProfile<CoordinatorProfile, CoordinatorGetResponse>();
-        }
-        public async Task<List<SupervisorGetResponse>> GetSupervisors()
-        {
-            return await GetAllUsersWithProfile<SupervisorProfile, SupervisorGetResponse>();
-        }
-        public async Task<List<ExaminerGetResponse>> GetExaminers()
-        {
-            return await GetAllUsersWithProfile<ExaminerProfile, ExaminerGetResponse>();
-
-        }
-
-        // get user by id [ generic method  ] 
+       
         public async Task<TGetResponse> GetUserById<TProfile , TGetResponse>(string userId) where TProfile : class , IUserProfile
         {
             var profile = await _context.Set<TProfile>().Include("User").FirstOrDefaultAsync(u => u.UserId == userId);
@@ -142,28 +163,6 @@ namespace RSR.BLL.Service.Users
             }
             return profile.Adapt<TGetResponse>();
         }
-        public async Task<StudentGetResponse> GetStudentById(string userId)
-        {
-           var student =  await GetUserById<StudentProfile, StudentGetResponse>(userId);
-           return student ;
-        }
-        public async Task<SupervisorGetResponse> GetSupervisorById(string userId)
-        {
-            var supervisor = await GetUserById<SupervisorProfile, SupervisorGetResponse>(userId);
-            return supervisor;
-        }
-        public async Task<CoordinatorGetResponse> GetCoordinaterById(string userId)
-        {
-            var coordinator = await GetUserById<CoordinatorProfile, CoordinatorGetResponse>(userId);
-            return coordinator;
-        }
-        public async Task<ExaminerGetResponse> GetExaminerById(string userId)
-        {
-            var Examiner  = await GetUserById<ExaminerProfile, ExaminerGetResponse>(userId);
-            return Examiner;
-        }
-
-
-
+     
     }
 }

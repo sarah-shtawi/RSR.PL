@@ -12,20 +12,16 @@ namespace RSR.BLL.Service.Users
 {
     public interface IUserService
     {
+        // assign user
         Task<BaseResponse> AssignUserWithProfile<TProfile>(AssignUserRequest request, string Role) where TProfile : class, IUserProfile, new();
-        Task<BaseResponse> AssignStudent(AssignStudentRequest request);
-        Task<BaseResponse> AssignSupervisor(AssignSupervisorRequest request);
-        Task<BaseResponse> AssignCoordinator(AssignCoordinaterRequest request);
-        Task<BaseResponse> AssignExaminer(AssignExaminerRequest request);
-        Task<List<StudentGetResponse>> GetStudents();
-        Task<List<CoordinatorGetResponse>> GetCoordinators();
-        Task<List<SupervisorGetResponse>> GetSupervisors();
-        Task<List<ExaminerGetResponse>> GetExaminers();
-        Task<TGetResponse> GetUserById<TProfile, TGetResponse>(string userId) where TProfile : class, IUserProfile;
-        Task<StudentGetResponse> GetStudentById(string userId);
-        Task<SupervisorGetResponse> GetSupervisorById(string userId);
-        Task<CoordinatorGetResponse> GetCoordinaterById(string userId);
-        Task<ExaminerGetResponse> GetExaminerById(string userId);
 
+        // get user 
+        Task<List<TGetResponse>> GetAllUsersWithProfile<TProfile, TGetResponse>() where TProfile : class, IUserProfile;
+     
+        // get user id 
+        Task<TGetResponse> GetUserById<TProfile, TGetResponse>(string userId) where TProfile : class, IUserProfile;
+
+        // assign image profile 
+        Task<BaseResponse> AssignImage<TProfile>(UploadImageRequest request, string userId) where TProfile : class, IUserProfile, new();
     }
 }

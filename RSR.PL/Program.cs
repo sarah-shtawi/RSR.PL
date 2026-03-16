@@ -42,9 +42,20 @@ namespace RSR.PL
              options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+         
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+            
+
+                options.User.RequireUniqueEmail = true; // Email Unigue 
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();
+
+
             // for deploy file on server 
             builder.Services.AddHttpContextAccessor();
 

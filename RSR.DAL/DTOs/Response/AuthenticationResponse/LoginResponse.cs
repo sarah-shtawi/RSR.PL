@@ -10,5 +10,6 @@ namespace RSR.DAL.DTOs.Response.AuthenticationResponse
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+        public List<string> roles { get; set; }
     }
 }
