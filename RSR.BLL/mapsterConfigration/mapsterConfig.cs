@@ -55,6 +55,12 @@ namespace RSR.BLL.mapsterConfigration
            .Map(dest => dest.Email, src => src.User.Email)
            .Map(dest => dest.PictureProfileURL, src => string.IsNullOrEmpty(src.PictureProfileURL)
                           ? null : $"{_configration["URL:BaseUrl"]}/images/{src.PictureProfileURL}");
+
+
+
+            TypeAdapterConfig<SupervisorProfile, AssignCoordinaterRequest>.NewConfig()
+                .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
+      
         }
 
     }

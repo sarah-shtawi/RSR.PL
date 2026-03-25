@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
 using RSR.DAL.Models.User;
+using System.Security.Claims;
 
 namespace RSR.PL.Areas.Examiner
 {
@@ -17,10 +18,12 @@ namespace RSR.PL.Areas.Examiner
         {
             _userService = userService;
         }
-        [HttpPost("image-profile-examiner/{id}")]
-        public async Task<IActionResult> AssignImageExaminer([FromRoute] string id, UploadImageRequest image)
+        [HttpPost("image-profile-examiner")]
+        public async Task<IActionResult> AssignImageExaminer( [FromForm] UploadImageRequest image)
         {
-            var result = await _userService.AssignImage<ExaminerProfile>(image, id); ;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _userService.AssignImage<ExaminerProfile>(image, userId); ;
             if (!result.Success)
             {
                 return BadRequest();

@@ -23,5 +23,13 @@ namespace RSR.BLL.Service.Users
 
         // assign image profile 
         Task<BaseResponse> AssignImage<TProfile>(UploadImageRequest request, string userId) where TProfile : class, IUserProfile, new();
+
+        // block user
+        Task<BaseResponse> BlockUser(string userId);
+
+        // unblock user
+        Task<BaseResponse> unBlockUser(string userId);
+
+
     }
 }

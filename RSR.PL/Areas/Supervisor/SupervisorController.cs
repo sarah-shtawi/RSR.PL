@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
 using RSR.DAL.Models.User;
+using System.Security.Claims;
 
 namespace RSR.PL.Areas.Supervisor
 {
@@ -18,10 +19,11 @@ namespace RSR.PL.Areas.Supervisor
             _userService = userService;
         }
 
-        [HttpPost("image-profile-supervisor/{id}")]
-        public async Task<IActionResult> AssignImageSupervisor([FromRoute] string id, [FromForm] UploadImageRequest image)
+        [HttpPost("image-profile-supervisor")]
+        public async Task<IActionResult> AssignImageSupervisor( [FromForm] UploadImageRequest image)
         {
-            var result = await _userService.AssignImage<SupervisorProfile>(image, id); ;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _userService.AssignImage<SupervisorProfile>(image, userId); ;
             if (!result.Success)
             {
                 return BadRequest();

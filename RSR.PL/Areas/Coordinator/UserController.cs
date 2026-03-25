@@ -2,11 +2,13 @@
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
 using RSR.DAL.DTOs.Response.User;
 using RSR.DAL.Models.User;
+using System.Security.Claims;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RSR.PL.Areas.Coordinator
@@ -157,10 +159,11 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", Examiner });
         }
 
-        [HttpPost("image-profile-coordinater/{id}")]
-        public async Task<IActionResult> AssignImageCoordinator([FromRoute] string id, UploadImageRequest image)
+        [HttpPost("image-profile-coordinater")]
+        public async Task<IActionResult> AssignImageCoordinator([FromForm] UploadImageRequest image)
         {
-            var result = await _userService.AssignImage<CoordinatorProfile>(image, id); ;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _userService.AssignImage<CoordinatorProfile>(image, userId); ;
             if (!result.Success)
             {
                 return BadRequest();
@@ -168,8 +171,27 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+        [HttpPatch("block/{userId}")]
+        public async Task <IActionResult> BlockUser([FromRoute] string userId)
+        {
+            var result = await _userService.BlockUser(userId);
+            if (!result.Success) 
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
 
-
+        [HttpPatch("unblock/{userId}")]
+        public async Task<IActionResult> unBlockUser([FromRoute] string userId)
+        {
+            var result = await _userService.unBlockUser(userId);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
 
 
 

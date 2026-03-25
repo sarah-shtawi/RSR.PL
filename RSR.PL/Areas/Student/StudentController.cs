@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
 using RSR.DAL.Models.User;
+using System.Security.Claims;
 
 namespace RSR.PL.Areas.Student
 {
@@ -18,10 +19,12 @@ namespace RSR.PL.Areas.Student
             _userService = userService;
         }
 
-        [HttpPost("image-profile-student/{id}")]
-        public async Task<IActionResult> AssignImageStudent([FromRoute] string id,  UploadImageRequest image)
+        [HttpPost("image-profile-student")]
+        public async Task<IActionResult> AssignImageStudent([FromForm]  UploadImageRequest image)
         {
-            var result = await _userService.AssignImage<StudentProfile>(image, id); ;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _userService.AssignImage<StudentProfile>(image, userId); ;
             if (!result.Success)
             {
                 return BadRequest();
