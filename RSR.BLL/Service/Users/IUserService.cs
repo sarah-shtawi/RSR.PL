@@ -1,4 +1,5 @@
 ﻿using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Request.UserRequest.update;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.User;
 using RSR.DAL.Models;
@@ -23,9 +24,10 @@ namespace RSR.BLL.Service.Users
 
         // assign image profile 
         Task<BaseResponse> AssignImage<TProfile>(UploadImageRequest request, string userId) where TProfile : class, IUserProfile, new();
-
-        // block user
-        Task<BaseResponse> BlockUser(string userId);
+        // update user 
+        Task<BaseResponse> UpdateUserWithProfile(string userId, UpdateUserRequest request);
+         // block user
+         Task<BaseResponse> BlockUser(string userId);
 
         // unblock user
         Task<BaseResponse> unBlockUser(string userId);

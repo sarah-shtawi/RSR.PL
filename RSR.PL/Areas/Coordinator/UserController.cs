@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Request.UserRequest.update;
 using RSR.DAL.DTOs.Response.User;
 using RSR.DAL.Models.User;
 using System.Security.Claims;
@@ -171,6 +172,47 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+        [HttpPatch("update-student/{studentId}")]
+        public async Task<IActionResult> UpdateStudent([FromBody] UpdateStudentRequest request , [FromRoute] string studentId)
+        {
+            var result = await _userService.UpdateUserWithProfile(studentId, request);
+            if (!result.Success) 
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+        [HttpPatch("update-supervisor/{supervisorId}")]
+        public async Task<IActionResult> UpdateSupervisor([FromBody] UpdateSupervisorRequest request, [FromRoute] string supervisorId)
+        {
+            var result = await _userService.UpdateUserWithProfile(supervisorId, request);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+        [HttpPatch("update-examiner/{examinerId}")]
+        public async Task<IActionResult> UpdateExaminer([FromBody] UpdateExaminerRequest request, [FromRoute] string examinerId)
+        {
+            var result = await _userService.UpdateUserWithProfile(examinerId, request);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+        [HttpPatch("update-coordinater/{coordinaterId}")]
+        public async Task<IActionResult> UpdateCoordinater([FromBody] UpdateCoordinaterRequest request, [FromRoute] string coordinaterId)
+        {
+            var result = await _userService.UpdateUserWithProfile(coordinaterId, request);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+
         [HttpPatch("block/{userId}")]
         public async Task <IActionResult> BlockUser([FromRoute] string userId)
         {
@@ -192,6 +234,7 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(result);
         }
+
 
 
 

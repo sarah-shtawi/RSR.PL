@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using RSR.BLL.Service.Files;
 using RSR.DAL.Data;
 using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Request.UserRequest.update;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.AuthenticationResponse;
 using RSR.DAL.DTOs.Response.User;
@@ -145,7 +146,7 @@ namespace RSR.BLL.Service.Users
                     if (!await _userManager.IsInRoleAsync(targetUser, r))
                     {
                         var roleResult = await _userManager.AddToRoleAsync(targetUser, r);
-
+                        targetUser.IsActive = true;
                         if (!roleResult.Succeeded)
                         {
                             return new BaseResponse
@@ -232,9 +233,9 @@ namespace RSR.BLL.Service.Users
         }
         public async Task<List<TGetResponse>> GetAllUsersWithProfile<TProfile , TGetResponse>() where TProfile : class , IUserProfile
         {
-            var usersProfile = await _context.Set<TProfile>().Include("User").ToListAsync();
+            var usersProfile = await _context.Set<TProfile>().Include(p=>p.User).Where(p =>p.User.IsActive == true).ToListAsync();
             return usersProfile.Adapt<List<TGetResponse>>();
-        }    
+        }   
         public async Task<TGetResponse> GetUserById<TProfile , TGetResponse>(string userId) where TProfile : class , IUserProfile
         {
             var profile = await _context.Set<TProfile>().Include("User").FirstOrDefaultAsync(u => u.UserId == userId);
@@ -244,7 +245,85 @@ namespace RSR.BLL.Service.Users
             }
             return profile.Adapt<TGetResponse>();
         }
+        public async Task<BaseResponse> UpdateUserWithProfile(string userId, UpdateUserRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return new BaseResponse { Success = false, Message = "User not found" };
 
+            // Update User
+            user.FullName = request.FullName;
+            user.UserName = request.UserName;
+            user.Email = request.Email;
+            var roles = await _userManager.GetRolesAsync(user);
+            // Student
+            if (roles.Contains("Student"))
+            {
+                var studentProfile = await _context.Set<StudentProfile>()
+                    .FirstOrDefaultAsync(p => p.UserId == userId);
+
+                if (studentProfile != null && request is UpdateStudentRequest studentRequest)
+                {
+                    studentProfile.College = studentRequest.College;
+                    studentProfile.StudentNumber = studentRequest.StudentNumber;
+                    studentProfile.Major = studentRequest.Major;
+                }
+            }
+            // Coordinator 
+            else if (roles.Contains("Coordinator"))
+            {
+                var coordinatorProfile = await _context.Set<CoordinatorProfile>()
+                    .FirstOrDefaultAsync(p => p.UserId == userId);
+                if (coordinatorProfile != null && request is UpdateCoordinaterRequest coordinatorRequest)
+                {
+                    coordinatorProfile.Department = coordinatorRequest.Department;
+                    coordinatorProfile.CoordinatorNumber = coordinatorRequest.CoordinatorNumber;
+                    // Supervisor
+                    var supervisorProfile = await _context.Set<SupervisorProfile>()
+                        .FirstOrDefaultAsync(p => p.UserId == userId);
+                    if (supervisorProfile != null)
+                    {
+                        supervisorProfile.Department = coordinatorRequest.Department;
+                        supervisorProfile.SupervisorNumber = coordinatorRequest.CoordinatorNumber;
+                    }
+                    // Examiner
+                    var examinerProfile = await _context.Set<ExaminerProfile>()
+                        .FirstOrDefaultAsync(p => p.UserId == userId);
+
+                    if (examinerProfile != null)
+                    {
+                        examinerProfile.Department = coordinatorRequest.Department;
+                        examinerProfile.ExaminerNumber = coordinatorRequest.CoordinatorNumber;
+                    }
+                }  
+            }
+            // Supervisor 
+            else if (roles.Contains("Supervisor"))
+            {
+                var supervisorProfile = await _context.Set<SupervisorProfile>()
+                    .FirstOrDefaultAsync(p => p.UserId == userId);
+
+                if (supervisorProfile != null && request is UpdateSupervisorRequest supervisorRequest)
+                {
+                    supervisorProfile.Department = supervisorRequest.Department;
+                    supervisorProfile.SupervisorNumber = supervisorRequest.SupervisorNumber;
+                    // Examiner
+                    var examinerProfile = await _context.Set<ExaminerProfile>()
+                        .FirstOrDefaultAsync(p => p.UserId == userId);
+                    if (examinerProfile != null)
+                    {
+                        examinerProfile.Department = supervisorRequest.Department;
+                        examinerProfile.ExaminerNumber = supervisorRequest.SupervisorNumber;
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "User updated successfully"
+            };
+        }
         public async Task<BaseResponse> BlockUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -258,6 +337,7 @@ namespace RSR.BLL.Service.Users
             }
             await _userManager.SetLockoutEnabledAsync(user, true);
             await _userManager.SetLockoutEndDateAsync(user, DateTime.MaxValue);
+            user.IsActive = false;
             await _userManager.UpdateAsync(user);
             return new BaseResponse()
             {
@@ -278,6 +358,7 @@ namespace RSR.BLL.Service.Users
             }
             await _userManager.SetLockoutEnabledAsync(user, false);
             await _userManager.SetLockoutEndDateAsync(user, null);
+            user.IsActive = true;
             await _userManager.UpdateAsync(user);
             return new BaseResponse()
             {

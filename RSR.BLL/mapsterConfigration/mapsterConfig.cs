@@ -1,7 +1,10 @@
 ﻿using Mapster;
+using Mapster.Adapters;
 using Microsoft.Extensions.Configuration;
 using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Request.UserRequest.update;
 using RSR.DAL.DTOs.Response.User;
+using RSR.DAL.Models;
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -60,7 +63,11 @@ namespace RSR.BLL.mapsterConfigration
 
             TypeAdapterConfig<SupervisorProfile, AssignCoordinaterRequest>.NewConfig()
                 .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
-      
+
+
+         
+
+
         }
 
     }
