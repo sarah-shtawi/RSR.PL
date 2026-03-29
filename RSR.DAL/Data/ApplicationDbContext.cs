@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace RSR.DAL.Data
         public DbSet<SupervisorProfile> Supervisors { get; set; }
         public DbSet<CoordinatorProfile> Coordinators { get; set; }
         public DbSet<ExaminerProfile> Examiners { get; set; }
-
+        public DbSet<Semester> Semesters { get; set; }
 
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
         {

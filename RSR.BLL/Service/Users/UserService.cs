@@ -85,6 +85,7 @@ namespace RSR.BLL.Service.Users
                     // user not found ==> create 
                     targetUser = request.Adapt<ApplicationUser>();
                     var result = await _userManager.CreateAsync(targetUser, request.Password);
+                    targetUser.IsActive = true;
                     if (!result.Succeeded)
                     {
                         return new BaseResponse
@@ -123,6 +124,7 @@ namespace RSR.BLL.Service.Users
                         Message = "Cannot assign Student role to a user who already has roles"
                     };
                 }
+
                 // add roles and don't duplicate 
                 var rolesToAdd = new List<string>();
 
@@ -146,7 +148,6 @@ namespace RSR.BLL.Service.Users
                     if (!await _userManager.IsInRoleAsync(targetUser, r))
                     {
                         var roleResult = await _userManager.AddToRoleAsync(targetUser, r);
-                        targetUser.IsActive = true;
                         if (!roleResult.Succeeded)
                         {
                             return new BaseResponse
@@ -189,7 +190,7 @@ namespace RSR.BLL.Service.Users
                     ExaminerProfile.ExaminerNumber = coordinatorProfile.CoordinatorNumber;
                     ExaminerProfile.Department = coordinatorProfile.Department;
 
-                    if( !await _context.Supervisors.AnyAsync( p=>p.UserId == targetUser.Id))
+                    if(!await _context.Supervisors.AnyAsync( p=>p.UserId == targetUser.Id))
                     {
                         await _context.Supervisors.AddAsync(SupervisorProfile);
                     }
@@ -233,7 +234,7 @@ namespace RSR.BLL.Service.Users
         }
         public async Task<List<TGetResponse>> GetAllUsersWithProfile<TProfile , TGetResponse>() where TProfile : class , IUserProfile
         {
-            var usersProfile = await _context.Set<TProfile>().Include(p=>p.User).Where(p =>p.User.IsActive == true).ToListAsync();
+            var usersProfile = await _context.Set<TProfile>().Include("User").Where(p =>p.User.IsActive == true).ToListAsync();
             return usersProfile.Adapt<List<TGetResponse>>();
         }   
         public async Task<TGetResponse> GetUserById<TProfile , TGetResponse>(string userId) where TProfile : class , IUserProfile
@@ -338,7 +339,8 @@ namespace RSR.BLL.Service.Users
             await _userManager.SetLockoutEnabledAsync(user, true);
             await _userManager.SetLockoutEndDateAsync(user, DateTime.MaxValue);
             user.IsActive = false;
-            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
+
             return new BaseResponse()
             {
                 Success = true,
