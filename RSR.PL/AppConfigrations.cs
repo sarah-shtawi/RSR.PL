@@ -2,8 +2,11 @@
 using RSR.BLL.Service.Authentication;
 using RSR.BLL.Service.EmailSender;
 using RSR.BLL.Service.Files;
+using RSR.BLL.Service.Semester;
+using RSR.BLL.Service.semesterService;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
+using RSR.DAL.Repository.SemesterRepo;
 using RSR.DAL.Utils;
 
 namespace RSR.PL
@@ -20,6 +23,9 @@ namespace RSR.PL
             Services.AddScoped<IEmailSenderService, EmailSenderService>();
             Services.AddScoped<IUserService , UserService>();
             Services.AddScoped<IFileService, FileService>();
+            Services.AddScoped<ISemesterRepository, SemesterRepository>();
+            Services.AddScoped<ISemesterService, SemesterService>();
+
 
 
 
