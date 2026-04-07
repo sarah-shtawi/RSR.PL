@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RSR.DAL.Models.ProjectGroupModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace RSR.DAL.Models.SemesterModel
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; } 
+        public List<Group> Groups { get; set; }
     }
 }

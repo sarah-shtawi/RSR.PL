@@ -11,7 +11,6 @@ namespace RSR.DAL.Models
     {
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-
         public string? PictureProfileURL { get; set; }
     }
 }

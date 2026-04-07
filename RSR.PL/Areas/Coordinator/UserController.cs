@@ -74,6 +74,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("students")]
         public async Task<IActionResult> getStudent()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var students = await _userService.GetAllUsersWithProfile<StudentProfile, StudentGetResponse>(); ;
             if (students == null)
             {
@@ -85,6 +86,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("coordinaters")]
         public async Task<IActionResult> getCoordinaters()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var coordinaters = await _userService.GetAllUsersWithProfile<CoordinatorProfile, CoordinatorGetResponse>();
             ;
             if (coordinaters == null)
@@ -96,7 +98,8 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("supervisors")]
         public async Task<IActionResult> getSupervisors()
         {
-            var supervisors = await _userService.GetAllUsersWithProfile<SupervisorProfile, SupervisorGetResponse>(); ;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var supervisors = await _userService.GetAllUsersWithProfile<SupervisorProfile, SupervisorGetResponse>();
             if (supervisors == null)
             {
                 return BadRequest();
@@ -107,6 +110,7 @@ namespace RSR.PL.Areas.Coordinator
         [HttpGet("examiners")]
         public async Task<IActionResult> getExaminers()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var examiners = await _userService.GetAllUsersWithProfile<ExaminerProfile, ExaminerGetResponse>();
             if (examiners == null)
             {

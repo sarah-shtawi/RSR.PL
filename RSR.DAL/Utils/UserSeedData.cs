@@ -46,7 +46,6 @@ namespace RSR.DAL.Utils
                     {
                         UserId = coordinator.Id,
                         CoordinatorNumber = "201055223",
-                        Department = "Computer Engineering" 
                     };
                    await _context.Coordinators.AddAsync(coordinatorProfile);
                    await _context.SaveChangesAsync();

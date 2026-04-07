@@ -17,35 +17,32 @@ namespace RSR.BLL.Service.semesterService
     public class SemesterService : ISemesterService
     {
         private readonly ISemesterRepository _semesterRepository;
-
         public SemesterService(ISemesterRepository semesterRepository)
         {
             _semesterRepository = semesterRepository;
         }
         public async Task<BaseResponse> CreateSemester(CreateSemesterRequest request)
         {
-            var semesterDB = request.Adapt<RSR.DAL.Models.SemesterModel.Semester>();
-            var allSemesters = await _semesterRepository.GetAllSemesters();
-            if (allSemesters.Count != 0)
-            {
-                foreach (var semester in allSemesters)
-                {
-                    if (semester.IsActive == true)
-                    {
-                        semester.IsActive = false;
-                        await _semesterRepository.UpdateSemester(semester);
-                    }
-                }
-            }
-            semesterDB.IsActive = true;
-            if (semesterDB.StartDate >= semesterDB.EndDate)
+            var activeSemester = await _semesterRepository.GetActiveSemester();
+            if (activeSemester != null)
             {
                 return new BaseResponse
                 {
                     Success = false,
-                    Message = "The Date's was a problem"
+                    Message = "There is an active semester, You can't create a new semester "
                 };
             }
+            if (request.StartDate >= request.EndDate)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "There is a problem with the dates"
+                };
+            }
+            var semesterDB = request.Adapt<RSR.DAL.Models.SemesterModel.Semester>();
+            semesterDB.IsActive = true;
+
             var semesterAdd = await _semesterRepository.CreateSemester(semesterDB);
             return new BaseResponse
             {
@@ -73,9 +70,7 @@ namespace RSR.BLL.Service.semesterService
             var semestersRes = semestersDB.Adapt<List<SemesterResponse>>();
             return semestersRes;
         }
-
-
-        public async Task<BaseResponse> UpdateSemester(Guid Id,CreateSemesterRequest request)
+        public async Task<BaseResponse> UpdateSemester(Guid Id, CreateSemesterRequest request)
         {
             var semester = await _semesterRepository.GetById(Id);
             if(semester is null)
@@ -91,7 +86,7 @@ namespace RSR.BLL.Service.semesterService
                 return new BaseResponse
                 {
                     Success = false,
-                    Message = "The Date's was a problem"
+                    Message = "There is a problem with the dates"
                 };
             }
             semester.Name = request.Name;
@@ -104,6 +99,6 @@ namespace RSR.BLL.Service.semesterService
                 Message = "Semester Updated Successfully"
             };
         }
-           
+          
     }
 }

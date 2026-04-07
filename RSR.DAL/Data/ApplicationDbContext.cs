@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RSR.DAL.Models.ProjectGroupModel;
+using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.SemesterModel;
+
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -19,6 +22,8 @@ namespace RSR.DAL.Data
         public DbSet<ExaminerProfile> Examiners { get; set; }
         public DbSet<Semester> Semesters { get; set; }
 
+        public DbSet<Group> Groups { get; set; }
+        public DbSet <Project> Projects { get; set; }
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
         {
         
@@ -39,7 +44,7 @@ namespace RSR.DAL.Data
 
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserToken");
 
-            // Relations 
+            // Relations User And Profiles 
             modelBuilder.Entity<StudentProfile>()
                 .HasOne(st => st.User)
                 .WithOne(u => u.StudentProfile)
@@ -60,6 +65,37 @@ namespace RSR.DAL.Data
                 .HasOne(c => c.User)
                 .WithOne(u => u.ExaminerProfile)
                 .HasForeignKey<ExaminerProfile>(c => c.UserId);
+
+            // relation with Project - Group  1 : 1
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Project)
+                .WithOne(p => p.Group)
+                .HasForeignKey<Project>(p => p.GroupId);
+
+            modelBuilder.Entity<Project>()
+           .HasIndex(p => p.GroupId)
+           .IsUnique();
+
+            // relation with Group - Student  1 : M
+            modelBuilder.Entity<StudentProfile>()
+                .HasOne(s => s.Group)
+                .WithMany(g => g.Students)
+                .HasForeignKey(s => s.GroupId);
+
+            // relation with Group - Supervisor 1 : M
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Supervisor)
+                .WithMany(s => s.Groups)
+                .HasForeignKey(g=>g.SupervisorId);
+
+            // relation with Group - semester 
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Semester)
+                .WithMany(s => s.Groups)
+                .HasForeignKey(g => g.SemesterId);
+
+
+
 
 
         }

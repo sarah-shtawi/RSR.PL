@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331005407_Department")]
+    partial class Department
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,66 +158,6 @@ namespace RSR.DAL.Migrations
                     b.ToTable("UserToken", (string)null);
                 });
 
-            modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
-                {
-                    b.Property<Guid>("GroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SemesterId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SupervisorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("GroupId");
-
-                    b.HasIndex("SemesterId");
-
-                    b.HasIndex("SupervisorId");
-
-                    b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.ProjectModel.Project", b =>
-                {
-                    b.Property<Guid>("ProjectId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProjectIdea")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProjectStatus")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectId");
-
-                    b.HasIndex("GroupId")
-                        .IsUnique();
-
-                    b.ToTable("Projects");
-                });
-
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
                 {
                     b.Property<Guid>("SemesterId")
@@ -254,7 +197,7 @@ namespace RSR.DAL.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreateAt")
+                    b.Property<DateTime?>("CreateAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -336,7 +279,6 @@ namespace RSR.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PictureProfileURL")
@@ -353,7 +295,6 @@ namespace RSR.DAL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExaminerNumber")
@@ -377,9 +318,6 @@ namespace RSR.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Major")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -393,8 +331,6 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("GroupId");
-
                     b.ToTable("Students");
                 });
 
@@ -404,7 +340,6 @@ namespace RSR.DAL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PictureProfileURL")
@@ -470,36 +405,6 @@ namespace RSR.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.SemesterModel.Semester", "Semester")
-                        .WithMany("Groups")
-                        .HasForeignKey("SemesterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RSR.DAL.Models.User.SupervisorProfile", "Supervisor")
-                        .WithMany("Groups")
-                        .HasForeignKey("SupervisorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Semester");
-
-                    b.Navigation("Supervisor");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.ProjectModel.Project", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
-                        .WithOne("Project")
-                        .HasForeignKey("RSR.DAL.Models.ProjectModel.Project", "GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("RSR.DAL.Models.User.CoordinatorProfile", b =>
                 {
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
@@ -524,17 +429,11 @@ namespace RSR.DAL.Migrations
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>
                 {
-                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
-                        .WithMany("Students")
-                        .HasForeignKey("GroupId");
-
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
                         .WithOne("StudentProfile")
                         .HasForeignKey("RSR.DAL.Models.User.StudentProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Group");
 
                     b.Navigation("User");
                 });
@@ -550,19 +449,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
-                {
-                    b.Navigation("Project")
-                        .IsRequired();
-
-                    b.Navigation("Students");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
-                {
-                    b.Navigation("Groups");
-                });
-
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Navigation("CoordinatorProfile");
@@ -572,11 +458,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("StudentProfile");
 
                     b.Navigation("SupervisorProfile");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.User.SupervisorProfile", b =>
-                {
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,7 +14,7 @@ namespace RSR.DAL.Models.User
 
         public string FullName { get; set; } = null!;
         public bool IsActive { get; set; }
-        public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         // for reset Password 
         public string? CodeResetPassword { get; set; }
