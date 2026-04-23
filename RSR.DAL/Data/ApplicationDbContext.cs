@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using RSR.DAL.Models.ProjectGroupModel;
 using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.SemesterModel;
-
+using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Task = RSR.DAL.Models.TaskModel.Task;
+
 
 namespace RSR.DAL.Data
 {
@@ -76,7 +75,7 @@ namespace RSR.DAL.Data
            .HasIndex(p => p.GroupId)
            .IsUnique();
 
-            // relation with Group - Student  1 : M
+            // relation with Student - Group   1 : M
             modelBuilder.Entity<StudentProfile>()
                 .HasOne(s => s.Group)
                 .WithMany(g => g.Students)
@@ -95,6 +94,30 @@ namespace RSR.DAL.Data
                 .HasForeignKey(g => g.SemesterId);
 
 
+            // relation with Task - Group 1 : M 
+            modelBuilder.Entity<Task>()
+                .HasOne(t => t.Group)
+                .WithMany(g => g.Tasks)
+                .HasForeignKey(t=>t.GroupId);
+
+            // relation with Task - Supervisor 1 : M 
+            modelBuilder.Entity<Task>()
+                .HasOne(t => t.Supervisor)
+                .WithMany(s => s.Tasks)
+                .HasForeignKey(t => t.SupervisorId);
+
+            // relation with  TaskSubmission - Student 1 : M 
+            modelBuilder.Entity<TaskSubmission>()
+                .HasOne(t => t.Student)
+                .WithMany(s => s.TaskSubmissions)
+                .HasForeignKey(s=>s.StudentId);
+
+            // relation with Task - Task Submission  1 : M
+            modelBuilder.Entity<TaskSubmission>()
+                .HasOne(ts => ts.Task)
+                .WithMany(t => t.TaskSubmissions)
+                .HasForeignKey(ts=>ts.TaskId);
+                
 
 
 

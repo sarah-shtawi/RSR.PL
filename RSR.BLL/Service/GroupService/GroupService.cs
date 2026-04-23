@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using RSR.DAL.Data;
 using RSR.DAL.DTOs.Request.GroupRequest;
 using RSR.DAL.DTOs.Response;
+using RSR.DAL.DTOs.Response.GroupRes;
 using RSR.DAL.Models.ProjectGroupModel;
 using RSR.DAL.Models.ProjectModel;
+using RSR.DAL.Models.User;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ProjectRepo;
 using RSR.DAL.Repository.SemesterRepo;
 using RSR.DAL.Repository.StudentRepo;
+using System.Collections.Generic;
 
 
 namespace RSR.BLL.Service.GroupService
@@ -31,6 +35,50 @@ namespace RSR.BLL.Service.GroupService
             this._context = _context;
         }
 
+        public async Task<List<GetAllSupervisorsWithGroups>> GetCoordinatersGroups()
+        {
+            var supervisorsWithGroup = await _groupRepository.GetAllSupervisorsWithGroups();
+            var AllGroups = supervisorsWithGroup.Select(s =>
+            new GetAllSupervisorsWithGroups
+            {
+                SupervisorName = s.User.FullName,
+                Groups = s.Groups.Select(g => new GroupResponse
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    ProjectName = g.Project.ProjectName,
+                    ProjectIdea = g.Project.ProjectIdea,
+                    ProjectStatus = g.Project.ProjectStatus,
+                    Description = g.Project.Description,
+                    Students = g.Students.Select(s => new StudentResponse
+                    {
+                        StudentNumber = s.StudentNumber,
+                        FullName = s.User.FullName
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+            return AllGroups;
+        }
+        public async Task<List<GroupResponse>> GetSupervisorGroups(string supervisorId)
+        {
+            var Groups = await _groupRepository.GetSupervisorGroup(supervisorId);
+            var supervisorGroups = Groups.Select(g =>
+                new GroupResponse
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    ProjectName = g.Project.ProjectName,
+                    ProjectIdea = g.Project.ProjectIdea,
+                    ProjectStatus = g.Project.ProjectStatus,
+                    Description = g.Project.Description,
+                    Students = g.Students.Select(s => new StudentResponse
+                    {
+                        StudentNumber = s.StudentNumber,
+                        FullName = s.User.FullName
+                    }).ToList()
+                }).ToList();
+            return supervisorGroups;
+        }
         public async Task<BaseResponse> CreateGroup(GroupRequest request , string SupervisorId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -44,6 +92,17 @@ namespace RSR.BLL.Service.GroupService
                         Success = false,
                         Message = "No students found"
                     };
+                }
+                foreach(var student in Students)
+                {
+                    if (student.GroupId is not null)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "Student already assigned"
+                        };
+                    }
                 }
                 var semester = await _semesterRepository.GetActiveSemester();
                 if(semester is null)
@@ -101,7 +160,7 @@ namespace RSR.BLL.Service.GroupService
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var groupWithProject = await _groupRepository.FindById(groupId); // Include
+                var groupWithProject = await _groupRepository.GroupByIdRepo(groupId); // Include
                 if (groupWithProject == null)
                 {
                     return new BaseResponse()
@@ -127,6 +186,17 @@ namespace RSR.BLL.Service.GroupService
                         Success = false,
                         Message = "No students found"
                     };
+                }
+                foreach (var student in Students)
+                {
+                    if (student.GroupId is not null && student.GroupId != groupWithProject.GroupId)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "Student already assigned"
+                        };
+                    }
                 }
                 var currentStudents = await _studentRepository.GetCurrentStudentByGroupId(groupWithProject.GroupId);
                 foreach (var student in currentStudents)
@@ -172,5 +242,37 @@ namespace RSR.BLL.Service.GroupService
             }
 
         }
+
+        public async Task<GroupResponse> GetGroupById(Guid groupId)
+        {
+            Console.WriteLine(groupId); 
+            var group = await _groupRepository.GroupByIdRepo(groupId);
+            if (group == null)
+            {
+                throw new Exception("Group is null");
+            }
+
+            if (group.Project == null)
+            {
+                throw new Exception("Project is null");
+            }
+            var GroupResponse = new GroupResponse
+            {
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                ProjectIdea = group.Project.ProjectIdea,
+                ProjectName = group.Project.ProjectName,
+                ProjectStatus = group.Project.ProjectStatus,
+                Description = group.Project.Description,
+                Students = group.Students.Select(s => new StudentResponse
+                {
+                    StudentNumber = s.StudentNumber,
+                    FullName = s.User.FullName,
+                }).ToList()
+            };
+            return GroupResponse;
+        }
+
+
     }
 }

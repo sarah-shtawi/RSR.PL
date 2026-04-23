@@ -5,6 +5,7 @@ using RSR.BLL.Service.GroupService;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Request.GroupRequest;
 using RSR.DAL.DTOs.Request.UserRequest;
+using RSR.DAL.DTOs.Response.User;
 using RSR.DAL.Models.User;
 using System.Security.Claims;
 
@@ -23,7 +24,18 @@ namespace RSR.PL.Areas.Supervisor
             _userService = userService;
             _groupService = groupService;
         }
-
+        [HttpGet("students-supervisor")]
+        public async Task<IActionResult> getStudent()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var students = await _userService.GetAllUsersWithProfile<StudentProfile, StudentGetResponse>(); ;
+            if (students == null)
+            {
+                return BadRequest();
+            }
+            return Ok(new { message = "success", students });
+        }
+   
         [HttpPost("image-profile-supervisor")]
         public async Task<IActionResult> AssignImageSupervisor( [FromForm] UploadImageRequest image)
         {
@@ -36,7 +48,18 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
-
+        [HttpGet("groups-supervisor")]
+        public async Task<IActionResult> GetSupervisorGroups()
+        {
+            var SupervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _groupService.GetSupervisorGroups(SupervisorId);
+            if(result is null)
+            {
+                return BadRequest();
+            }
+            return Ok( new { message = "success" , groups =  result });
+        }
+       
         [HttpPost("create-group")]
         public async Task<IActionResult> CreateGroup([FromBody] GroupRequest request)
         {
@@ -44,7 +67,7 @@ namespace RSR.PL.Areas.Supervisor
             var result = await _groupService.CreateGroup(request , SupervisorId);
             if (!result.Success) 
             {
-                return BadRequest(result.Message);            
+                return BadRequest(result);            
             }
             return Ok(result);
 
