@@ -17,7 +17,7 @@ namespace RSR.BLL.Service.semesterService
         {
             _scopeFactory = scopeFactory;
         }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async System.Threading.Tasks.Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -31,7 +31,7 @@ namespace RSR.BLL.Service.semesterService
                         await semesterRepo.UpdateSemester(semesterActive);
                     }
                 }
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
     }

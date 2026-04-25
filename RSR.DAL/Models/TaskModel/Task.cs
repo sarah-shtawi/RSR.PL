@@ -14,6 +14,8 @@ namespace RSR.DAL.Models.TaskModel
         public Guid TaskId { get; set; } = Guid.NewGuid();
         public string Title { get; set; }
         public string Description { get; set; }
+        public string? SupervisorNotes { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime DeadLine { get; set; }
         public string? TaskFileURL { get; set; }

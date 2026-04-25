@@ -17,7 +17,7 @@ namespace RSR.BLL.Service.EmailSender
         {
             _configuration = configuration;
         }
-        public async Task sendEmail(string email , string subject , string htmlMessage)
+        public async System.Threading.Tasks.Task sendEmail(string email , string subject , string htmlMessage)
         {
             var client = new SmtpClient("smtp.gmail.com", 587)
             {

@@ -22,6 +22,7 @@ namespace RSR.DAL.Models.ProjectGroupModel
         // relation with student profile  1 : M 
         public List<StudentProfile> Students { get; set; } = new();
 
+
         // relation with supervisor 
         public string SupervisorId { get; set; }
         public SupervisorProfile Supervisor { get; set; }

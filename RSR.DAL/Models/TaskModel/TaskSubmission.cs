@@ -21,13 +21,13 @@ namespace RSR.DAL.Models.TaskModel
         // relation with student 
         public StudentProfile Student { get; set; }
         public string StudentId { get; set; }
+        public Guid GroupId { get; set; }
 
 
         // relation with Task
         public Task Task { get; set; }
         public Guid TaskId { get; set; }
 
-        public Guid GroupId { get; set; }
 
         public int VersionNumber { get; set; }
         public bool IsLatest { get; set; }

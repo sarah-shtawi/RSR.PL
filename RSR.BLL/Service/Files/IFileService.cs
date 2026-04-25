@@ -10,5 +10,6 @@ namespace RSR.BLL.Service.Files
     public  interface IFileService
     {
         Task<string?> UploadeImageFile(IFormFile file);
+        Task<string?> UploadTaskFile(IFormFile TaskFile);
     }
 }

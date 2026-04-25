@@ -20,9 +20,9 @@ namespace RSR.DAL.Models.User
         public string? PictureProfileURL { get; set; }
 
         // relation with group 
-        public List<Group> Groups { get; set; } = new List<Group>();
+        public List<Group> Groups { get; set; } = new();
 
         // relation with Task 
-        public List<Task> Tasks { get; set; } = new List<Task>();
+        public List<Task> Tasks { get; set; } = new();
     }
 }

@@ -23,6 +23,11 @@ namespace RSR.DAL.Data
 
         public DbSet<Group> Groups { get; set; }
         public DbSet <Project> Projects { get; set; }
+
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskSubmission> TaskSubmissions { get; set; }
+
+
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
         {
         
@@ -104,7 +109,8 @@ namespace RSR.DAL.Data
             modelBuilder.Entity<Task>()
                 .HasOne(t => t.Supervisor)
                 .WithMany(s => s.Tasks)
-                .HasForeignKey(t => t.SupervisorId);
+                .HasForeignKey(t => t.SupervisorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // relation with  TaskSubmission - Student 1 : M 
             modelBuilder.Entity<TaskSubmission>()
@@ -116,8 +122,10 @@ namespace RSR.DAL.Data
             modelBuilder.Entity<TaskSubmission>()
                 .HasOne(ts => ts.Task)
                 .WithMany(t => t.TaskSubmissions)
-                .HasForeignKey(ts=>ts.TaskId);
-                
+                .HasForeignKey(ts=>ts.TaskId)
+                .OnDelete(DeleteBehavior.Restrict);
+      
+
 
 
 

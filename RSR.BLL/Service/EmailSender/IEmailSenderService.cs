@@ -8,6 +8,6 @@ namespace RSR.BLL.Service.EmailSender
 {
     public  interface IEmailSenderService
     {
-        Task sendEmail(string email, string subject, string htmlMessage);
+        System.Threading.Tasks.Task sendEmail(string email, string subject, string htmlMessage);
     }
 }
