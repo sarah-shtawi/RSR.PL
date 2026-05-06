@@ -24,7 +24,10 @@ namespace RSR.DAL.Models.User
         // for refresh token 
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
-               
+
+        // relation with TaskSubmissionComments
+        public List<TaskSubmissionComment> TaskSubmissionComments { get; set; } = new List<TaskSubmissionComment>();
+
         // Navigation Proparity with profiles 
         public StudentProfile? StudentProfile {  get; set; }
         public SupervisorProfile? SupervisorProfile { get; set; }

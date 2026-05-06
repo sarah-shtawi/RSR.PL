@@ -28,6 +28,8 @@ namespace RSR.DAL.Models.TaskModel
         public Task Task { get; set; }
         public Guid TaskId { get; set; }
 
+        // relation with TaskSubmissionComments
+        public List<TaskSubmissionComment> TaskSubmissionComments { get; set; }
 
         public int VersionNumber { get; set; }
         public bool IsLatest { get; set; }

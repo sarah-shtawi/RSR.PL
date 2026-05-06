@@ -33,5 +33,10 @@ namespace RSR.DAL.Repository.StudentRepo
             }
             return CurrentStudents;
         }
+        public async Task <StudentProfile?> GetStudentById(string studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            return student;
+        } 
     }
 }

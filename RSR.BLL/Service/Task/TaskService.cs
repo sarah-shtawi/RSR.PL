@@ -8,11 +8,8 @@ using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.TaskRepo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace RSR.BLL.Service.Task
 {
@@ -169,15 +166,11 @@ namespace RSR.BLL.Service.Task
                 Message = "Task Updated Successfully"
             };
         }
-
         public async Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId , string supervisorId)
         {
             var Tasks = await _taskRepository.GetTasksGroup(GroupId , supervisorId);
             var TasksResponse = Tasks.Adapt<List<TaskResponse>>();
             return TasksResponse;
         }
-
-
-
     }
 }

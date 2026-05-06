@@ -328,6 +328,40 @@ namespace RSR.DAL.Migrations
                     b.ToTable("TaskSubmissions");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmissionComment", b =>
+                {
+                    b.Property<Guid>("TaskSubmissionCommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ParentCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TaskSubmissionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TaskSubmissionCommentId");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("TaskSubmissionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TaskSubmissionComments");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -627,6 +661,32 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmissionComment", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.TaskModel.TaskSubmissionComment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RSR.DAL.Models.TaskModel.TaskSubmission", "TaskSubmission")
+                        .WithMany("TaskSubmissionComments")
+                        .HasForeignKey("TaskSubmissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
+                        .WithMany("TaskSubmissionComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ParentComment");
+
+                    b.Navigation("TaskSubmission");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.User.CoordinatorProfile", b =>
                 {
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
@@ -697,6 +757,16 @@ namespace RSR.DAL.Migrations
                     b.Navigation("TaskSubmissions");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmission", b =>
+                {
+                    b.Navigation("TaskSubmissionComments");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmissionComment", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Navigation("CoordinatorProfile");
@@ -706,6 +776,8 @@ namespace RSR.DAL.Migrations
                     b.Navigation("StudentProfile");
 
                     b.Navigation("SupervisorProfile");
+
+                    b.Navigation("TaskSubmissionComments");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>

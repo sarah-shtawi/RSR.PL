@@ -26,6 +26,7 @@ namespace RSR.DAL.Data
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskSubmission> TaskSubmissions { get; set; }
+        public DbSet<TaskSubmissionComment> TaskSubmissionComments { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
@@ -124,11 +125,27 @@ namespace RSR.DAL.Data
                 .WithMany(t => t.TaskSubmissions)
                 .HasForeignKey(ts=>ts.TaskId)
                 .OnDelete(DeleteBehavior.Restrict);
-      
 
+            // relation with TaskSubmission - TaskSubmissionComment
+            modelBuilder.Entity<TaskSubmissionComment>()
+                 .HasOne(c => c.TaskSubmission)
+                 .WithMany(ts => ts.TaskSubmissionComments)
+                 .HasForeignKey(c=>c.TaskSubmissionId)
+                 .OnDelete(DeleteBehavior.Cascade); ;
 
+            // relation with User -  TaskSubmissionComment  1 : M
+            modelBuilder.Entity<TaskSubmissionComment>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.TaskSubmissionComments)
+                .HasForeignKey(c=>c.UserId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
-
+            // self relation TaskSubmissionComment - TaskSubmissionComment 
+            modelBuilder.Entity<TaskSubmissionComment>()
+                .HasOne(c=>c.ParentComment)
+                .WithMany(c=>c.Replies)
+                .HasForeignKey(c=>c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

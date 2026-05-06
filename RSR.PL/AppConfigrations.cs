@@ -6,13 +6,16 @@ using RSR.BLL.Service.GroupService;
 using RSR.BLL.Service.Semester;
 using RSR.BLL.Service.semesterService;
 using RSR.BLL.Service.Task;
+using RSR.BLL.Service.TaskSubmission;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ProjectRepo;
 using RSR.DAL.Repository.SemesterRepo;
 using RSR.DAL.Repository.StudentRepo;
+using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
+using RSR.DAL.Repository.TaskSubmissionRepo;
 using RSR.DAL.Utils;
 
 namespace RSR.PL
@@ -47,6 +50,14 @@ namespace RSR.PL
 
             Services.AddScoped<ITaskRepository, TaskRepository>();
             Services.AddScoped<ITaskService, TaskService>();
+
+            Services.AddScoped<ITaskSubmissionRepository, TaskSubmissionRepository>();
+            Services.AddScoped<ITaskSubmissionService, TaskSubmissionService>();
+
+            Services.AddScoped<ISubmissionCommentRepository, SubmissionCommentRepository>();
+
+            
+
         }
     }
 }

@@ -11,5 +11,6 @@ namespace RSR.DAL.Repository.StudentRepo
     {
         Task<List<StudentProfile>> GetStudentsByIds(List<string> studentsIds);
         Task<List<StudentProfile>>? GetCurrentStudentByGroupId(Guid groupId);
+        Task<StudentProfile?> GetStudentById(string studentId);
     }
 }
