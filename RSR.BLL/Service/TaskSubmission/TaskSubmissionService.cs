@@ -275,7 +275,50 @@ namespace RSR.BLL.Service.TaskSubmission
 
         }
 
-       public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
+        public async Task<BaseResponse> ReplyToComment(string userId , Guid parentCommentId , ReplyToCommentRequest Request  )
+        {
+            var parent = await _commentRepository.GetParentComment(parentCommentId);
+            if (parent == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Parent Comment Is Not Found"
+                };
+            }
+            var submission = await _taskSubmissionRepository.GetSubmissionById(parent.TaskSubmissionId);
+            if (submission == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Submission Is Not Found"
+                };
+            }
+            if(userId != submission.StudentId && userId != submission.Task.SupervisorId)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You Can't reply to this comment."
+                };
+            }
+            var reply = new TaskSubmissionComment
+            {
+                Content = Request.Content,
+                CreatedAt = DateTime.UtcNow,
+                TaskSubmissionId = submission.TaskSubmissionId,
+                UserId = userId,
+                ParentCommentId = parentCommentId,
+            };
+            await _commentRepository.CreateComment( reply );
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Comment Added Successfully"
+            };
+        }
+         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
         {
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
             if (submission is null) 
@@ -309,5 +352,8 @@ namespace RSR.BLL.Service.TaskSubmission
                 Message = "Submission Removed Successfully"
             };
         }
+
+
+
     }
 }

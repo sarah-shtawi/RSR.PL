@@ -23,5 +23,10 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
             await _context.TaskSubmissionComments.AddAsync(comment);
             await _context.SaveChangesAsync();
         }
+        public async Task <TaskSubmissionComment?> GetParentComment(Guid  parentcomment)
+        {
+            var parentComment = await _context.TaskSubmissionComments.FindAsync(parentcomment);
+            return parentComment;
+        }
     }
 }

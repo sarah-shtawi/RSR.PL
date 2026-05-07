@@ -35,7 +35,7 @@ namespace RSR.DAL.Repository.TaskSubmissionRepo
         }
         public async Task<TaskSubmission?> GetSubmissionById(Guid TaskSubmissionId)
         {
-            var taskSubmision = await _context.TaskSubmissions.FindAsync(TaskSubmissionId);
+            var taskSubmision = await _context.TaskSubmissions.Include(s=>s.Task).FirstOrDefaultAsync(s => s.TaskSubmissionId == TaskSubmissionId);
             return taskSubmision;
         }
 

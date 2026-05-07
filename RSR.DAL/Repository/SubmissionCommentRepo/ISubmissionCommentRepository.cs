@@ -10,5 +10,6 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
     public  interface ISubmissionCommentRepository
     {
         System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment);
+        Task<TaskSubmissionComment?> GetParentComment(Guid parentcomment);
     }
 }

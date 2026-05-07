@@ -14,5 +14,6 @@ namespace RSR.BLL.Service.TaskSubmission
         Task<BaseResponse> UpdateTaskSubmission(TaskSubmissionRequest Request, string StudentId, Guid SubmissionTaskId);
         Task<BaseResponse> ReviewForSubmission(Guid submissionId, string supervisorId, ReviewTaskSubmission request);
         Task<BaseResponse> DeleteSubmission(Guid submissionId, string studentId);
+        Task<BaseResponse> ReplyToComment(string userId, Guid parentCommentId, ReplyToCommentRequest Request);
     }
 }
