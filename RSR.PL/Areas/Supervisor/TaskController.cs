@@ -9,7 +9,6 @@ namespace RSR.PL.Areas.Supervisor
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Supervisor")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -18,7 +17,7 @@ namespace RSR.PL.Areas.Supervisor
         {
             _taskService = taskService;
         }
-
+        [Authorize(Roles = "Supervisor")]
         [HttpPost("create/{GroupId}")]
         public async Task <IActionResult> CreateTask([FromRoute] Guid GroupId , [FromForm] TaskRequest Request)
         {
@@ -31,11 +30,14 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
 
         }
+        [Authorize(Roles = "Supervisor,Student")]
+
         [HttpGet("tasks-group/{GroupId}")]
         public async Task <IActionResult> GetTasksByGroup([FromRoute] Guid GroupId)
         {
-            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var Tasks = await _taskService.GetTasksByGroup(GroupId ,supervisorId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            var Tasks = await _taskService.GetTasksByGroupForSupervisor(GroupId ,userId , role);
             if(Tasks is null)
             {
                 return BadRequest(Tasks);

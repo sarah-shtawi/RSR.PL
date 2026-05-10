@@ -15,5 +15,8 @@ namespace RSR.DAL.DTOs.Response.TaskRes
         public DateTime CreatedAt { get; set; }
         public DateTime DeadLine { get; set; }
         public string? TaskFileURL { get; set; }
+
+        public string SupervisorName { get; set; }
+        public List<TaskSubmissionResponse> TaskSubmissions { get; set; }
     }
 }

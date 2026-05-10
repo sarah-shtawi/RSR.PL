@@ -166,9 +166,16 @@ namespace RSR.BLL.Service.Task
                 Message = "Task Updated Successfully"
             };
         }
-        public async Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId , string supervisorId)
+        public async Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId , string userId , string role)
         {
-            var Tasks = await _taskRepository.GetTasksGroup(GroupId , supervisorId);
+            var Tasks = await _taskRepository.GetTasksGroup(GroupId);  
+            if(role == "Supervisor")
+            {
+                Tasks = Tasks.Where(t=>t.SupervisorId == userId).ToList();
+            }else if (role == "Student")
+            {
+                Tasks = Tasks.Where(t => t.Group.Students.Any(s=>s.UserId == userId)).ToList();
+            }
             var TasksResponse = Tasks.Adapt<List<TaskResponse>>();
             return TasksResponse;
         }

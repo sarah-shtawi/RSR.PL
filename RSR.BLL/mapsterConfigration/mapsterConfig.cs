@@ -64,12 +64,21 @@ namespace RSR.BLL.mapsterConfigration
 
 
             TypeAdapterConfig<SupervisorProfile, AssignCoordinaterRequest>.NewConfig()
-                .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
+               .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
 
             TypeAdapterConfig<DAL.Models.TaskModel.Task, TaskResponse>.NewConfig()
-                .Map(dest => dest.TaskFileURL, src => string.IsNullOrEmpty(src.TaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.TaskFileURL}");
-            
-         
+              .Map(dest => dest.TaskFileURL, src => string.IsNullOrEmpty(src.TaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.TaskFileURL}")
+              .Map(dest => dest.SupervisorName, src => src.Supervisor.User.FullName);
+
+
+            TypeAdapterConfig<TaskSubmission, TaskSubmissionResponse>.NewConfig()
+             .Map(dest => dest.TaskSubmissionURL, src => string.IsNullOrEmpty(src.SubmissionTaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.SubmissionTaskFileURL}")
+                          .Map(dest => dest.StudentName, src => src.Student.User.FullName);
+
+
+
+            TypeAdapterConfig<TaskSubmissionComment, TaskSubmissionCommentResponse>.NewConfig()
+          .Map(dest => dest.UserName, src => src.User.FullName);
 
 
         }

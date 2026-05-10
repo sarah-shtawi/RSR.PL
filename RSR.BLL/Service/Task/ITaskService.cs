@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace RSR.BLL.Service.Task
 {
-    public  interface ITaskService
+    public interface ITaskService
     {
         Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
         Task<BaseResponse> UpdateTask(string SupervisorId, Guid GroupId, TaskRequest Request, Guid TaskId);
-        Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId, string supervisorId);
+        Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId, string userId , string role);
     }
 }
