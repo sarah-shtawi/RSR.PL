@@ -1,4 +1,5 @@
-﻿using RSR.DAL.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using RSR.DAL.Data;
 using RSR.DAL.Models.TaskModel;
 
 namespace RSR.DAL.Repository.TaskRepo
@@ -29,9 +30,14 @@ namespace RSR.DAL.Repository.TaskRepo
             return Task;
         }
 
-        public async Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId , string supervisorId)
+        public async Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId)
         {
-            var Tasks = _context.Tasks.Where(t=>t.GroupId == GroupId && t.SupervisorId == supervisorId).ToList();
+            var Tasks = await _context.Tasks
+                .Include(t=>t.Supervisor)
+                .Include(t=>t.Group)
+                .Include(t=>t.TaskSubmissions.OrderBy(s=>s.SubmittedAt)).ThenInclude(ts=>ts.Student)
+                .Include(t=>t.TaskSubmissions).ThenInclude(ts=>ts.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
+                .Where(t=>t.GroupId == GroupId).ToListAsync();
             return Tasks;
         }
 
