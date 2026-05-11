@@ -12,6 +12,7 @@ namespace RSR.DAL.DTOs.Response.User
         public string College { get; set; }
         public string Major { get; set; }
         public string? PictureProfileURL { get; set; }
+        public Guid GroupId { get; set; }
 
     }
 }

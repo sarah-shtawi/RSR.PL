@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.GroupService;
 using RSR.BLL.Service.Users;
 using RSR.DAL.DTOs.Response.GroupRes;
+using System.Security.Claims;
 
 namespace RSR.PL.Areas.Coordinator
 {
@@ -27,10 +28,13 @@ namespace RSR.PL.Areas.Coordinator
         }
 
         [HttpGet("group/{groupId}")]
-        [Authorize(Roles =("Supervisor,Coordinator"))]
+        [Authorize(Roles =("Supervisor,Coordinator,Student"))]
         public async Task<IActionResult> GetGroupById([FromRoute] Guid groupId)
         {
-            var group = await _groupService.GetGroupById(groupId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            var group = await _groupService.GetGroupById(groupId , userId, role);
             if (group == null)
             {
                 return BadRequest(group);            

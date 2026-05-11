@@ -13,6 +13,8 @@ namespace RSR.BLL.Service.Task
     {
         Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
         Task<BaseResponse> UpdateTask(string SupervisorId, Guid GroupId, TaskRequest Request, Guid TaskId);
-        Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId, string userId , string role);
-    }
+        Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId, string userId, string role);
+        Task<TaskDetailsResponse> TaskDetails(Guid TaskId, string userId, string role);  
+            
+     }
 }

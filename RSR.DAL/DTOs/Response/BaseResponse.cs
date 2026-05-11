@@ -14,5 +14,6 @@ namespace RSR.DAL.DTOs.Response
 
         public List<string>? Errors { get; set; }
 
+
     }
 }

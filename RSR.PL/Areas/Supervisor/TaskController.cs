@@ -45,8 +45,24 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(new { message = "success", Tasks });
         }
 
+        //Task Details
+        [Authorize(Roles = ("Supervisor,Student"))]
+        [HttpGet("task-id/{TaskId}")]
+        public async Task<IActionResult> GetTaskDetails([FromRoute] Guid TaskId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            var task = await _taskService.TaskDetails(TaskId, userId, role);
+            if(task is null)
+            {
+                return BadRequest(task);
+            }
+            return Ok(new { message = "success", task });
+
+        }
 
 
+        [Authorize(Roles = "Supervisor")]
         [HttpPatch("{GroupId}/tasks/{taskId}")]
         public async Task<IActionResult> UpdateTask([FromRoute] Guid GroupId, [FromRoute] Guid TaskId,[FromForm] TaskRequest Request)
         {
