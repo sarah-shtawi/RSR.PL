@@ -8,6 +8,8 @@ using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.TaskRepo;
+using System.Data;
+using System.Threading.Tasks;
 
 
 
@@ -126,8 +128,6 @@ namespace RSR.BLL.Service.Task
                     Message = "This Group does not updated to this supervisor"
                 };
             }
-
-
             TaskDB.Title = Request.Title;
             TaskDB.Description = Request.Description;
             TaskDB.DeadLine = Request.DeadLine;
@@ -178,6 +178,46 @@ namespace RSR.BLL.Service.Task
             }
             var TasksResponse = Tasks.Adapt<List<TaskResponse>>();
             return TasksResponse;
+        }
+
+        public async Task <TaskDetailsResponse> TaskDetails(Guid TaskId , string userId , string role)
+        {
+            var Task = await _taskRepository.GetTaskById(TaskId);
+            if (Task == null) 
+            {
+                return new TaskDetailsResponse
+                {
+                    Success = false,
+                    Message= "Task Not Found"
+                };
+            }
+            if (role == "Supervisor")
+            {
+                if (Task.SupervisorId != userId)
+                {
+                    return new TaskDetailsResponse
+                    {
+                        Success = false,
+                        Message = "You are not a supervisor of the group that owns this task."
+                    };
+                }
+            }
+            else if (role == "Student")
+            {
+                if (!Task.Group.Students.Any(s => s.UserId == userId))
+                {
+                    return new TaskDetailsResponse
+                    {
+                        Success = false,
+                        Message = "You are not a member of the group that owns this task."
+                    };
+                }
+            }
+
+            var TaskResponse = Task.Adapt<TaskDetailsResponse>();
+            TaskResponse.Success = true;
+            TaskResponse.Message = "Task Details";
+            return TaskResponse;
         }
     }
 }

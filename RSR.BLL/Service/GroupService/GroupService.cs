@@ -53,7 +53,8 @@ namespace RSR.BLL.Service.GroupService
                     Students = g.Students.Select(s => new StudentResponse
                     {
                         StudentNumber = s.StudentNumber,
-                        FullName = s.User.FullName
+                        FullName = s.User.FullName,
+                        GroupId = s.GroupId ?? Guid.Empty
                     }).ToList()
                 }).ToList()
             }).ToList();
@@ -74,7 +75,8 @@ namespace RSR.BLL.Service.GroupService
                     Students = g.Students.Select(s => new StudentResponse
                     {
                         StudentNumber = s.StudentNumber,
-                        FullName = s.User.FullName
+                        FullName = s.User.FullName,
+                        GroupId = s.GroupId ?? Guid.Empty
                     }).ToList()
                 }).ToList();
             return supervisorGroups;
@@ -243,21 +245,51 @@ namespace RSR.BLL.Service.GroupService
 
         }
 
-        public async Task<GroupResponse> GetGroupById(Guid groupId)
+        public async Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role)
         {
-            Console.WriteLine(groupId); 
             var group = await _groupRepository.GroupByIdRepo(groupId);
             if (group == null)
             {
-                throw new Exception("Group is null");
+                return new GroupResponse
+                {
+                    Success = false,
+                    Message = "group not found"
+                };
             }
 
             if (group.Project == null)
             {
-                throw new Exception("Project is null");
+                return new GroupResponse
+                {
+                    Success = false,
+                    Message = "Project not found"
+                };
             }
+            if(role == "Student")
+            {
+                bool isMember = group.Students.Any(s => s.UserId == userId);
+
+                if (!isMember)
+                    return new GroupResponse
+                    {
+                        Success = false,
+                        Message = "You are not a member of this group"
+                    };
+            }
+            if (role == "Supervisor")
+            {
+                if (group.SupervisorId != userId)
+                    return new GroupResponse
+                    {
+                        Success = false,
+                        Message = "You are not the supervisor of this group"
+                    };
+            }
+
             var GroupResponse = new GroupResponse
             {
+                Success = true,
+                Message = "success",
                 GroupId = group.GroupId,
                 GroupName = group.GroupName,
                 ProjectIdea = group.Project.ProjectIdea,
@@ -268,6 +300,7 @@ namespace RSR.BLL.Service.GroupService
                 {
                     StudentNumber = s.StudentNumber,
                     FullName = s.User.FullName,
+                   GroupId = s.GroupId ?? Guid.Empty
                 }).ToList()
             };
             return GroupResponse;

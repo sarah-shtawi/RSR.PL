@@ -26,17 +26,22 @@ namespace RSR.DAL.Repository.TaskRepo
         }
         public async Task<Models.TaskModel.Task?> GetTaskById(Guid TaskId)
         {
-          var Task = await _context.Tasks.FindAsync(TaskId);
+          var Task = await _context.Tasks
+                .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
+                .Include(t=>t.Group).ThenInclude(g=>g.Students)
+                .Include(t=>t.TaskSubmissions).ThenInclude(s=>s.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
+                .Include(t => t.TaskSubmissions.OrderBy(s => s.SubmittedAt)).ThenInclude(ts => ts.Student)
+                .FirstOrDefaultAsync(t=>t.TaskId == TaskId);
             return Task;
         }
 
         public async Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId)
         {
             var Tasks = await _context.Tasks
-                .Include(t=>t.Supervisor)
-                .Include(t=>t.Group)
-                .Include(t=>t.TaskSubmissions.OrderBy(s=>s.SubmittedAt)).ThenInclude(ts=>ts.Student)
-                .Include(t=>t.TaskSubmissions).ThenInclude(ts=>ts.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
+                .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
+                .Include(t=>t.Group).ThenInclude(g=>g.Students)
+               // .Include(t=>t.TaskSubmissions.OrderBy(s=>s.SubmittedAt)).ThenInclude(ts=>ts.Student)
+              //  .Include(t=>t.TaskSubmissions).ThenInclude(ts=>ts.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
                 .Where(t=>t.GroupId == GroupId).ToListAsync();
             return Tasks;
         }
