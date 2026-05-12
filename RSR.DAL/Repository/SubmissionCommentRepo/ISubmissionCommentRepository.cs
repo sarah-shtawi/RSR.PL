@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.Repository.SubmissionCommentRepo
 {
-    public  interface ISubmissionCommentRepository
+    public interface ISubmissionCommentRepository
     {
         System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment);
         Task<TaskSubmissionComment?> GetParentComment(Guid parentcomment);
-    }
+        Task<TaskSubmissionComment> GetCommentById(Guid commentId);
+        System.Threading.Tasks.Task UpdateComment(TaskSubmissionComment comment);
+        System.Threading.Tasks.Task DeleteComment(TaskSubmissionComment comment);
+     }
 }
+

@@ -244,7 +244,6 @@ namespace RSR.BLL.Service.GroupService
             }
 
         }
-
         public async Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role)
         {
             var group = await _groupRepository.GroupByIdRepo(groupId);
@@ -306,6 +305,36 @@ namespace RSR.BLL.Service.GroupService
             return GroupResponse;
         }
 
+        public async Task<GroupResponse> GetGroupByStudent(string studentId)
+        {
+            var group = await _groupRepository.GetGroupByStudent(studentId);
+            if (group == null)
+            {
+                return new GroupResponse
+                {
+                    Success = false,
+                    Message = "You are not assigned to any group currently."
+                };
+            }
+            var groupResponse = new GroupResponse
+            {
+                Success = true,
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                ProjectName = group.Project.ProjectName,
+                ProjectStatus = group.Project.ProjectStatus,
+                ProjectIdea = group.Project.ProjectIdea,
+                Description = group.Project.Description,
+                Students = group.Students.Select(s => new StudentResponse
+                {
+                    StudentNumber = s.StudentNumber,
+                    FullName = s.User.FullName,
+                    GroupId= s.GroupId ?? Guid.Empty
+                }).ToList()
+            };
+            return groupResponse;
+
+        }
 
     }
 }

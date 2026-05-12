@@ -15,5 +15,6 @@ namespace RSR.DAL.Repository.GroupRepo
         Task<Group> GroupByIdRepo(Guid GroupId);
         Task<Group> UpdateGroup(Group group);
         Task<List<SupervisorProfile>> GetAllSupervisorsWithGroups();
+        Task<Group> GetGroupByStudent(string studentId);
     }
 }
