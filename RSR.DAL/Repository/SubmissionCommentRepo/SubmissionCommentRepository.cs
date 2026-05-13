@@ -45,5 +45,12 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
            _context.TaskSubmissionComments.Remove(comment);
             await _context.SaveChangesAsync();
         }
+
+
+        public async System.Threading.Tasks.Task RemoveComments(List<TaskSubmissionComment> comments)
+        {
+             _context.TaskSubmissionComments.RemoveRange(comments);
+            await _context.SaveChangesAsync();
+        }
     }
 }

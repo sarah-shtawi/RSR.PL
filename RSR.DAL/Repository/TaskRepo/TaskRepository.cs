@@ -30,7 +30,7 @@ namespace RSR.DAL.Repository.TaskRepo
                 .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
                 .Include(t=>t.Group).ThenInclude(g=>g.Students)
                 .Include(t=>t.TaskSubmissions).ThenInclude(s=>s.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
-                .Include(t => t.TaskSubmissions.OrderBy(s => s.SubmittedAt)).ThenInclude(ts => ts.Student)
+                .Include(t => t.TaskSubmissions.OrderBy(s => s.SubmittedAt)).ThenInclude(ts => ts.Student).ThenInclude(s=>s.User)
                 .FirstOrDefaultAsync(t=>t.TaskId == TaskId);
             return Task;
         }
@@ -40,10 +40,13 @@ namespace RSR.DAL.Repository.TaskRepo
             var Tasks = await _context.Tasks
                 .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
                 .Include(t=>t.Group).ThenInclude(g=>g.Students)
-               // .Include(t=>t.TaskSubmissions.OrderBy(s=>s.SubmittedAt)).ThenInclude(ts=>ts.Student)
-              //  .Include(t=>t.TaskSubmissions).ThenInclude(ts=>ts.TaskSubmissionComments.OrderBy(c=>c.CreatedAt)).ThenInclude(c=>c.User)
                 .Where(t=>t.GroupId == GroupId).ToListAsync();
             return Tasks;
+        }
+        public async System.Threading.Tasks.Task  DeleteTask(Models.TaskModel.Task task)
+        {
+            var Task =  _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
         }
 
     }

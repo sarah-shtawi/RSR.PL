@@ -14,6 +14,7 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
         Task<TaskSubmissionComment> GetCommentById(Guid commentId);
         System.Threading.Tasks.Task UpdateComment(TaskSubmissionComment comment);
         System.Threading.Tasks.Task DeleteComment(TaskSubmissionComment comment);
+        System.Threading.Tasks.Task RemoveComments(List<TaskSubmissionComment> comments);
      }
 }
 

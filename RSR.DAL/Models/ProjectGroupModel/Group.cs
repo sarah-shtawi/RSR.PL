@@ -16,9 +16,13 @@ namespace RSR.DAL.Models.ProjectGroupModel
         public Guid GroupId { get; set; } = Guid.NewGuid();
         public string GroupName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+       
+        
         // relation with project 1 : 1 
         public Project Project { get; set; }
 
+      
+        
         // relation with student profile  1 : M 
         public List<StudentProfile> Students { get; set; } = new();
 
@@ -27,12 +31,19 @@ namespace RSR.DAL.Models.ProjectGroupModel
         public string SupervisorId { get; set; }
         public SupervisorProfile Supervisor { get; set; }
 
+       
         // relation with semester 
         public Guid SemesterId { get; set; }
         public Semester Semester { get; set; }
 
+      
         // relation with Task 
         public List<Task> Tasks { get; set; } = new();
+     
+        
+        // relation with Thesis 
+     //   public Thesis Thesis { get; set; }
+      //  public Guid ThesisId { get; set; }
 
     }
 }
