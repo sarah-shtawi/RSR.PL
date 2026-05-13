@@ -81,6 +81,12 @@ namespace RSR.BLL.mapsterConfigration
           .Map(dest => dest.UserName, src => src.User.FullName);
 
 
+            TypeAdapterConfig<DAL.Models.TaskModel.Task, TaskDetailsResponse>.NewConfig()
+          .Map(dest => dest.SupervisorName, src => src.Supervisor.User.FullName);
+
+          
+
+
         }
 
     }

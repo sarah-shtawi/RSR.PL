@@ -124,7 +124,7 @@ namespace RSR.DAL.Data
                 .HasOne(ts => ts.Task)
                 .WithMany(t => t.TaskSubmissions)
                 .HasForeignKey(ts=>ts.TaskId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // relation with TaskSubmission - TaskSubmissionComment
             modelBuilder.Entity<TaskSubmissionComment>()

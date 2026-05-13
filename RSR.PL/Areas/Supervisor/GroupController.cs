@@ -13,7 +13,6 @@ namespace RSR.PL.Areas.Supervisor
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Supervisor")]
     public class GroupController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -24,6 +23,7 @@ namespace RSR.PL.Areas.Supervisor
             _userService = userService;
             _groupService = groupService;
         }
+        [Authorize(Roles = "Supervisor")]
         [HttpGet("students-supervisor")]
         public async Task<IActionResult> getStudent()
         {
@@ -35,7 +35,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(new { message = "success", students });
         }
-   
+
+        [Authorize(Roles = "Supervisor")]
         [HttpPost("image-profile-supervisor")]
         public async Task<IActionResult> AssignImageSupervisor( [FromForm] UploadImageRequest image)
         {
@@ -48,6 +49,7 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
+        [Authorize(Roles = "Supervisor")]
         [HttpGet("groups-supervisor")]
         public async Task<IActionResult> GetSupervisorGroups()
         {
@@ -59,7 +61,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok( new { message = "success" , groups =  result });
         }
-       
+
+        [Authorize(Roles = "Supervisor")]
         [HttpPost("create-group")]
         public async Task<IActionResult> CreateGroup([FromBody] GroupRequest request)
         {
@@ -73,6 +76,7 @@ namespace RSR.PL.Areas.Supervisor
 
         }
 
+        [Authorize(Roles = "Supervisor")]
         [HttpPatch("update-group/{GroupId}")]
         public async Task <IActionResult> UpdateGroup([FromRoute] Guid GroupId , [FromBody] GroupRequest request)
         {
@@ -83,6 +87,19 @@ namespace RSR.PL.Areas.Supervisor
               return BadRequest(new {success = false , Message = result.Message});
             }
             return Ok(result);
+        }
+
+
+        [Authorize(Roles = "Student")]
+        [HttpGet("my-group/{studentId}")]
+        public async Task <IActionResult> GetGroupByStudent([FromRoute] string studentId)
+        {
+            var group = await _groupService.GetGroupByStudent(studentId);
+            if(group is null)
+            {
+                return NotFound();
+            }
+            return Ok(group);
         }
     }
 }

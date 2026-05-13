@@ -28,6 +28,10 @@ namespace RSR.DAL.Models.User
         // relation with TaskSubmissionComments
         public List<TaskSubmissionComment> TaskSubmissionComments { get; set; } = new List<TaskSubmissionComment>();
 
+        // relation with Thesis FeedBack 
+       // public List<ThesisFeedback> ThesisFeedbacks { get; set; } = new List<ThesisFeedback>();
+
+
         // Navigation Proparity with profiles 
         public StudentProfile? StudentProfile {  get; set; }
         public SupervisorProfile? SupervisorProfile { get; set; }

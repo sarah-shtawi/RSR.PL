@@ -318,7 +318,82 @@ namespace RSR.BLL.Service.TaskSubmission
                 Message = "Comment Added Successfully"
             };
         }
-         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
+
+        public async Task<BaseResponse> UpdateComment(Guid commentId , string userId , ReplyToCommentRequest request )
+        {
+            var comment = await _commentRepository.GetCommentById(commentId);
+            if(comment == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "comment not found "
+                };
+            }
+            if (userId != comment.UserId) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You are not allowed to edit this comment"
+                };
+            }
+            if (comment.Replies != null && comment.Replies.Count > 0) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You cannot edit a comment that has replies"
+                };
+            }
+            comment.Content = request.Content;
+            await _commentRepository.UpdateComment( comment );
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Comment updated successfully"
+            };
+        }
+
+        public async Task<BaseResponse> DeleteComment(Guid commentId, string userId)
+        {
+            var comment = await _commentRepository.GetCommentById(commentId);
+            if( comment == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Comment Not Found"
+                };
+            }
+            if (userId != comment.UserId) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You Can't Delete this comment"
+                };
+            }
+            if(comment.Replies != null && comment.Replies.Count > 0)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You can't delete comment that has replies"
+                };
+            }
+            await _commentRepository.DeleteComment(comment);
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "comment deleted successfully"
+            };
+
+
+        }
+
+
+        public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
         {
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
             if (submission is null) 

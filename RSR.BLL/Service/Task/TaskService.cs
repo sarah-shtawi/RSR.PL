@@ -1,13 +1,16 @@
 ﻿using Azure.Core;
 using Mapster;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using RSR.BLL.Service.Files;
 using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Repository.GroupRepo;
+using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
+using RSR.DAL.Repository.TaskSubmissionRepo;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -21,13 +24,17 @@ namespace RSR.BLL.Service.Task
         private readonly IFileService _fileService;
         private readonly IGroupRepository _groupRepository;
         private readonly IWebHostEnvironment _env;
+        private readonly ISubmissionCommentRepository _commentRepository;
+        private readonly ITaskSubmissionRepository _submissionRepo;
 
-        public TaskService(ITaskRepository taskRepository , IFileService fileService , IGroupRepository groupRepository , IWebHostEnvironment env)
+        public TaskService(ITaskRepository taskRepository , IFileService fileService , IGroupRepository groupRepository , IWebHostEnvironment env , ISubmissionCommentRepository commentRepository , ITaskSubmissionRepository submissionRepo)
         {
             _taskRepository = taskRepository;
             _fileService = fileService;
             _groupRepository = groupRepository;
             _env = env;
+            _commentRepository = commentRepository;
+            _submissionRepo = submissionRepo;
         }
         public async Task <BaseResponse> CreateTask(string SupervisorId , Guid GroupId, TaskRequest Request)
         {
@@ -218,6 +225,55 @@ namespace RSR.BLL.Service.Task
             TaskResponse.Success = true;
             TaskResponse.Message = "Task Details";
             return TaskResponse;
+        }
+
+        public async Task<BaseResponse> DeleteTask(Guid TaskId , string supervisorId)
+        {
+            var task = await _taskRepository.GetTaskById(TaskId);
+           
+            if (task is null)
+            {
+                return new BaseResponse
+                {
+                    Success= false,
+                    Message = "Task Not Found"
+                };
+            }
+            if (task.SupervisorId != supervisorId) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You can not delete this task because you are not its supervisor and you did not create it."
+                };
+            }
+            // delete comments
+            foreach (var submission in task.TaskSubmissions)
+            {
+                // remove replies
+                var replies = submission.TaskSubmissionComments
+                    .Where(c => c.ParentCommentId != null)
+                    .ToList();
+
+                await _commentRepository.RemoveComments(replies);
+
+                // remove parent comment 
+                var parentComments = submission.TaskSubmissionComments
+                    .Where(c => c.ParentCommentId == null)
+                    .ToList();
+
+                await _commentRepository.RemoveComments(parentComments);
+            }
+            // delete submissions 
+            await _submissionRepo.RemoveSubmissions(task.TaskSubmissions);
+
+            // delelt task 
+            await _taskRepository.DeleteTask(task);
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Task Deleted Successfully"
+            };
         }
     }
 }

@@ -41,7 +41,30 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(result);
         }
-     
+        [Authorize(Roles = ("Supervisor,Student"))]
+        [HttpPut("update-comment/commentId/{commentId}")]
+        public async Task <IActionResult> UpdateComment([FromRoute] Guid commentId , [FromBody] ReplyToCommentRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _taskSubmissionService.UpdateComment(commentId, userId,request);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = ("Supervisor,Student"))]
+        [HttpDelete("delete-comment/commentId/{commentId}")]
+        public async Task<IActionResult> DeleteComment([FromRoute] Guid commentId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _taskSubmissionService.DeleteComment(commentId, userId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
 
     }

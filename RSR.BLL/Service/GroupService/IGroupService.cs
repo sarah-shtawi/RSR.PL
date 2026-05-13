@@ -16,5 +16,6 @@ namespace RSR.BLL.Service.GroupService
         Task<List<GroupResponse>> GetSupervisorGroups(string supervisorId);
         Task<List<GetAllSupervisorsWithGroups>> GetCoordinatersGroups();
         Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role);
+        Task<GroupResponse> GetGroupByStudent(string studentId);
     }
 }

@@ -22,8 +22,13 @@ namespace RSR.DAL.Models.User
         // relation with group 1 : M 
         public Guid? GroupId { get; set; }
         public ProjectGroupModel.Group Group { get; set; }
+
+
         // relation with task Submission 
         public List<TaskSubmission> TaskSubmissions { get; set; } = new();
+
+        // relation with Thesis Version 
+      //  public List<ThesisVersions> ThesisVersions { get; set; } = new();
 
     }
 }

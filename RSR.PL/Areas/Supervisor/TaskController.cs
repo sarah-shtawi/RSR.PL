@@ -30,8 +30,9 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
 
         }
+       
+        
         [Authorize(Roles = "Supervisor,Student")]
-
         [HttpGet("tasks-group/{GroupId}")]
         public async Task <IActionResult> GetTasksByGroup([FromRoute] Guid GroupId)
         {
@@ -45,7 +46,6 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(new { message = "success", Tasks });
         }
 
-        //Task Details
         [Authorize(Roles = ("Supervisor,Student"))]
         [HttpGet("task-id/{TaskId}")]
         public async Task<IActionResult> GetTaskDetails([FromRoute] Guid TaskId)
@@ -69,6 +69,19 @@ namespace RSR.PL.Areas.Supervisor
             var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _taskService.UpdateTask(supervisorId, GroupId, Request , TaskId);
             if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Supervisor")]
+        [HttpDelete("remove-delete/task-id/{taskId}")]
+        public async Task <IActionResult> RemoveTask([FromRoute] Guid taskId)
+        {
+            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _taskService.DeleteTask(taskId , supervisorId);
+            if (!result.Success) 
             {
                 return BadRequest(result);
             }
