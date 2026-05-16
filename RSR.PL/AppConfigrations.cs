@@ -7,6 +7,8 @@ using RSR.BLL.Service.Semester;
 using RSR.BLL.Service.semesterService;
 using RSR.BLL.Service.Task;
 using RSR.BLL.Service.TaskSubmission;
+using RSR.BLL.Service.Thesis;
+using RSR.BLL.Service.ThesisVersions;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
 using RSR.DAL.Repository.GroupRepo;
@@ -16,6 +18,9 @@ using RSR.DAL.Repository.StudentRepo;
 using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
 using RSR.DAL.Repository.TaskSubmissionRepo;
+using RSR.DAL.Repository.ThesisFeedBackRepo;
+using RSR.DAL.Repository.ThesisRepo;
+using RSR.DAL.Repository.ThesisVersionsRepo;
 using RSR.DAL.Utils;
 
 namespace RSR.PL
@@ -56,7 +61,13 @@ namespace RSR.PL
 
             Services.AddScoped<ISubmissionCommentRepository, SubmissionCommentRepository>();
 
-            
+            Services.AddScoped<IThesisService, ThesisService>();
+            Services.AddScoped<IThesisRepository, ThesisRepository>();
+
+            Services.AddScoped<IThesisVersionsRepository, ThesisVersionsRepository>();
+            Services.AddScoped<IThesisVersionsService, ThesisVersionsService>();
+
+            Services.AddScoped<IThesisFeedBackRepository, ThesisFeedBackRepository>();
 
         }
     }

@@ -1,6 +1,7 @@
 ﻿using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.TaskModel;
+using RSR.DAL.Models.ThesisModel;
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -39,11 +40,11 @@ namespace RSR.DAL.Models.ProjectGroupModel
       
         // relation with Task 
         public List<Task> Tasks { get; set; } = new();
-     
-        
+
+
         // relation with Thesis 
-     //   public Thesis Thesis { get; set; }
-      //  public Guid ThesisId { get; set; }
+        public Thesis Thesis { get; set; }
+        public Guid ThesisId { get; set; }
 
     }
 }

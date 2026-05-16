@@ -391,8 +391,6 @@ namespace RSR.BLL.Service.TaskSubmission
 
 
         }
-
-
         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
         {
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
@@ -427,8 +425,5 @@ namespace RSR.BLL.Service.TaskSubmission
                 Message = "Submission Removed Successfully"
             };
         }
-
-
-
     }
 }

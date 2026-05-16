@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514221121_ThesisAndFeedBackRelationForeignKey")]
+    partial class ThesisAndFeedBackRelationForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -398,14 +401,12 @@ namespace RSR.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Decision")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReviwerId")
                         .IsRequired()
@@ -413,6 +414,9 @@ namespace RSR.DAL.Migrations
 
                     b.Property<Guid>("VersionId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("decision")
+                        .HasColumnType("int");
 
                     b.HasKey("FeedbackId");
 
@@ -438,12 +442,6 @@ namespace RSR.DAL.Migrations
 
                     b.Property<bool>("IsLatest")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsPublished")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("PublishedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ThesisId")
                         .HasColumnType("uniqueidentifier");

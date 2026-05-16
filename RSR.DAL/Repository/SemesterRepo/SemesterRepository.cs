@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RSR.DAL.Models.SemesterModel;
 using Microsoft.EntityFrameworkCore;
+using RSR.DAL.Models.ThesisModel;
 
 namespace RSR.DAL.Repository.SemesterRepo
 {
@@ -63,6 +64,15 @@ namespace RSR.DAL.Repository.SemesterRepo
             await _context.SaveChangesAsync();
             return semester;
         }
-       
+
+
+        public async Task<List<Semester>> GetSemesterWithProjectsForArchive()
+        {
+            var AllThesis = await _context.Semesters
+                .Include(s => s.Groups).ThenInclude(g => g.Project)
+                .Include(s => s.Groups).ThenInclude(g => g.Thesis).ThenInclude(th => th.ThesisVersions.Where(v => v.IsFrozen)).ToListAsync();
+            return AllThesis;
+        }
+
     }
 }

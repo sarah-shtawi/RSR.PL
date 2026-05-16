@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260514161145_IsLatestForThesis")]
+    partial class IsLatestForThesis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -395,17 +398,14 @@ namespace RSR.DAL.Migrations
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisFeedback", b =>
                 {
                     b.Property<Guid>("FeedbackId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Decision")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReviwerId")
                         .IsRequired()
@@ -414,11 +414,12 @@ namespace RSR.DAL.Migrations
                     b.Property<Guid>("VersionId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("decision")
+                        .HasColumnType("int");
+
                     b.HasKey("FeedbackId");
 
                     b.HasIndex("ReviwerId");
-
-                    b.HasIndex("VersionId");
 
                     b.ToTable("ThesisFeedbacks");
                 });
@@ -438,12 +439,6 @@ namespace RSR.DAL.Migrations
 
                     b.Property<bool>("IsLatest")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsPublished")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("PublishedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ThesisId")
                         .HasColumnType("uniqueidentifier");
@@ -808,15 +803,15 @@ namespace RSR.DAL.Migrations
 
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisFeedback", b =>
                 {
-                    b.HasOne("RSR.DAL.Models.User.ApplicationUser", "Reviwer")
-                        .WithMany("ThesisFeedbacks")
-                        .HasForeignKey("ReviwerId")
+                    b.HasOne("RSR.DAL.Models.ThesisModel.ThesisVersions", "ThesisVersion")
+                        .WithMany("thesisFeedbacks")
+                        .HasForeignKey("FeedbackId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RSR.DAL.Models.ThesisModel.ThesisVersions", "ThesisVersion")
-                        .WithMany("thesisFeedbacks")
-                        .HasForeignKey("VersionId")
+                    b.HasOne("RSR.DAL.Models.User.ApplicationUser", "Reviwer")
+                        .WithMany("ThesisFeedbacks")
+                        .HasForeignKey("ReviwerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

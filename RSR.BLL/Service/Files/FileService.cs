@@ -81,7 +81,48 @@ namespace RSR.BLL.Service.Files
                 {
                     throw new Exception("Failed to upload Task File", ex);
                 }  
-        } 
+        }
+
+        public async Task<string?> UploadThesisFile(IFormFile ThesisFile)
+        {
+            if (ThesisFile == null || ThesisFile.Length == 0)
+            {
+                throw new ArgumentException("Not File Uploaded Or File Is Empty");
+            }
+            if (ThesisFile.Length > MaxFileSize)
+                throw new ArgumentException("File size must not exceed 20 MB.");
+
+
+            var extension = Path.GetExtension(ThesisFile.FileName);
+
+            if (!string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("Only PDF files are allowed.");
+
+
+            var ThesisfileName = Guid.NewGuid().ToString() + extension;
+            var ThesisFolderPath = Path.Combine(_env.WebRootPath, "files", "Thesis");
+
+            if (!Directory.Exists(ThesisFolderPath))
+                Directory.CreateDirectory(ThesisFolderPath);
+
+            var ThesisPath = Path.Combine(ThesisFolderPath, ThesisfileName);
+            try
+            {
+                using (var stream = new FileStream(ThesisPath, FileMode.Create))
+                {
+                    await ThesisFile.CopyToAsync(stream);
+                }
+                return ThesisfileName;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to upload Thesis File", ex);
+            }
+        }
+
+
+
+
 
     }
 }
