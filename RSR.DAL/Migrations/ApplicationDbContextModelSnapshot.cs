@@ -175,6 +175,9 @@ namespace RSR.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<Guid>("ThesisId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("GroupId");
 
                     b.HasIndex("SemesterId");
@@ -344,6 +347,10 @@ namespace RSR.DAL.Migrations
                     b.Property<Guid?>("ParentCommentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("TaskSubmissionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -360,6 +367,111 @@ namespace RSR.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TaskSubmissionComments");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
+                {
+                    b.Property<Guid>("ThesisId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeadLine")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ThesisFile")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ThesisId");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique();
+
+                    b.ToTable("Thesis");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisFeedback", b =>
+                {
+                    b.Property<Guid>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Decision")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviwerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("VersionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("ReviwerId");
+
+                    b.HasIndex("VersionId");
+
+                    b.ToTable("ThesisFeedbacks");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisVersions", b =>
+                {
+                    b.Property<Guid>("VersionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsFrozen")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLatest")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ThesisId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("VersionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("VisibleByExaminer")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("studentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("VersionId");
+
+                    b.HasIndex("ThesisId");
+
+                    b.HasIndex("studentId");
+
+                    b.ToTable("ThesisVersions");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
@@ -647,13 +759,13 @@ namespace RSR.DAL.Migrations
                     b.HasOne("RSR.DAL.Models.User.StudentProfile", "Student")
                         .WithMany("TaskSubmissions")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RSR.DAL.Models.TaskModel.Task", "Task")
                         .WithMany("TaskSubmissions")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Student");
@@ -677,7 +789,7 @@ namespace RSR.DAL.Migrations
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
                         .WithMany("TaskSubmissionComments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ParentComment");
@@ -685,6 +797,55 @@ namespace RSR.DAL.Migrations
                     b.Navigation("TaskSubmission");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
+                        .WithOne("Thesis")
+                        .HasForeignKey("RSR.DAL.Models.ThesisModel.Thesis", "GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisFeedback", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.User.ApplicationUser", "Reviwer")
+                        .WithMany("ThesisFeedbacks")
+                        .HasForeignKey("ReviwerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RSR.DAL.Models.ThesisModel.ThesisVersions", "ThesisVersion")
+                        .WithMany("thesisFeedbacks")
+                        .HasForeignKey("VersionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Reviwer");
+
+                    b.Navigation("ThesisVersion");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisVersions", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.ThesisModel.Thesis", "Thesis")
+                        .WithMany("ThesisVersions")
+                        .HasForeignKey("ThesisId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RSR.DAL.Models.User.StudentProfile", "student")
+                        .WithMany("ThesisVersions")
+                        .HasForeignKey("studentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Thesis");
+
+                    b.Navigation("student");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.CoordinatorProfile", b =>
@@ -745,6 +906,9 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("Tasks");
+
+                    b.Navigation("Thesis")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
@@ -767,6 +931,16 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Replies");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
+                {
+                    b.Navigation("ThesisVersions");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisVersions", b =>
+                {
+                    b.Navigation("thesisFeedbacks");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Navigation("CoordinatorProfile");
@@ -778,11 +952,15 @@ namespace RSR.DAL.Migrations
                     b.Navigation("SupervisorProfile");
 
                     b.Navigation("TaskSubmissionComments");
+
+                    b.Navigation("ThesisFeedbacks");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>
                 {
                     b.Navigation("TaskSubmissions");
+
+                    b.Navigation("ThesisVersions");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.SupervisorProfile", b =>

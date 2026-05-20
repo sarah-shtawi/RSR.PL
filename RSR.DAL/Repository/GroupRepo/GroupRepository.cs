@@ -47,6 +47,7 @@ namespace RSR.DAL.Repository.GroupRepo
         {
             var group = await  _context.Groups.Include(g=>g.Project)
                 .Include(g=>g.Students).ThenInclude(s=>s.User)
+                .Include(g=>g.Thesis)
                 .FirstOrDefaultAsync(g=>g.GroupId == GroupId);
             if (group == null)
             {

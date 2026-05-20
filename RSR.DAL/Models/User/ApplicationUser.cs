@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.DAL.Models.TaskModel;
+using RSR.DAL.Models.ThesisModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,7 +30,7 @@ namespace RSR.DAL.Models.User
         public List<TaskSubmissionComment> TaskSubmissionComments { get; set; } = new List<TaskSubmissionComment>();
 
         // relation with Thesis FeedBack 
-       // public List<ThesisFeedback> ThesisFeedbacks { get; set; } = new List<ThesisFeedback>();
+        public List<ThesisFeedback> ThesisFeedbacks { get; set; } = new List<ThesisFeedback>();
 
 
         // Navigation Proparity with profiles 

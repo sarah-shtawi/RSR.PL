@@ -1,4 +1,5 @@
 ﻿using RSR.DAL.Models.TaskModel;
+using RSR.DAL.Models.ThesisModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,7 +29,7 @@ namespace RSR.DAL.Models.User
         public List<TaskSubmission> TaskSubmissions { get; set; } = new();
 
         // relation with Thesis Version 
-      //  public List<ThesisVersions> ThesisVersions { get; set; } = new();
+        public List<ThesisVersions> ThesisVersions { get; set; } = new();
 
     }
 }

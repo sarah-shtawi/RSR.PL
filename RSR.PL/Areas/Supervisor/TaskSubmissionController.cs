@@ -34,6 +34,8 @@ namespace RSR.PL.Areas.Supervisor
         public async Task <IActionResult> ReplyToComment([FromBody] ReplyToCommentRequest request , [FromRoute] Guid parentCommentId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
             var result = await _taskSubmissionService.ReplyToComment(userId, parentCommentId, request);
             if (!result.Success)
             {

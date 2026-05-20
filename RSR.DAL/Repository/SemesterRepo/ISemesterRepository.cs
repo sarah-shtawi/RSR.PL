@@ -15,6 +15,7 @@ namespace RSR.DAL.Repository.SemesterRepo
         Task<Semester> GetById(Guid semesterId);
         Task<Semester> UpdateSemester(Semester semester);
         Task<Semester> Delete(Semester semester);
+        Task<List<Semester>> GetSemesterWithProjectsForArchive();
 
     }
 }
