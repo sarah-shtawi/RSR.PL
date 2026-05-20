@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Files;
 using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.Models.TaskModel;
+using RSR.DAL.Models.User;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.StudentRepo;
 using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
 using RSR.DAL.Repository.TaskSubmissionRepo;
+using System.Data;
 
 namespace RSR.BLL.Service.TaskSubmission
 {
@@ -20,9 +23,11 @@ namespace RSR.BLL.Service.TaskSubmission
         private readonly IFileService _fileService;
         private readonly IWebHostEnvironment _env;
         private readonly ISubmissionCommentRepository _commentRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public TaskSubmissionService(ITaskSubmissionRepository taskSubmissionRepository, ITaskRepository taskRepository 
-            , IStudentRepository studentRepository , IGroupRepository groupRepository, IFileService fileService , IWebHostEnvironment env ,ISubmissionCommentRepository commentRepository)
+            , IStudentRepository studentRepository , IGroupRepository groupRepository, IFileService fileService , IWebHostEnvironment env 
+            ,ISubmissionCommentRepository commentRepository ,UserManager <ApplicationUser> userManager)
         {
             _taskSubmissionRepository = taskSubmissionRepository;
             _taskRepository = taskRepository;
@@ -31,6 +36,7 @@ namespace RSR.BLL.Service.TaskSubmission
             _fileService = fileService;
             _env = env;
             _commentRepository = commentRepository;
+            _userManager = userManager;
         }
 
         public async Task<BaseResponse> AddTaskSubmission(TaskSubmissionRequest TaskSubmission, string StudentId , Guid TaskId )
@@ -248,8 +254,9 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "You must provide a reason for rejection"
                 };
             }
+       
             // update submission status 
-             submission.Status = request.status;
+            submission.Status = request.status;
              submission.ReviewedAt = DateTime.UtcNow;
              await _taskSubmissionRepository.UpdateTaskSubmission(submission);
 
@@ -263,6 +270,7 @@ namespace RSR.BLL.Service.TaskSubmission
                     TaskSubmissionId = submission.TaskSubmissionId,
                     UserId = supervisorId,
                     ParentCommentId = null,
+                    Role = "Supervisor"
                 };
                 await _commentRepository.CreateComment(comment);
             }
@@ -303,6 +311,24 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "You Can't reply to this comment."
                 };
             }
+            var user = await _userManager.FindByIdAsync(userId);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            string role; 
+            if (roles.Contains("Supervisor"))
+            {
+                role = "Supervisor";
+            }
+            else if (roles.Contains("Student"))
+            {
+                role = "Student";
+            }
+            else
+            {
+                role = roles.FirstOrDefault();
+            }
+
+
             var reply = new TaskSubmissionComment
             {
                 Content = Request.Content,
@@ -310,6 +336,7 @@ namespace RSR.BLL.Service.TaskSubmission
                 TaskSubmissionId = submission.TaskSubmissionId,
                 UserId = userId,
                 ParentCommentId = parentCommentId,
+                Role = role
             };
             await _commentRepository.CreateComment( reply );
             return new BaseResponse

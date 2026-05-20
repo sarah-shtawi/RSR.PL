@@ -14,6 +14,7 @@ namespace RSR.DAL.Models.TaskModel
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public string Role { get; set; }
 
         // relation with TaskSubmission 
         public Guid TaskSubmissionId { get; set; }

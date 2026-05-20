@@ -220,7 +220,7 @@ namespace RSR.BLL.Service.Task
                     };
                 }
             }
-
+            
             var TaskResponse = Task.Adapt<TaskDetailsResponse>();
             TaskResponse.Success = true;
             TaskResponse.Message = "Task Details";
