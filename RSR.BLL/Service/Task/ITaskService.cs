@@ -1,0 +1,31 @@
+﻿using RSR.DAL.DTOs.Request.TaskReq;
+using RSR.DAL.DTOs.Response;
+using RSR.DAL.DTOs.Response.TaskRes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RSR.BLL.Service.Task
+{
+<<<<<<< HEAD
+    public  interface ITaskService
+    {
+        Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
+        Task<BaseResponse> UpdateTask(string SupervisorId, Guid GroupId, TaskRequest Request, Guid TaskId);
+        Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId, string supervisorId);
+    }
+=======
+    public interface ITaskService
+    {
+        Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
+        Task<BaseResponse> UpdateTask(string SupervisorId, Guid GroupId, TaskRequest Request, Guid TaskId);
+        Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId, string userId, string role);
+        Task<TaskDetailsResponse> TaskDetails(Guid TaskId, string userId, string role);
+        Task<BaseResponse> DeleteTask(Guid TaskId, string supervisorId);
+
+
+     }
+>>>>>>> origin/master
+}

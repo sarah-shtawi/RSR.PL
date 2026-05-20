@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d8dafffa-8494-48fc-97de-c4d8b637dbc3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RSR.BLL\RSR.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+<<<<<<< HEAD
+=======
+    <Folder Include="wwwroot\files\Thesis\" />
+>>>>>>> origin/master
+    <Folder Include="wwwroot\files\Tasks\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\1d276bfa-82f8-49ac-961b-d1b13b797bf8.jpg" />
+    <None Include="wwwroot\images\5c0cbc38-6f50-47af-9533-e35e84576cac.jpg" />
+    <None Include="wwwroot\images\739870ef-118c-44ca-b2fb-ad729e47d575.jpg" />
+    <None Include="wwwroot\images\d35e4a6b-0a93-4704-8748-98054a5fc9b2.jpg" />
+    <None Include="wwwroot\images\d895643c-9d12-47c5-be48-bf951820d565.jpg" />
+    <None Include="wwwroot\images\f5c3bcfb-7476-4d19-8437-291851529eff.jpg" />
+  </ItemGroup>
+
+</Project>
