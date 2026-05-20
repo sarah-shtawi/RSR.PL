@@ -11,9 +11,6 @@ namespace RSR.BLL.Service.Files
     {
         Task<string?> UploadeImageFile(IFormFile file);
         Task<string?> UploadTaskFile(IFormFile TaskFile);
-<<<<<<< HEAD
-=======
         Task<string?> UploadThesisFile(IFormFile ThesisFile);
->>>>>>> origin/master
     }
 }

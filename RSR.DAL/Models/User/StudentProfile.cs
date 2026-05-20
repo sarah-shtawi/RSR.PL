@@ -1,8 +1,5 @@
 ﻿using RSR.DAL.Models.TaskModel;
-<<<<<<< HEAD
-=======
 using RSR.DAL.Models.ThesisModel;
->>>>>>> origin/master
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,11 +23,6 @@ namespace RSR.DAL.Models.User
         // relation with group 1 : M 
         public Guid? GroupId { get; set; }
         public ProjectGroupModel.Group Group { get; set; }
-<<<<<<< HEAD
-        // relation with task Submission 
-        public List<TaskSubmission> TaskSubmissions { get; set; } = new();
-
-=======
 
 
         // relation with task Submission 
@@ -39,6 +31,5 @@ namespace RSR.DAL.Models.User
         // relation with Thesis Version 
         public List<ThesisVersions> ThesisVersions { get; set; } = new();
 
->>>>>>> origin/master
     }
 }

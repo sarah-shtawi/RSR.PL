@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿using RSR.DAL.Data;
-=======
 ﻿using Microsoft.EntityFrameworkCore;
 using RSR.DAL.Data;
->>>>>>> origin/master
 using RSR.DAL.Models.TaskModel;
 using System;
 using System.Collections.Generic;
@@ -22,10 +18,6 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
         {
             _context = context;
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
         public async System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment)
         {
             await _context.TaskSubmissionComments.AddAsync(comment);
@@ -36,8 +28,6 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
             var parentComment = await _context.TaskSubmissionComments.FindAsync(parentcomment);
             return parentComment;
         }
-<<<<<<< HEAD
-=======
         public async Task <TaskSubmissionComment> GetCommentById(Guid commentId)
         {
             var comment = await _context.TaskSubmissionComments
@@ -62,6 +52,5 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
              _context.TaskSubmissionComments.RemoveRange(comments);
             await _context.SaveChangesAsync();
         }
->>>>>>> origin/master
     }
 }

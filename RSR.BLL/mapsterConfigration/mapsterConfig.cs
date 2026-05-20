@@ -3,12 +3,6 @@ using Mapster.Adapters;
 using Microsoft.Extensions.Configuration;
 using RSR.DAL.DTOs.Request.UserRequest;
 using RSR.DAL.DTOs.Request.UserRequest.update;
-<<<<<<< HEAD
-using RSR.DAL.DTOs.Response.TaskRes;
-using RSR.DAL.DTOs.Response.User;
-using RSR.DAL.Models;
-using RSR.DAL.Models.TaskModel;
-=======
 using RSR.DAL.DTOs.Response.SemesterRes;
 using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.DTOs.Response.ThesisRes;
@@ -17,7 +11,6 @@ using RSR.DAL.Models;
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Models.ThesisModel;
->>>>>>> origin/master
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -75,15 +68,6 @@ namespace RSR.BLL.mapsterConfigration
 
 
             TypeAdapterConfig<SupervisorProfile, AssignCoordinaterRequest>.NewConfig()
-<<<<<<< HEAD
-                .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
-
-            TypeAdapterConfig<DAL.Models.TaskModel.Task, TaskResponse>.NewConfig()
-                .Map(dest => dest.TaskFileURL, src => string.IsNullOrEmpty(src.TaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.TaskFileURL}");
-            
-         
-
-=======
                .Map(dest => dest.CoordinatorNumber , src => src.SupervisorNumber);
             // Task Mapping
             TypeAdapterConfig<DAL.Models.TaskModel.Task, TaskResponse>.NewConfig()
@@ -124,7 +108,6 @@ namespace RSR.BLL.mapsterConfigration
             TypeAdapterConfig<Semester, SemesterArchive>.NewConfig()
             .Map(dest => dest.Projects, src => src.Groups.Where(g => g.Thesis != null && g.Thesis.ThesisVersions.Any(v => v.IsFrozen))
             .SelectMany(g => g.Thesis.ThesisVersions.Where(v => v.IsFrozen)).ToList());
->>>>>>> origin/master
 
         }
 

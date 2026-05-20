@@ -9,10 +9,6 @@ namespace RSR.PL.Areas.Supervisor
 {
     [Route("api/[controller]")]
     [ApiController]
-<<<<<<< HEAD
-    [Authorize(Roles ="Supervisor")]
-=======
->>>>>>> origin/master
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -21,11 +17,7 @@ namespace RSR.PL.Areas.Supervisor
         {
             _taskService = taskService;
         }
-<<<<<<< HEAD
-
-=======
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpPost("create/{GroupId}")]
         public async Task <IActionResult> CreateTask([FromRoute] Guid GroupId , [FromForm] TaskRequest Request)
         {
@@ -38,13 +30,6 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
 
         }
-<<<<<<< HEAD
-        [HttpGet("tasks-group/{GroupId}")]
-        public async Task <IActionResult> GetTasksByGroup([FromRoute] Guid GroupId)
-        {
-            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var Tasks = await _taskService.GetTasksByGroup(GroupId ,supervisorId);
-=======
        
         
         [Authorize(Roles = "Supervisor,Student")]
@@ -54,7 +39,6 @@ namespace RSR.PL.Areas.Supervisor
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var role = User.FindFirstValue(ClaimTypes.Role);
             var Tasks = await _taskService.GetTasksByGroupForSupervisor(GroupId ,userId , role);
->>>>>>> origin/master
             if(Tasks is null)
             {
                 return BadRequest(Tasks);
@@ -62,10 +46,6 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(new { message = "success", Tasks });
         }
 
-<<<<<<< HEAD
-
-
-=======
         [Authorize(Roles = ("Supervisor,Student"))]
         [HttpGet("task-id/{TaskId}")]
         public async Task<IActionResult> GetTaskDetails([FromRoute] Guid TaskId)
@@ -83,7 +63,6 @@ namespace RSR.PL.Areas.Supervisor
 
 
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpPatch("{GroupId}/tasks/{taskId}")]
         public async Task<IActionResult> UpdateTask([FromRoute] Guid GroupId, [FromRoute] Guid TaskId,[FromForm] TaskRequest Request)
         {
@@ -96,8 +75,6 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
-<<<<<<< HEAD
-=======
         [Authorize(Roles = "Supervisor")]
         [HttpDelete("remove-delete/task-id/{taskId}")]
         public async Task <IActionResult> RemoveTask([FromRoute] Guid taskId)
@@ -111,6 +88,5 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
->>>>>>> origin/master
     }
 }

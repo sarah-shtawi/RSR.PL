@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.TaskSubmission;
 using RSR.DAL.DTOs.Request.TaskReq;
-<<<<<<< HEAD
-=======
 using RSR.DAL.DTOs.Response.GroupRes;
->>>>>>> origin/master
 using System.Security.Claims;
 
 namespace RSR.PL.Areas.Student
@@ -45,11 +42,8 @@ namespace RSR.PL.Areas.Student
             }
             return Ok(result);
         }
-<<<<<<< HEAD
-=======
 
 
->>>>>>> origin/master
         [HttpDelete("Delete/SubmissionId/{TaskSubmissionId}")]
         public async Task <IActionResult> DeleteSubmission([FromRoute] Guid TaskSubmissionId)
         {
@@ -62,10 +56,6 @@ namespace RSR.PL.Areas.Student
             return Ok(result);
         }
 
-<<<<<<< HEAD
-
-=======
        
->>>>>>> origin/master
     }
 }

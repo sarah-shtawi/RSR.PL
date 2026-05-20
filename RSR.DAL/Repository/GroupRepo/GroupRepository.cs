@@ -47,10 +47,7 @@ namespace RSR.DAL.Repository.GroupRepo
         {
             var group = await  _context.Groups.Include(g=>g.Project)
                 .Include(g=>g.Students).ThenInclude(s=>s.User)
-<<<<<<< HEAD
-=======
                 .Include(g=>g.Thesis)
->>>>>>> origin/master
                 .FirstOrDefaultAsync(g=>g.GroupId == GroupId);
             if (group == null)
             {
@@ -65,9 +62,6 @@ namespace RSR.DAL.Repository.GroupRepo
             return group;
         }
 
-<<<<<<< HEAD
-      
-=======
         public async Task<Group> GetGroupByStudent(string studentId)
         {
             var student = await _context.Students
@@ -80,6 +74,5 @@ namespace RSR.DAL.Repository.GroupRepo
         }
 
 
->>>>>>> origin/master
     }
 }

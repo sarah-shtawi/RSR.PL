@@ -7,14 +7,6 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.Repository.SubmissionCommentRepo
 {
-<<<<<<< HEAD
-    public  interface ISubmissionCommentRepository
-    {
-        System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment);
-        Task<TaskSubmissionComment?> GetParentComment(Guid parentcomment);
-    }
-}
-=======
     public interface ISubmissionCommentRepository
     {
         System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment);
@@ -26,4 +18,3 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
      }
 }
 
->>>>>>> origin/master

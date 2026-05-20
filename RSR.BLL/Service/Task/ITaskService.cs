@@ -9,14 +9,6 @@ using System.Threading.Tasks;
 
 namespace RSR.BLL.Service.Task
 {
-<<<<<<< HEAD
-    public  interface ITaskService
-    {
-        Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
-        Task<BaseResponse> UpdateTask(string SupervisorId, Guid GroupId, TaskRequest Request, Guid TaskId);
-        Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId, string supervisorId);
-    }
-=======
     public interface ITaskService
     {
         Task<BaseResponse> CreateTask(string SupervisorId, Guid GroupId, TaskRequest Request);
@@ -27,5 +19,4 @@ namespace RSR.BLL.Service.Task
 
 
      }
->>>>>>> origin/master
 }

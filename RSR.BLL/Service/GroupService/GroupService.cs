@@ -53,12 +53,8 @@ namespace RSR.BLL.Service.GroupService
                     Students = g.Students.Select(s => new StudentResponse
                     {
                         StudentNumber = s.StudentNumber,
-<<<<<<< HEAD
-                        FullName = s.User.FullName
-=======
                         FullName = s.User.FullName,
                         GroupId = s.GroupId ?? Guid.Empty
->>>>>>> origin/master
                     }).ToList()
                 }).ToList()
             }).ToList();
@@ -79,12 +75,8 @@ namespace RSR.BLL.Service.GroupService
                     Students = g.Students.Select(s => new StudentResponse
                     {
                         StudentNumber = s.StudentNumber,
-<<<<<<< HEAD
-                        FullName = s.User.FullName
-=======
                         FullName = s.User.FullName,
                         GroupId = s.GroupId ?? Guid.Empty
->>>>>>> origin/master
                     }).ToList()
                 }).ToList();
             return supervisorGroups;
@@ -252,16 +244,6 @@ namespace RSR.BLL.Service.GroupService
             }
 
         }
-<<<<<<< HEAD
-
-        public async Task<GroupResponse> GetGroupById(Guid groupId)
-        {
-            Console.WriteLine(groupId); 
-            var group = await _groupRepository.GroupByIdRepo(groupId);
-            if (group == null)
-            {
-                throw new Exception("Group is null");
-=======
         public async Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role)
         {
             var group = await _groupRepository.GroupByIdRepo(groupId);
@@ -272,17 +254,10 @@ namespace RSR.BLL.Service.GroupService
                     Success = false,
                     Message = "group not found"
                 };
->>>>>>> origin/master
             }
 
             if (group.Project == null)
             {
-<<<<<<< HEAD
-                throw new Exception("Project is null");
-            }
-            var GroupResponse = new GroupResponse
-            {
-=======
                 return new GroupResponse
                 {
                     Success = false,
@@ -314,7 +289,6 @@ namespace RSR.BLL.Service.GroupService
             {
                 Success = true,
                 Message = "success",
->>>>>>> origin/master
                 GroupId = group.GroupId,
                 GroupName = group.GroupName,
                 ProjectIdea = group.Project.ProjectIdea,
@@ -325,17 +299,12 @@ namespace RSR.BLL.Service.GroupService
                 {
                     StudentNumber = s.StudentNumber,
                     FullName = s.User.FullName,
-<<<<<<< HEAD
-=======
                    GroupId = s.GroupId ?? Guid.Empty
->>>>>>> origin/master
                 }).ToList()
             };
             return GroupResponse;
         }
 
-<<<<<<< HEAD
-=======
         public async Task<GroupResponse> GetGroupByStudent(string studentId)
         {
             var group = await _groupRepository.GetGroupByStudent(studentId);
@@ -366,7 +335,6 @@ namespace RSR.BLL.Service.GroupService
             return groupResponse;
 
         }
->>>>>>> origin/master
 
     }
 }

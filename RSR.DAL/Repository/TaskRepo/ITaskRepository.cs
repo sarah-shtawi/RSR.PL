@@ -11,11 +11,7 @@ namespace RSR.DAL.Repository.TaskRepo
         Task<Models.TaskModel.Task> CreateTask(Models.TaskModel.Task task);
         Task<Models.TaskModel.Task> UpdateTask(Models.TaskModel.Task task);
         Task<Models.TaskModel.Task?> GetTaskById(Guid TaskId);
-<<<<<<< HEAD
-        Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId  , string supervisorId);
-=======
         Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId);
         System.Threading.Tasks.Task DeleteTask(Models.TaskModel.Task task);
->>>>>>> origin/master
     }
 }

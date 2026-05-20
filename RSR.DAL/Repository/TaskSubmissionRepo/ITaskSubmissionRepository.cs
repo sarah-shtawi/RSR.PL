@@ -14,9 +14,6 @@ namespace RSR.DAL.Repository.TaskSubmissionRepo
         Task<TaskSubmission> UpdateTaskSubmission(TaskSubmission taskSubmission);
         Task<TaskSubmission?> GetSubmissionById(Guid TaskSubmissionId);
         Task<TaskSubmission> DeleteSubmission(TaskSubmission taskSubmission);
-<<<<<<< HEAD
-=======
         System.Threading.Tasks.Task RemoveSubmissions(List<TaskSubmission> submissions);
->>>>>>> origin/master
     }
 }

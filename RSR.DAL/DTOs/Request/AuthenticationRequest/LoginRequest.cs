@@ -13,11 +13,5 @@ namespace RSR.DAL.DTOs.Request.Authentication
         public string Email { get; set; }
 
         public string Password { get; set; }
-<<<<<<< HEAD
-        public string Role { get; set; }
-
-
-=======
->>>>>>> origin/master
     }
 }

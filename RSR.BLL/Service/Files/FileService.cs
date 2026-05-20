@@ -81,9 +81,6 @@ namespace RSR.BLL.Service.Files
                 {
                     throw new Exception("Failed to upload Task File", ex);
                 }  
-<<<<<<< HEAD
-        } 
-=======
         }
 
         public async Task<string?> UploadThesisFile(IFormFile ThesisFile)
@@ -126,7 +123,6 @@ namespace RSR.BLL.Service.Files
 
 
 
->>>>>>> origin/master
 
     }
 }

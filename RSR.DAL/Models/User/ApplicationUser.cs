@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.DAL.Models.TaskModel;
-<<<<<<< HEAD
-=======
 using RSR.DAL.Models.ThesisModel;
->>>>>>> origin/master
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,13 +29,10 @@ namespace RSR.DAL.Models.User
         // relation with TaskSubmissionComments
         public List<TaskSubmissionComment> TaskSubmissionComments { get; set; } = new List<TaskSubmissionComment>();
 
-<<<<<<< HEAD
-=======
         // relation with Thesis FeedBack 
         public List<ThesisFeedback> ThesisFeedbacks { get; set; } = new List<ThesisFeedback>();
 
 
->>>>>>> origin/master
         // Navigation Proparity with profiles 
         public StudentProfile? StudentProfile {  get; set; }
         public SupervisorProfile? SupervisorProfile { get; set; }

@@ -1,10 +1,7 @@
 ﻿using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.TaskModel;
-<<<<<<< HEAD
-=======
 using RSR.DAL.Models.ThesisModel;
->>>>>>> origin/master
 using RSR.DAL.Models.User;
 using System;
 using System.Collections.Generic;
@@ -20,11 +17,6 @@ namespace RSR.DAL.Models.ProjectGroupModel
         public Guid GroupId { get; set; } = Guid.NewGuid();
         public string GroupName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-<<<<<<< HEAD
-        // relation with project 1 : 1 
-        public Project Project { get; set; }
-
-=======
        
         
         // relation with project 1 : 1 
@@ -32,7 +24,6 @@ namespace RSR.DAL.Models.ProjectGroupModel
 
       
         
->>>>>>> origin/master
         // relation with student profile  1 : M 
         public List<StudentProfile> Students { get; set; } = new();
 
@@ -41,19 +32,11 @@ namespace RSR.DAL.Models.ProjectGroupModel
         public string SupervisorId { get; set; }
         public SupervisorProfile Supervisor { get; set; }
 
-<<<<<<< HEAD
-=======
        
->>>>>>> origin/master
         // relation with semester 
         public Guid SemesterId { get; set; }
         public Semester Semester { get; set; }
 
-<<<<<<< HEAD
-        // relation with Task 
-        public List<Task> Tasks { get; set; } = new();
-
-=======
       
         // relation with Task 
         public List<Task> Tasks { get; set; } = new();
@@ -63,6 +46,5 @@ namespace RSR.DAL.Models.ProjectGroupModel
         public Thesis Thesis { get; set; }
         public Guid ThesisId { get; set; }
 
->>>>>>> origin/master
     }
 }

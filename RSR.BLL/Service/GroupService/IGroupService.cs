@@ -15,11 +15,7 @@ namespace RSR.BLL.Service.GroupService
         Task<BaseResponse> UpdateGroup(GroupRequest request, string SupervisorId, Guid groupId);
         Task<List<GroupResponse>> GetSupervisorGroups(string supervisorId);
         Task<List<GetAllSupervisorsWithGroups>> GetCoordinatersGroups();
-<<<<<<< HEAD
-        Task<GroupResponse> GetGroupById(Guid groupId);
-=======
         Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role);
         Task<GroupResponse> GetGroupByStudent(string studentId);
->>>>>>> origin/master
     }
 }

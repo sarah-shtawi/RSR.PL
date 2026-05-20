@@ -15,9 +15,6 @@ namespace RSR.BLL.Service.Semester
         Task<SemesterResponse> GetActiveSemester();
         Task<List<SemesterResponse>> GetAllSemesters();
         Task<BaseResponse> UpdateSemester(Guid Id, CreateSemesterRequest request);
-<<<<<<< HEAD
-=======
         Task<List<SemesterArchive>> ProjectForArchive();
->>>>>>> origin/master
     }
 }

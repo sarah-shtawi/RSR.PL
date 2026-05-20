@@ -6,10 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RSR.DAL.Models.SemesterModel;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
-=======
 using RSR.DAL.Models.ThesisModel;
->>>>>>> origin/master
 
 namespace RSR.DAL.Repository.SemesterRepo
 {
@@ -67,9 +64,6 @@ namespace RSR.DAL.Repository.SemesterRepo
             await _context.SaveChangesAsync();
             return semester;
         }
-<<<<<<< HEAD
-       
-=======
 
 
         public async Task<List<Semester>> GetSemesterWithProjectsForArchive()
@@ -80,6 +74,5 @@ namespace RSR.DAL.Repository.SemesterRepo
             return AllThesis;
         }
 
->>>>>>> origin/master
     }
 }

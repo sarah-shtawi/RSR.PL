@@ -47,14 +47,11 @@ namespace RSR.DAL.Repository.TaskSubmissionRepo
             return taskSubmission;
         }
 
-<<<<<<< HEAD
-=======
         public async System.Threading.Tasks.Task RemoveSubmissions( List<TaskSubmission> submissions )
         {
              _context.TaskSubmissions.RemoveRange(submissions);
             _context.SaveChanges();
         }
 
->>>>>>> origin/master
     }
 }

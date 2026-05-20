@@ -4,10 +4,7 @@ using RSR.BLL.Service.Semester;
 using RSR.DAL.DTOs.Request.semester;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.SemesterRes;
-<<<<<<< HEAD
-=======
 using RSR.DAL.DTOs.Response.ThesisRes;
->>>>>>> origin/master
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Repository.SemesterRepo;
 using System;
@@ -103,9 +100,6 @@ namespace RSR.BLL.Service.semesterService
                 Message = "Semester Updated Successfully"
             };
         }
-<<<<<<< HEAD
-          
-=======
 
         public async Task<List<SemesterArchive>> ProjectForArchive()
         {
@@ -113,6 +107,5 @@ namespace RSR.BLL.Service.semesterService
             var ThesisArchive = allThesis.Adapt<List<SemesterArchive>>();
             return ThesisArchive;
         }
->>>>>>> origin/master
     }
 }

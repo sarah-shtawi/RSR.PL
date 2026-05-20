@@ -1,25 +1,18 @@
 ﻿using Azure.Core;
 using Mapster;
 using Microsoft.AspNetCore.Hosting;
-<<<<<<< HEAD
-=======
 using Microsoft.EntityFrameworkCore;
->>>>>>> origin/master
 using RSR.BLL.Service.Files;
 using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Repository.GroupRepo;
-<<<<<<< HEAD
-using RSR.DAL.Repository.TaskRepo;
-=======
 using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
 using RSR.DAL.Repository.TaskSubmissionRepo;
 using System.Data;
 using System.Threading.Tasks;
->>>>>>> origin/master
 
 
 
@@ -31,25 +24,17 @@ namespace RSR.BLL.Service.Task
         private readonly IFileService _fileService;
         private readonly IGroupRepository _groupRepository;
         private readonly IWebHostEnvironment _env;
-<<<<<<< HEAD
-
-        public TaskService(ITaskRepository taskRepository , IFileService fileService , IGroupRepository groupRepository , IWebHostEnvironment env)
-=======
         private readonly ISubmissionCommentRepository _commentRepository;
         private readonly ITaskSubmissionRepository _submissionRepo;
 
         public TaskService(ITaskRepository taskRepository , IFileService fileService , IGroupRepository groupRepository , IWebHostEnvironment env , ISubmissionCommentRepository commentRepository , ITaskSubmissionRepository submissionRepo)
->>>>>>> origin/master
         {
             _taskRepository = taskRepository;
             _fileService = fileService;
             _groupRepository = groupRepository;
             _env = env;
-<<<<<<< HEAD
-=======
             _commentRepository = commentRepository;
             _submissionRepo = submissionRepo;
->>>>>>> origin/master
         }
         public async Task <BaseResponse> CreateTask(string SupervisorId , Guid GroupId, TaskRequest Request)
         {
@@ -150,11 +135,6 @@ namespace RSR.BLL.Service.Task
                     Message = "This Group does not updated to this supervisor"
                 };
             }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/master
             TaskDB.Title = Request.Title;
             TaskDB.Description = Request.Description;
             TaskDB.DeadLine = Request.DeadLine;
@@ -193,14 +173,6 @@ namespace RSR.BLL.Service.Task
                 Message = "Task Updated Successfully"
             };
         }
-<<<<<<< HEAD
-        public async Task<List<TaskResponse>> GetTasksByGroup(Guid GroupId , string supervisorId)
-        {
-            var Tasks = await _taskRepository.GetTasksGroup(GroupId , supervisorId);
-            var TasksResponse = Tasks.Adapt<List<TaskResponse>>();
-            return TasksResponse;
-        }
-=======
         public async Task<List<TaskResponse>> GetTasksByGroupForSupervisor(Guid GroupId , string userId , string role)
         {
             var Tasks = await _taskRepository.GetTasksGroup(GroupId);  
@@ -303,6 +275,5 @@ namespace RSR.BLL.Service.Task
                 Message = "Task Deleted Successfully"
             };
         }
->>>>>>> origin/master
     }
 }

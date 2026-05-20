@@ -34,11 +34,8 @@ namespace RSR.PL.Areas.Supervisor
         public async Task <IActionResult> ReplyToComment([FromBody] ReplyToCommentRequest request , [FromRoute] Guid parentCommentId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-<<<<<<< HEAD
-=======
             var role = User.FindFirstValue(ClaimTypes.Role);
 
->>>>>>> origin/master
             var result = await _taskSubmissionService.ReplyToComment(userId, parentCommentId, request);
             if (!result.Success)
             {
@@ -46,8 +43,6 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(result);
         }
-<<<<<<< HEAD
-=======
         [Authorize(Roles = ("Supervisor,Student"))]
         [HttpPut("update-comment/commentId/{commentId}")]
         public async Task <IActionResult> UpdateComment([FromRoute] Guid commentId , [FromBody] ReplyToCommentRequest request)
@@ -72,7 +67,6 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(result);
         }
->>>>>>> origin/master
 
 
     }

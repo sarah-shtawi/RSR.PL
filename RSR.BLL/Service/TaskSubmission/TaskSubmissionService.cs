@@ -1,25 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-<<<<<<< HEAD
-=======
 using Microsoft.AspNetCore.Identity;
->>>>>>> origin/master
 using RSR.BLL.Service.Files;
 using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.Models.TaskModel;
-<<<<<<< HEAD
-=======
 using RSR.DAL.Models.User;
->>>>>>> origin/master
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.StudentRepo;
 using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
 using RSR.DAL.Repository.TaskSubmissionRepo;
-<<<<<<< HEAD
-=======
 using System.Data;
->>>>>>> origin/master
 
 namespace RSR.BLL.Service.TaskSubmission
 {
@@ -32,17 +23,11 @@ namespace RSR.BLL.Service.TaskSubmission
         private readonly IFileService _fileService;
         private readonly IWebHostEnvironment _env;
         private readonly ISubmissionCommentRepository _commentRepository;
-<<<<<<< HEAD
-
-        public TaskSubmissionService(ITaskSubmissionRepository taskSubmissionRepository, ITaskRepository taskRepository 
-            , IStudentRepository studentRepository , IGroupRepository groupRepository, IFileService fileService , IWebHostEnvironment env ,ISubmissionCommentRepository commentRepository)
-=======
         private readonly UserManager<ApplicationUser> _userManager;
 
         public TaskSubmissionService(ITaskSubmissionRepository taskSubmissionRepository, ITaskRepository taskRepository 
             , IStudentRepository studentRepository , IGroupRepository groupRepository, IFileService fileService , IWebHostEnvironment env 
             ,ISubmissionCommentRepository commentRepository ,UserManager <ApplicationUser> userManager)
->>>>>>> origin/master
         {
             _taskSubmissionRepository = taskSubmissionRepository;
             _taskRepository = taskRepository;
@@ -51,10 +36,7 @@ namespace RSR.BLL.Service.TaskSubmission
             _fileService = fileService;
             _env = env;
             _commentRepository = commentRepository;
-<<<<<<< HEAD
-=======
             _userManager = userManager;
->>>>>>> origin/master
         }
 
         public async Task<BaseResponse> AddTaskSubmission(TaskSubmissionRequest TaskSubmission, string StudentId , Guid TaskId )
@@ -272,14 +254,9 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "You must provide a reason for rejection"
                 };
             }
-<<<<<<< HEAD
-            // update submission status 
-             submission.Status = request.status;
-=======
        
             // update submission status 
             submission.Status = request.status;
->>>>>>> origin/master
              submission.ReviewedAt = DateTime.UtcNow;
              await _taskSubmissionRepository.UpdateTaskSubmission(submission);
 
@@ -293,10 +270,7 @@ namespace RSR.BLL.Service.TaskSubmission
                     TaskSubmissionId = submission.TaskSubmissionId,
                     UserId = supervisorId,
                     ParentCommentId = null,
-<<<<<<< HEAD
-=======
                     Role = "Supervisor"
->>>>>>> origin/master
                 };
                 await _commentRepository.CreateComment(comment);
             }
@@ -337,8 +311,6 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "You Can't reply to this comment."
                 };
             }
-<<<<<<< HEAD
-=======
             var user = await _userManager.FindByIdAsync(userId);
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -357,7 +329,6 @@ namespace RSR.BLL.Service.TaskSubmission
             }
 
 
->>>>>>> origin/master
             var reply = new TaskSubmissionComment
             {
                 Content = Request.Content,
@@ -365,10 +336,7 @@ namespace RSR.BLL.Service.TaskSubmission
                 TaskSubmissionId = submission.TaskSubmissionId,
                 UserId = userId,
                 ParentCommentId = parentCommentId,
-<<<<<<< HEAD
-=======
                 Role = role
->>>>>>> origin/master
             };
             await _commentRepository.CreateComment( reply );
             return new BaseResponse
@@ -377,9 +345,6 @@ namespace RSR.BLL.Service.TaskSubmission
                 Message = "Comment Added Successfully"
             };
         }
-<<<<<<< HEAD
-         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
-=======
 
         public async Task<BaseResponse> UpdateComment(Guid commentId , string userId , ReplyToCommentRequest request )
         {
@@ -454,7 +419,6 @@ namespace RSR.BLL.Service.TaskSubmission
 
         }
         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
->>>>>>> origin/master
         {
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
             if (submission is null) 
@@ -488,11 +452,5 @@ namespace RSR.BLL.Service.TaskSubmission
                 Message = "Submission Removed Successfully"
             };
         }
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> origin/master
     }
 }

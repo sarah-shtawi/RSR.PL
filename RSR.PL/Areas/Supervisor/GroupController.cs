@@ -13,10 +13,6 @@ namespace RSR.PL.Areas.Supervisor
 {
     [Route("api/[controller]")]
     [ApiController]
-<<<<<<< HEAD
-    [Authorize(Roles ="Supervisor")]
-=======
->>>>>>> origin/master
     public class GroupController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -27,10 +23,7 @@ namespace RSR.PL.Areas.Supervisor
             _userService = userService;
             _groupService = groupService;
         }
-<<<<<<< HEAD
-=======
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpGet("students-supervisor")]
         public async Task<IActionResult> getStudent()
         {
@@ -42,12 +35,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(new { message = "success", students });
         }
-<<<<<<< HEAD
-   
-=======
 
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpPost("image-profile-supervisor")]
         public async Task<IActionResult> AssignImageSupervisor( [FromForm] UploadImageRequest image)
         {
@@ -60,10 +49,7 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
-<<<<<<< HEAD
-=======
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpGet("groups-supervisor")]
         public async Task<IActionResult> GetSupervisorGroups()
         {
@@ -75,12 +61,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok( new { message = "success" , groups =  result });
         }
-<<<<<<< HEAD
-       
-=======
 
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpPost("create-group")]
         public async Task<IActionResult> CreateGroup([FromBody] GroupRequest request)
         {
@@ -94,10 +76,7 @@ namespace RSR.PL.Areas.Supervisor
 
         }
 
-<<<<<<< HEAD
-=======
         [Authorize(Roles = "Supervisor")]
->>>>>>> origin/master
         [HttpPatch("update-group/{GroupId}")]
         public async Task <IActionResult> UpdateGroup([FromRoute] Guid GroupId , [FromBody] GroupRequest request)
         {
@@ -109,8 +88,6 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(result);
         }
-<<<<<<< HEAD
-=======
 
 
         [Authorize(Roles = "Student")]
@@ -124,6 +101,5 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(group);
         }
->>>>>>> origin/master
     }
 }

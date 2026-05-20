@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿using RSR.DAL.Data;
-=======
 ﻿using Microsoft.EntityFrameworkCore;
 using RSR.DAL.Data;
->>>>>>> origin/master
 using RSR.DAL.Models.TaskModel;
 
 namespace RSR.DAL.Repository.TaskRepo
@@ -30,17 +26,6 @@ namespace RSR.DAL.Repository.TaskRepo
         }
         public async Task<Models.TaskModel.Task?> GetTaskById(Guid TaskId)
         {
-<<<<<<< HEAD
-          var Task = await _context.Tasks.FindAsync(TaskId);
-            return Task;
-        }
-
-        public async Task<List<Models.TaskModel.Task>> GetTasksGroup(Guid GroupId , string supervisorId)
-        {
-            var Tasks = _context.Tasks.Where(t=>t.GroupId == GroupId && t.SupervisorId == supervisorId).ToList();
-            return Tasks;
-        }
-=======
           var Task = await _context.Tasks
                 .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
                 .Include(t=>t.Group).ThenInclude(g=>g.Students)
@@ -63,7 +48,6 @@ namespace RSR.DAL.Repository.TaskRepo
             var Task =  _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
         }
->>>>>>> origin/master
 
     }
 }

@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.TaskRes
 {
-<<<<<<< HEAD
-    public  class TaskResponse
-=======
     public  class TaskResponse 
->>>>>>> origin/master
     {
         public Guid TaskId { get; set; }
         public string Title { get; set; }
@@ -19,9 +15,6 @@ namespace RSR.DAL.DTOs.Response.TaskRes
         public DateTime CreatedAt { get; set; }
         public DateTime DeadLine { get; set; }
         public string? TaskFileURL { get; set; }
-<<<<<<< HEAD
-=======
         public string SupervisorName { get; set; }
->>>>>>> origin/master
     }
 }

@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.GroupRes
 {
-<<<<<<< HEAD
-    public  class GroupResponse
-=======
     public  class GroupResponse : BaseResponse
->>>>>>> origin/master
     {
         public Guid GroupId { get; set; }
         public string GroupName {  get; set; }

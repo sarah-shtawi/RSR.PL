@@ -155,125 +155,6 @@ namespace RSR.DAL.Migrations
                     b.ToTable("UserToken", (string)null);
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationField", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EvaluationFormId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FieldName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRequired")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaxValue")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinValue")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EvaluationFormId");
-
-                    b.ToTable("EvaluationFields");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationForm", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssignTo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EvaluationForms");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EvaluationFormId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SubmittedByUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EvaluationFormId");
-
-                    b.HasIndex("SubmittedByUserId");
-
-                    b.ToTable("EvaluationSubmissions");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmissionAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EvaluationFieldId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EvaluationSubmissionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EvaluationFieldId");
-
-                    b.HasIndex("EvaluationSubmissionId");
-
-                    b.ToTable("EvaluationSubmissionAnswers");
-                });
-
-=======
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
                 {
                     b.Property<Guid>("GroupId")
@@ -294,12 +175,9 @@ namespace RSR.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-<<<<<<< HEAD
-=======
                     b.Property<Guid>("ThesisId")
                         .HasColumnType("uniqueidentifier");
 
->>>>>>> origin/master
                     b.HasKey("GroupId");
 
                     b.HasIndex("SemesterId");
@@ -469,13 +347,10 @@ namespace RSR.DAL.Migrations
                     b.Property<Guid?>("ParentCommentId")
                         .HasColumnType("uniqueidentifier");
 
-<<<<<<< HEAD
-=======
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
->>>>>>> origin/master
                     b.Property<Guid>("TaskSubmissionId")
                         .HasColumnType("uniqueidentifier");
 
@@ -494,8 +369,6 @@ namespace RSR.DAL.Migrations
                     b.ToTable("TaskSubmissionComments");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
                 {
                     b.Property<Guid>("ThesisId")
@@ -601,7 +474,6 @@ namespace RSR.DAL.Migrations
                     b.ToTable("ThesisVersions");
                 });
 
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -833,56 +705,6 @@ namespace RSR.DAL.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationField", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.Evaluation.EvaluationForm", "EvaluationForm")
-                        .WithMany("Fields")
-                        .HasForeignKey("EvaluationFormId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EvaluationForm");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.Evaluation.EvaluationForm", "EvaluationForm")
-                        .WithMany()
-                        .HasForeignKey("EvaluationFormId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("RSR.DAL.Models.User.ApplicationUser", "SubmittedByUser")
-                        .WithMany()
-                        .HasForeignKey("SubmittedByUserId");
-
-                    b.Navigation("EvaluationForm");
-
-                    b.Navigation("SubmittedByUser");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmissionAnswer", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.Evaluation.EvaluationField", "EvaluationField")
-                        .WithMany()
-                        .HasForeignKey("EvaluationFieldId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("RSR.DAL.Models.Evaluation.EvaluationSubmission", "EvaluationSubmission")
-                        .WithMany("Answers")
-                        .HasForeignKey("EvaluationSubmissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EvaluationField");
-
-                    b.Navigation("EvaluationSubmission");
-                });
-
-=======
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
                 {
                     b.HasOne("RSR.DAL.Models.SemesterModel.Semester", "Semester")
@@ -937,21 +759,13 @@ namespace RSR.DAL.Migrations
                     b.HasOne("RSR.DAL.Models.User.StudentProfile", "Student")
                         .WithMany("TaskSubmissions")
                         .HasForeignKey("StudentId")
-<<<<<<< HEAD
-                        .OnDelete(DeleteBehavior.Cascade)
-=======
                         .OnDelete(DeleteBehavior.NoAction)
->>>>>>> origin/master
                         .IsRequired();
 
                     b.HasOne("RSR.DAL.Models.TaskModel.Task", "Task")
                         .WithMany("TaskSubmissions")
                         .HasForeignKey("TaskId")
-<<<<<<< HEAD
-                        .OnDelete(DeleteBehavior.Restrict)
-=======
                         .OnDelete(DeleteBehavior.Cascade)
->>>>>>> origin/master
                         .IsRequired();
 
                     b.Navigation("Student");
@@ -975,11 +789,7 @@ namespace RSR.DAL.Migrations
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
                         .WithMany("TaskSubmissionComments")
                         .HasForeignKey("UserId")
-<<<<<<< HEAD
-                        .OnDelete(DeleteBehavior.Restrict)
-=======
                         .OnDelete(DeleteBehavior.NoAction)
->>>>>>> origin/master
                         .IsRequired();
 
                     b.Navigation("ParentComment");
@@ -989,8 +799,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
                 {
                     b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
@@ -1040,7 +848,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("student");
                 });
 
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.User.CoordinatorProfile", b =>
                 {
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "User")
@@ -1091,19 +898,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationForm", b =>
-                {
-                    b.Navigation("Fields");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-=======
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
                 {
                     b.Navigation("Project")
@@ -1112,12 +906,9 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Students");
 
                     b.Navigation("Tasks");
-<<<<<<< HEAD
-=======
 
                     b.Navigation("Thesis")
                         .IsRequired();
->>>>>>> origin/master
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
@@ -1140,8 +931,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Replies");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
                 {
                     b.Navigation("ThesisVersions");
@@ -1152,7 +941,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("thesisFeedbacks");
                 });
 
->>>>>>> origin/master
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
                 {
                     b.Navigation("CoordinatorProfile");
@@ -1164,21 +952,15 @@ namespace RSR.DAL.Migrations
                     b.Navigation("SupervisorProfile");
 
                     b.Navigation("TaskSubmissionComments");
-<<<<<<< HEAD
-=======
 
                     b.Navigation("ThesisFeedbacks");
->>>>>>> origin/master
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>
                 {
                     b.Navigation("TaskSubmissions");
-<<<<<<< HEAD
-=======
 
                     b.Navigation("ThesisVersions");
->>>>>>> origin/master
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.SupervisorProfile", b =>
