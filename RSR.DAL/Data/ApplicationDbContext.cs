@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RSR.DAL.Models.Evaluation;
 using RSR.DAL.Models.ProjectGroupModel;
 using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.SemesterModel;
@@ -34,6 +35,11 @@ namespace RSR.DAL.Data
         public DbSet<ThesisVersions> ThesisVersions { get; set; }
         public DbSet<ThesisFeedback> ThesisFeedbacks { get; set; }
 
+        public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
+
+        public DbSet<EvaluationForm> EvaluationForms { get; set; }
+
+        public DbSet<EvaluationField> EvaluationFields { get; set; }
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
         {
         

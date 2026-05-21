@@ -1,5 +1,6 @@
 ﻿using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
+using RSR.DAL.DTOs.Response.TaskRes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace RSR.BLL.Service.TaskSubmission
         Task<BaseResponse> UpdateTaskSubmission(TaskSubmissionRequest Request, string StudentId, Guid SubmissionTaskId);
         Task<BaseResponse> ReviewForSubmission(Guid submissionId, string supervisorId, ReviewTaskSubmission request);
         Task<BaseResponse> DeleteSubmission(Guid submissionId, string studentId);
-        Task<BaseResponse> ReplyToComment(string userId, Guid parentCommentId, ReplyToCommentRequest Request);
+        Task<TaskSubmissionCommentResponse> ReplyToComment(string userId, Guid parentCommentId, ReplyToCommentRequest Request);
         Task<BaseResponse> UpdateComment(Guid commentId, string userId, ReplyToCommentRequest request);
         Task<BaseResponse> DeleteComment(Guid commentId, string userId);
     }
