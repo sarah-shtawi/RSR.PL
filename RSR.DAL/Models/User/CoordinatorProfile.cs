@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RSR.DAL.Models.ScheduleModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,10 @@ namespace RSR.DAL.Models.User
         public ApplicationUser User { get; set; }
         public string CoordinatorNumber { get; set; }
         public string Department { get; set; }
+
         public string? PictureProfileURL { get; set; }
+
+        // relation with Schedules
+        public List<Schedule> Schedules { get; set; }
     }
 }

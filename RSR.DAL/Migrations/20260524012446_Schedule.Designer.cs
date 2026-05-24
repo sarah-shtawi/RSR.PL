@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260524012446_Schedule")]
+    partial class Schedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,7 +186,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("EvaluationFormId");
 
-                    b.ToTable("EvaluationFields", (string)null);
+                    b.ToTable("EvaluationFields");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationForm", b =>
@@ -216,7 +219,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EvaluationForms", (string)null);
+                    b.ToTable("EvaluationForms");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
@@ -242,7 +245,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("SubmittedByUserId");
 
-                    b.ToTable("EvaluationSubmissions", (string)null);
+                    b.ToTable("EvaluationSubmissions");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmissionAnswer", b =>
@@ -268,7 +271,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("EvaluationSubmissionId");
 
-                    b.ToTable("EvaluationSubmissionAnswers", (string)null);
+                    b.ToTable("EvaluationSubmissionAnswers");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
@@ -300,7 +303,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ProjectModel.Project", b =>
@@ -331,7 +334,7 @@ namespace RSR.DAL.Migrations
                     b.HasIndex("GroupId")
                         .IsUnique();
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.DefenseExaminer", b =>
@@ -353,7 +356,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("DefenseExaminers", (string)null);
+                    b.ToTable("DefenseExaminers");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.Schedule", b =>
@@ -386,7 +389,7 @@ namespace RSR.DAL.Migrations
                     b.HasIndex("GroupId")
                         .IsUnique();
 
-                    b.ToTable("Schedules", (string)null);
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
@@ -410,7 +413,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("SemesterId");
 
-                    b.ToTable("Semesters", (string)null);
+                    b.ToTable("Semesters");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.TaskModel.Task", b =>
@@ -452,7 +455,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Tasks", (string)null);
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmission", b =>
@@ -499,7 +502,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("TaskSubmissions", (string)null);
+                    b.ToTable("TaskSubmissions");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.TaskModel.TaskSubmissionComment", b =>
@@ -537,7 +540,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TaskSubmissionComments", (string)null);
+                    b.ToTable("TaskSubmissionComments");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.Thesis", b =>
@@ -564,7 +567,7 @@ namespace RSR.DAL.Migrations
                     b.HasIndex("GroupId")
                         .IsUnique();
 
-                    b.ToTable("Thesis", (string)null);
+                    b.ToTable("Thesis");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisFeedback", b =>
@@ -595,7 +598,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("VersionId");
 
-                    b.ToTable("ThesisFeedbacks", (string)null);
+                    b.ToTable("ThesisFeedbacks");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ThesisModel.ThesisVersions", b =>
@@ -642,7 +645,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("studentId");
 
-                    b.ToTable("ThesisVersions", (string)null);
+                    b.ToTable("ThesisVersions");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.ApplicationUser", b =>
@@ -750,7 +753,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Coordinators", (string)null);
+                    b.ToTable("Coordinators");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.ExaminerProfile", b =>
@@ -771,7 +774,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Examiners", (string)null);
+                    b.ToTable("Examiners");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>
@@ -801,7 +804,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.SupervisorProfile", b =>
@@ -822,7 +825,7 @@ namespace RSR.DAL.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Supervisors", (string)null);
+                    b.ToTable("Supervisors");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
