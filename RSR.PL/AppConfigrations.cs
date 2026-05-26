@@ -4,6 +4,7 @@ using RSR.BLL.Service.EmailSender;
 using RSR.BLL.Service.EvaluationService;
 using RSR.BLL.Service.Files;
 using RSR.BLL.Service.GroupService;
+using RSR.BLL.Service.Schedule;
 using RSR.BLL.Service.Semester;
 using RSR.BLL.Service.semesterService;
 using RSR.BLL.Service.Task;
@@ -16,6 +17,7 @@ using RSR.BLL.Services.EvaluationService;
  using RSR.DAL.Repository.EvaluationRepository;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ProjectRepo;
+using RSR.DAL.Repository.ScheduleRepo;
 using RSR.DAL.Repository.SemesterRepo;
 using RSR.DAL.Repository.StudentRepo;
 using RSR.DAL.Repository.SubmissionCommentRepo;
@@ -69,9 +71,12 @@ namespace RSR.PL
 
             Services.AddScoped<IThesisVersionsRepository, ThesisVersionsRepository>();
             Services.AddScoped<IThesisVersionsService, ThesisVersionsService>();
-
             Services.AddScoped<IThesisFeedBackRepository, ThesisFeedBackRepository>();
 
+
+
+            Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+            Services.AddScoped<IScheduleService, ScheduleService>();
 
             // Evaluation Services
             Services.AddScoped<IEvaluationFieldService, EvaluationFieldService>();

@@ -1,4 +1,5 @@
 ﻿using RSR.DAL.Models.ProjectModel;
+using RSR.DAL.Models.ScheduleModel;
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Models.ThesisModel;
@@ -45,6 +46,9 @@ namespace RSR.DAL.Models.ProjectGroupModel
         // relation with Thesis 
         public Thesis Thesis { get; set; }
         public Guid ThesisId { get; set; }
+
+        // relation with schedule 
+        public Schedule Schedule { get; set; }
 
     }
 }

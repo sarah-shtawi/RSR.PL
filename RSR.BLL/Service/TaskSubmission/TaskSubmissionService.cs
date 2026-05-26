@@ -328,8 +328,6 @@ namespace RSR.BLL.Service.TaskSubmission
             {
                 role = roles.FirstOrDefault();
             }
-
-
             var reply = new TaskSubmissionComment
             {
                 Content = Request.Content,
@@ -339,18 +337,17 @@ namespace RSR.BLL.Service.TaskSubmission
                 ParentCommentId = parentCommentId,
                 Role = role
             };
-           var replyComment =  await _commentRepository.CreateComment( reply );
-
+            await _commentRepository.CreateComment( reply );
             return new TaskSubmissionCommentResponse
             {
                 Success = true,
-                message = "Comment Added Successfully",
-                TaskSubmissionCommentId = replyComment.TaskSubmissionCommentId,
-                ParentCommentId = parentCommentId,
-                Content = Request.Content,
+                Message = "Comment Added Successfully",
+                TaskSubmissionCommentId = reply.TaskSubmissionCommentId,
+                ParentCommentId = reply.ParentCommentId,
+                Content = reply.Content,
                 UserName = user.FullName,
-                role = role,
-                CreatedAt = replyComment.CreatedAt,
+                role = reply.Role,
+                CreatedAt = reply.CreatedAt,
             };
         }
 

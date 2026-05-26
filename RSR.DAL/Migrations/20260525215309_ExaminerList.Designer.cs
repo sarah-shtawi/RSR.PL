@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RSR.DAL.Data;
 
@@ -11,9 +12,11 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525215309_ExaminerList")]
+    partial class ExaminerList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,9 +207,6 @@ namespace RSR.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -233,23 +233,15 @@ namespace RSR.DAL.Migrations
                     b.Property<int>("EvaluationFormId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SubmittedByUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<float>("TotalScore")
-                        .HasColumnType("real");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EvaluationFormId");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("SubmittedByUserId");
 
@@ -280,44 +272,6 @@ namespace RSR.DAL.Migrations
                     b.HasIndex("EvaluationSubmissionId");
 
                     b.ToTable("EvaluationSubmissionAnswers");
-                    b.ToTable("EvaluationSubmissionAnswers", (string)null);
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.FinalEvaluationResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("ExaminerGrade")
-                        .HasColumnType("float");
-
-                    b.Property<double>("FinalGrade")
-                        .HasColumnType("float");
-
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("PublishedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("SupervisorGrade")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("FinalEvaluationResults");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>
@@ -944,19 +898,11 @@ namespace RSR.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RSR.DAL.Models.User.ApplicationUser", "SubmittedByUser")
                         .WithMany()
                         .HasForeignKey("SubmittedByUserId");
 
                     b.Navigation("EvaluationForm");
-
-                    b.Navigation("Group");
 
                     b.Navigation("SubmittedByUser");
                 });
@@ -978,17 +924,6 @@ namespace RSR.DAL.Migrations
                     b.Navigation("EvaluationField");
 
                     b.Navigation("EvaluationSubmission");
-                });
-
-            modelBuilder.Entity("RSR.DAL.Models.Evaluation.FinalEvaluationResult", b =>
-                {
-                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.ProjectGroupModel.Group", b =>

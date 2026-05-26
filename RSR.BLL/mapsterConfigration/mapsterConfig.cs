@@ -72,7 +72,8 @@ namespace RSR.BLL.mapsterConfigration
             // Task Mapping
             TypeAdapterConfig<DAL.Models.TaskModel.Task, TaskResponse>.NewConfig()
               .Map(dest => dest.TaskFileURL, src => string.IsNullOrEmpty(src.TaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.TaskFileURL}")
-              .Map(dest => dest.SupervisorName, src => src.Supervisor.User.FullName);
+              .Map(dest => dest.SupervisorName, src => src.Supervisor.User.FullName)
+              .Map(dest=>dest.Status, src =>src.TaskSubmissions.OrderByDescending(s => s.SubmittedAt).Select(t =>t.Status).FirstOrDefault());
 
             TypeAdapterConfig<TaskSubmission, TaskSubmissionResponse>.NewConfig()
              .Map(dest => dest.TaskSubmissionURL, src => string.IsNullOrEmpty(src.SubmissionTaskFileURL) ? null : $"{_configration["URL:BaseUrl"]}/files/Tasks/{src.SubmissionTaskFileURL}")

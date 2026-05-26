@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using RSR.DAL.Models.Evaluation;
 using RSR.DAL.Models.ProjectGroupModel;
 using RSR.DAL.Models.ProjectModel;
+using RSR.DAL.Models.ScheduleModel;
 using RSR.DAL.Models.SemesterModel;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Models.ThesisModel;
@@ -34,6 +36,16 @@ namespace RSR.DAL.Data
         public DbSet<ThesisVersions> ThesisVersions { get; set; }
         public DbSet<ThesisFeedback> ThesisFeedbacks { get; set; }
 
+        public DbSet<EvaluationField> EvaluationFields { get; set; }
+
+        public DbSet<EvaluationForm> EvaluationForms { get; set; }
+        public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
+        public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
+
+        public DbSet<Schedule> Schedules { get; set; }
+
+        public DbSet<DefenseExaminer> DefenseExaminers { get; set; }
+        public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
         public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
 
         public DbSet<EvaluationForm> EvaluationForms { get; set; }
@@ -201,6 +213,39 @@ namespace RSR.DAL.Data
                 .WithMany(u => u.ThesisFeedbacks)
                 .HasForeignKey(F => F.ReviwerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Schedule
+
+            // relation with schedule - Group 1 : 1 
+            modelBuilder.Entity<Schedule>()
+              .HasOne(s => s.Group)
+              .WithOne(g => g.Schedule)
+              .HasForeignKey<Schedule>(s => s.GroupId);
+
+
+            // relation with schedule - coordinator 1 : M 
+            modelBuilder.Entity<Schedule>()
+               .HasOne(s => s.Coordinator)
+               .WithMany(c=>c.Schedules)
+               .HasForeignKey(s => s.CoordinatorId)
+              .OnDelete(DeleteBehavior.Restrict); ;
+
+            // relation with schedule - DefenseExaminer 1 : M 
+            modelBuilder.Entity<DefenseExaminer>()
+                .HasOne(e => e.Schedule)
+                .WithMany(s => s.DefenseExaminers)
+                .HasForeignKey(e=>e.ScheduleId);
+
+            // relation with Examiner - DefenseExaminer 1 : M 
+            modelBuilder.Entity<DefenseExaminer>()
+               .HasOne(d => d.Examiner)
+               .WithMany(e=>e.DefenseExaminers)
+               .HasForeignKey(d=>d.ExaminerId)
+               .OnDelete(DeleteBehavior.Restrict); 
+                
+
+
+
 
             // EvaluationSubmissionAnswer table mapping
             modelBuilder.Entity<EvaluationSubmissionAnswer>()
