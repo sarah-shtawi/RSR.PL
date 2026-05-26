@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Files;
 using RSR.DAL.DTOs.Request.TaskReq;
 using RSR.DAL.DTOs.Response;
+using RSR.DAL.DTOs.Response.TaskRes;
 using RSR.DAL.Models.TaskModel;
 using RSR.DAL.Models.User;
 using RSR.DAL.Repository.GroupRepo;
@@ -283,12 +284,12 @@ namespace RSR.BLL.Service.TaskSubmission
 
         }
 
-        public async Task<BaseResponse> ReplyToComment(string userId , Guid parentCommentId , ReplyToCommentRequest Request  )
+        public async Task<TaskSubmissionCommentResponse> ReplyToComment(string userId , Guid parentCommentId , ReplyToCommentRequest Request  )
         {
             var parent = await _commentRepository.GetParentComment(parentCommentId);
             if (parent == null) 
             {
-                return new BaseResponse
+                return new TaskSubmissionCommentResponse
                 {
                     Success = false,
                     Message = "Parent Comment Is Not Found"
@@ -297,7 +298,7 @@ namespace RSR.BLL.Service.TaskSubmission
             var submission = await _taskSubmissionRepository.GetSubmissionById(parent.TaskSubmissionId);
             if (submission == null) 
             {
-                return new BaseResponse
+                return new TaskSubmissionCommentResponse
                 {
                     Success = false,
                     Message = "Submission Is Not Found"
@@ -305,7 +306,7 @@ namespace RSR.BLL.Service.TaskSubmission
             }
             if(userId != submission.StudentId && userId != submission.Task.SupervisorId)
             {
-                return new BaseResponse
+                return new TaskSubmissionCommentResponse
                 {
                     Success = false,
                     Message = "You Can't reply to this comment."
@@ -327,8 +328,6 @@ namespace RSR.BLL.Service.TaskSubmission
             {
                 role = roles.FirstOrDefault();
             }
-
-
             var reply = new TaskSubmissionComment
             {
                 Content = Request.Content,
@@ -339,10 +338,16 @@ namespace RSR.BLL.Service.TaskSubmission
                 Role = role
             };
             await _commentRepository.CreateComment( reply );
-            return new BaseResponse
+            return new TaskSubmissionCommentResponse
             {
                 Success = true,
-                Message = "Comment Added Successfully"
+                Message = "Comment Added Successfully",
+                TaskSubmissionCommentId = reply.TaskSubmissionCommentId,
+                ParentCommentId = reply.ParentCommentId,
+                Content = reply.Content,
+                UserName = user.FullName,
+                role = reply.Role,
+                CreatedAt = reply.CreatedAt,
             };
         }
 

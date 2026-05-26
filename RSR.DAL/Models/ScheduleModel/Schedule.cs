@@ -26,6 +26,6 @@ namespace RSR.DAL.Models.ScheduleModel
         public string? Notes { get; set; }
 
         // relation with Defense Examiners
-        public List<DefenseExaminer> DefenseExaminers { get; set; }
+        public List<DefenseExaminer> DefenseExaminers { get; set; } = new();
     }
 }

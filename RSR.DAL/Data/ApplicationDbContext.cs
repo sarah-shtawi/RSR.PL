@@ -202,6 +202,8 @@ namespace RSR.DAL.Data
                 .HasForeignKey(F=>F.ReviwerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Schedule
+
             // relation with schedule - Group 1 : 1 
             modelBuilder.Entity<Schedule>()
               .HasOne(s => s.Group)
