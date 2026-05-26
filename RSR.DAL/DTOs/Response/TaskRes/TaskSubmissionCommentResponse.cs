@@ -11,7 +11,7 @@ namespace RSR.DAL.DTOs.Response.TaskRes
     public  class TaskSubmissionCommentResponse 
     {
         public bool Success { get; set; }
-        public string Message { get; set; }
+        public string message { get; set; }
         public Guid TaskSubmissionCommentId { get; set; }
         public Guid? ParentCommentId { get; set; }
         public string Content { get; set; }

@@ -112,5 +112,17 @@ namespace RSR.PL.Areas.Supervisor
         }
 
 
+        [Authorize(Roles = "Supervisor")]
+        [HttpPost("freeze-thesis/versionId/{versionId}")]
+        public async Task<IActionResult> FreezeThesis([FromRoute] Guid versionId)
+        {
+            var result = await _versionsService.FreezeThesis(versionId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
     }
 }

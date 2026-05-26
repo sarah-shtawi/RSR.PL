@@ -15,5 +15,7 @@ namespace RSR.BLL.Service.Schedule
         System.Threading.Tasks.Task<BaseResponse> UpdateSchedule(ScheduleRequest request, string coordinatorId, Guid scheduleId);
         Task<List<ScheduleResponse>> GetSchedulesForCoordinator();
         Task<List<ScheduleResponse>> GetSchedulesForSupervisor(string supervisorId);
+        Task<ScheduleResponse> GetScheduleStudent(string studentId);
+        Task<List<ScheduleResponse>> GetSchedulesExaminer(string examinerId);
     }
 }

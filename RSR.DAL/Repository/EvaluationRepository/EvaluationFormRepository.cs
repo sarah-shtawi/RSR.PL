@@ -122,22 +122,17 @@ namespace RSR.DAL.Repository.EvaluationRepository
         // =========================
         // COUNT ALL FORMS
         // =========================
-        public async Task<int>
-            CountAsync()
+        public async Task<int>CountAsync()
         {
-            return await _context.EvaluationForms
-                .CountAsync();
+            return await _context.EvaluationForms.CountAsync();
         }
 
         // =========================
         // COUNT PUBLISHED FORMS
         // =========================
-        public async Task<int>
-            CountPublishedAsync()
+        public async Task<int>CountPublishedAsync()
         {
-            return await _context.EvaluationForms
-                .CountAsync(f =>
-                    f.Status == FormStatus.Published);
+            return await _context.EvaluationForms.CountAsync(f =>f.Status == FormStatus.Published);
         }
     }
 }

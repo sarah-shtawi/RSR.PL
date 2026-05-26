@@ -82,5 +82,43 @@ namespace RSR.DAL.Repository.ScheduleRepo
                 }).ToListAsync();
             return schedules;
         }
+
+
+        public async Task <ScheduleResponse?> GetScheduleForStudent(string studentId)
+        {
+            var schedule = await _context.Schedules.Where(s=>s.Group.Students.Any(s=>s.UserId == studentId)).Select(s=> new ScheduleResponse
+            {
+                ScheduleId = s.ScheduleId,
+                GroupName = s.Group.GroupName,
+                SupervisorName = s.Group.Supervisor.User.FullName,
+                ProjectName = s.Group.Project.ProjectName,
+                Location = s.Location,
+                Date = s.Date,
+                Notes = s.Notes,
+                ThesisURL = string.IsNullOrEmpty(s.Group.Thesis.ThesisFile) ? null : $"{_configuration["URL:BaseUrl"]}/files/Thesis/{s.Group.Thesis.ThesisFile}",
+                Students = s.Group.Students.Select(st => st.User.FullName).ToList(),
+                Examiners = s.DefenseExaminers.Select(e => e.Examiner.User.FullName).ToList(),
+            }).FirstOrDefaultAsync();
+
+            return schedule;
+        }
+        public async Task <List<ScheduleResponse?>> GetSchedulesForExaminer(string ExaminerId)
+        {
+            var schedules = await _context.Schedules.Where(s => s.DefenseExaminers.Any(e => e.ExaminerId == ExaminerId)).Select(s => new ScheduleResponse
+            {
+                ScheduleId = s.ScheduleId,
+                GroupName = s.Group.GroupName,
+                SupervisorName = s.Group.Supervisor.User.FullName,
+                ProjectName = s.Group.Project.ProjectName,
+                Location = s.Location,
+                Date = s.Date,
+                Notes = s.Notes,
+                ThesisURL = string.IsNullOrEmpty(s.Group.Thesis.ThesisFile) ? null : $"{_configuration["URL:BaseUrl"]}/files/Thesis/{s.Group.Thesis.ThesisFile}",
+                Students = s.Group.Students.Select(st => st.User.FullName).ToList(),
+                Examiners = s.DefenseExaminers.Select(e => e.Examiner.User.FullName).ToList()
+            }).ToListAsync();
+            return schedules;
+        }
+
     }
 }

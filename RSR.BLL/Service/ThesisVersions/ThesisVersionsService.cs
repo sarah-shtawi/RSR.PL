@@ -308,5 +308,44 @@ namespace RSR.BLL.Service.ThesisVersions
             var HomePageThesis = publishedThesis.Adapt<List<ThesisArchiveHomePageResponse>>();
             return HomePageThesis;
         }
+
+        public async Task <BaseResponse> FreezeThesis(Guid ThesisVersionId)
+        {
+            var version = await _versionsRepository.GetVersionById(ThesisVersionId);
+            if (version == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "version is fot found"
+                };
+            }
+            var lastFeedback = await _thesisFeedBack.GetLastFeedback(ThesisVersionId);
+            if (lastFeedback == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "No FeedBack Found"
+                };
+            }
+            if(lastFeedback.Decision != Decision.Approved)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Only approved thesis can be frozen"
+                };
+            }
+            version.IsFrozen = true;
+            version.VisibleByExaminer = true;
+            await _versionsRepository.UpdateThesisVersion(version);
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Thesis frozen successfully"
+            };
+        }
+
     }
 }

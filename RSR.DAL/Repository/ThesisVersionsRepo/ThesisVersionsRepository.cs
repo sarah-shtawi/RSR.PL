@@ -61,6 +61,7 @@ namespace RSR.DAL.Repository.ThesisVersionsRepo
               return publishedVersions;
         }
 
+   
 
     }
 }

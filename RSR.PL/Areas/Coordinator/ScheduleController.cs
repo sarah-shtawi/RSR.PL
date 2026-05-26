@@ -17,6 +17,7 @@ namespace RSR.PL.Areas.Coordinator
         {
             _scheduleService = scheduleService;
         }
+
         [Authorize(Roles =("Coordinator"))]
         [HttpPost("create-schedule")]
         public async Task <IActionResult> CreateSchedule(ScheduleRequest request)
@@ -29,6 +30,8 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok( new { message = "success", result });
         }
+
+
 
         [Authorize(Roles = ("Coordinator"))]
         [HttpPatch("update-schedule/{scheduleId}")]
@@ -44,6 +47,7 @@ namespace RSR.PL.Areas.Coordinator
         }
 
 
+
         [Authorize(Roles = ("Coordinator"))]
         [HttpGet("all-schedules")]
         public async Task<IActionResult> GetSchedules()
@@ -51,6 +55,8 @@ namespace RSR.PL.Areas.Coordinator
             var result = await _scheduleService.GetSchedulesForCoordinator();
             return Ok(new { message = "success", result });
         }
+
+
 
 
         [Authorize(Roles = ("Supervisor"))]
@@ -62,6 +68,26 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", result });
         }
 
+
+
+        [Authorize(Roles = ("Student"))]
+        [HttpGet("schedule-student")]
+        public async Task<IActionResult> GetSchedulesForStudent()
+        {
+            var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _scheduleService.GetScheduleStudent(studentId);
+            return Ok(new { message = "success", result });
+        }
+
+
+        [Authorize(Roles = ("Examiner"))]
+        [HttpGet("schedules-Examiner")]
+        public async Task<IActionResult> GetSchedulesForExaminer()
+        {
+            var ExaminerId  = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _scheduleService.GetSchedulesExaminer(ExaminerId);
+            return Ok(new { message = "success", result });
+        }
 
 
 

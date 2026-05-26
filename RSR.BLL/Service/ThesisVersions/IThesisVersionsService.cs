@@ -17,5 +17,6 @@ namespace RSR.BLL.Service.ThesisVersions
 
         Task<BaseResponse> PublishThesisVersion(Guid versionId);
         Task<List<ThesisArchiveHomePageResponse>> GetThesisHomePage();
+        Task<BaseResponse> FreezeThesis(Guid ThesisVersionId);
     }
 }

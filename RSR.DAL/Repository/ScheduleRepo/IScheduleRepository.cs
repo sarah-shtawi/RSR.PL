@@ -15,7 +15,8 @@ namespace RSR.DAL.Repository.ScheduleRepo
         Task<Schedule?> GetScheduleById(Guid ScheduleId);
         Task RemoveExaminers(Guid scheduleId);
         Task<List<ScheduleResponse>> getSchedulesForCoordinator();
-
         Task<List<ScheduleResponse>> getSchedulesForSupervisor(string supervisorId);
+        Task<ScheduleResponse?> GetScheduleForStudent(string studentId);
+        Task<List<ScheduleResponse?>> GetSchedulesForExaminer(string ExaminerId);
     }
 }

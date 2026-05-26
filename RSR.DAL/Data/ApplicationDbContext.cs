@@ -37,7 +37,6 @@ namespace RSR.DAL.Data
         public DbSet<ThesisFeedback> ThesisFeedbacks { get; set; }
 
         public DbSet<EvaluationField> EvaluationFields { get; set; }
-
         public DbSet<EvaluationForm> EvaluationForms { get; set; }
         public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
         public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
@@ -45,21 +44,10 @@ namespace RSR.DAL.Data
         public DbSet<Schedule> Schedules { get; set; }
 
         public DbSet<DefenseExaminer> DefenseExaminers { get; set; }
-        public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
-        public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
 
-        public DbSet<EvaluationForm> EvaluationForms { get; set; }
-
-        public DbSet<EvaluationField> EvaluationFields { get; set; }
-
-        public DbSet<FinalEvaluationResult>
-         FinalEvaluationResults
-        { get; set; }
-
-
+        public DbSet<FinalEvaluationResult> FinalEvaluationResults { get; set; }
 
         // ADD THIS
-        public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

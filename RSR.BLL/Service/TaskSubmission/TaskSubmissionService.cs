@@ -341,7 +341,7 @@ namespace RSR.BLL.Service.TaskSubmission
             return new TaskSubmissionCommentResponse
             {
                 Success = true,
-                Message = "Comment Added Successfully",
+                message = "Comment Added Successfully",
                 TaskSubmissionCommentId = reply.TaskSubmissionCommentId,
                 ParentCommentId = reply.ParentCommentId,
                 Content = reply.Content,

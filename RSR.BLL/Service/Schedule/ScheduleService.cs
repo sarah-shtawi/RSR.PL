@@ -87,7 +87,6 @@ namespace RSR.BLL.Service.Schedule
             };
         }
 
-
         public async System.Threading.Tasks.Task<BaseResponse> UpdateSchedule(ScheduleRequest request, string coordinatorId, Guid scheduleId)
         {
             var schedule = await _scheduleRepository.GetScheduleById(scheduleId);
@@ -156,10 +155,20 @@ namespace RSR.BLL.Service.Schedule
             return allSchedules;
         }
 
-
         public async Task <List<ScheduleResponse>> GetSchedulesForSupervisor(string supervisorId)
         {         
             var Schedules = await _scheduleRepository.getSchedulesForSupervisor(supervisorId);
+            return Schedules;
+        }
+        public async Task <ScheduleResponse> GetScheduleStudent(string studentId)
+        {
+            var schedule = await _scheduleRepository.GetScheduleForStudent(studentId);
+            return schedule;
+        }
+
+        public async Task <List<ScheduleResponse>> GetSchedulesExaminer(string examinerId)
+        {
+            var Schedules = await _scheduleRepository.GetSchedulesForExaminer(examinerId);
             return Schedules;
         }
     }
