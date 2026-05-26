@@ -14,10 +14,9 @@ using System;
 using System.Collections.Generic;
 using Task = RSR.DAL.Models.TaskModel.Task;
 
-
 namespace RSR.DAL.Data
 {
-    public  class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<StudentProfile> Students { get; set; }
         public DbSet<SupervisorProfile> Supervisors { get; set; }
@@ -27,7 +26,7 @@ namespace RSR.DAL.Data
         public DbSet<Semester> Semesters { get; set; }
 
         public DbSet<Group> Groups { get; set; }
-        public DbSet <Project> Projects { get; set; }
+        public DbSet<Project> Projects { get; set; }
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskSubmission> TaskSubmissions { get; set; }
@@ -47,13 +46,31 @@ namespace RSR.DAL.Data
 
         public DbSet<DefenseExaminer> DefenseExaminers { get; set; }
         public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
+        public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
+
+        public DbSet<EvaluationForm> EvaluationForms { get; set; }
+
+        public DbSet<EvaluationField> EvaluationFields { get; set; }
+
+        public DbSet<FinalEvaluationResult>
+         FinalEvaluationResults
+        { get; set; }
+
+
+
+        // ADD THIS
+        public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
-        
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             // Change Names of Identity Tables
             modelBuilder.Entity<ApplicationUser>().ToTable("Users");
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
@@ -75,13 +92,12 @@ namespace RSR.DAL.Data
             modelBuilder.Entity<SupervisorProfile>()
                 .HasOne(s => s.User)
                 .WithOne(u => u.SupervisorProfile)
-                .HasForeignKey<SupervisorProfile>(s=>s.UserId);
+                .HasForeignKey<SupervisorProfile>(s => s.UserId);
 
             modelBuilder.Entity<CoordinatorProfile>()
                 .HasOne(c => c.User)
-                .WithOne(u=>u.CoordinatorProfile)
-                .HasForeignKey<CoordinatorProfile>(c=>c.UserId);
-
+                .WithOne(u => u.CoordinatorProfile)
+                .HasForeignKey<CoordinatorProfile>(c => c.UserId);
 
             modelBuilder.Entity<ExaminerProfile>()
                 .HasOne(c => c.User)
@@ -95,8 +111,8 @@ namespace RSR.DAL.Data
                 .HasForeignKey<Project>(p => p.GroupId);
 
             modelBuilder.Entity<Project>()
-           .HasIndex(p => p.GroupId)
-           .IsUnique();
+                .HasIndex(p => p.GroupId)
+                .IsUnique();
 
             // relation with Student - Group   1 : M
             modelBuilder.Entity<StudentProfile>()
@@ -108,98 +124,94 @@ namespace RSR.DAL.Data
             modelBuilder.Entity<Group>()
                 .HasOne(g => g.Supervisor)
                 .WithMany(s => s.Groups)
-                .HasForeignKey(g=>g.SupervisorId);
+                .HasForeignKey(g => g.SupervisorId);
 
-            // relation with  semester - Group 1 : M
+            // relation with semester - Group 1 : M
             modelBuilder.Entity<Group>()
                 .HasOne(g => g.Semester)
                 .WithMany(s => s.Groups)
                 .HasForeignKey(g => g.SemesterId);
 
-
-            // relation with  Group - Task 1 : M 
+            // relation with Group - Task 1 : M 
             modelBuilder.Entity<Task>()
                 .HasOne(t => t.Group)
                 .WithMany(g => g.Tasks)
-                .HasForeignKey(t=>t.GroupId);
+                .HasForeignKey(t => t.GroupId);
 
-            // relation with  Supervisor - Task  1 : M 
+            // relation with Supervisor - Task 1 : M 
             modelBuilder.Entity<Task>()
                 .HasOne(t => t.Supervisor)
                 .WithMany(s => s.Tasks)
                 .HasForeignKey(t => t.SupervisorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // relation with  TaskSubmission - Student 1 : M 
+            // relation with TaskSubmission - Student 1 : M 
             modelBuilder.Entity<TaskSubmission>()
                 .HasOne(t => t.Student)
                 .WithMany(s => s.TaskSubmissions)
-                .HasForeignKey(s=>s.StudentId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(s => s.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // relation with Task - Task Submission  1 : M
+            // relation with Task - Task Submission 1 : M
             modelBuilder.Entity<TaskSubmission>()
                 .HasOne(ts => ts.Task)
                 .WithMany(t => t.TaskSubmissions)
-                .HasForeignKey(ts=>ts.TaskId)
+                .HasForeignKey(ts => ts.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // relation with TaskSubmission - TaskSubmissionComment 1 : M
             modelBuilder.Entity<TaskSubmissionComment>()
-                 .HasOne(c => c.TaskSubmission)
-                 .WithMany(ts => ts.TaskSubmissionComments)
-                 .HasForeignKey(c=>c.TaskSubmissionId)
-                 .OnDelete(DeleteBehavior.Cascade); ;
+                .HasOne(c => c.TaskSubmission)
+                .WithMany(ts => ts.TaskSubmissionComments)
+                .HasForeignKey(c => c.TaskSubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // relation with User -  TaskSubmissionComment  1 : M
+            // relation with User - TaskSubmissionComment 1 : M
             modelBuilder.Entity<TaskSubmissionComment>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.TaskSubmissionComments)
-                .HasForeignKey(c=>c.UserId)
+                .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // self relation TaskSubmissionComment - TaskSubmissionComment 1 : M
             modelBuilder.Entity<TaskSubmissionComment>()
-                .HasOne(c=>c.ParentComment)
-                .WithMany(c=>c.Replies)
-                .HasForeignKey(c=>c.ParentCommentId)
+                .HasOne(c => c.ParentComment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // relation with Thesis , Group 1 : 1 
             modelBuilder.Entity<Thesis>()
                 .HasOne(th => th.Group)
                 .WithOne(g => g.Thesis)
-                .HasForeignKey<Thesis>(th=>th.GroupId);
+                .HasForeignKey<Thesis>(th => th.GroupId);
 
-            // relation with Thesis , Thesis Version  1 : M 
+            // relation with Thesis , Thesis Version 1 : M 
             modelBuilder.Entity<ThesisVersions>()
                 .HasOne(ThV => ThV.Thesis)
-                 .WithMany(Th =>Th.ThesisVersions)
-                 .HasForeignKey(ThV=>ThV.ThesisId)
-                 .OnDelete(DeleteBehavior.NoAction);
-            
+                .WithMany(Th => Th.ThesisVersions)
+                .HasForeignKey(ThV => ThV.ThesisId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // relation with   Student , ThesisVersion 1 : M  
+            // relation with Student , ThesisVersion 1 : M  
             modelBuilder.Entity<ThesisVersions>()
                 .HasOne(ThV => ThV.student)
                 .WithMany(s => s.ThesisVersions)
                 .HasForeignKey(ThV => ThV.studentId)
                 .OnDelete(DeleteBehavior.NoAction);
-            
 
             // relation with ThesisVersion - ThesisFeedBack 1 : M
             modelBuilder.Entity<ThesisFeedback>()
                 .HasOne(F => F.ThesisVersion)
-                .WithMany(V=>V.thesisFeedbacks)
-                .HasForeignKey(F=>F.VersionId)
+                .WithMany(V => V.thesisFeedbacks)
+                .HasForeignKey(F => F.VersionId)
                 .OnDelete(DeleteBehavior.NoAction);
-            
 
-            //relation with   User - ThesisFeedBack  1 : M 
-
+            // relation with User - ThesisFeedBack 1 : M
             modelBuilder.Entity<ThesisFeedback>()
                 .HasOne(F => F.Reviwer)
                 .WithMany(u => u.ThesisFeedbacks)
-                .HasForeignKey(F=>F.ReviwerId)
+                .HasForeignKey(F => F.ReviwerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Schedule
@@ -235,9 +247,22 @@ namespace RSR.DAL.Data
 
 
 
+            // EvaluationSubmissionAnswer table mapping
+            modelBuilder.Entity<EvaluationSubmissionAnswer>()
+                .ToTable("EvaluationSubmissionAnswers");
 
+            // relation with Group - EvaluationSubmission 1 : M
+            modelBuilder.Entity<EvaluationSubmission>()
+                .HasOne(es => es.Group)
+                .WithMany()
+                .HasForeignKey(es => es.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //Final Grade
 
-
+            modelBuilder.Entity<FinalEvaluationResult>()
+              .HasOne(f => f.Group)
+              .WithMany()
+              .HasForeignKey(f => f.GroupId);
         }
     }
 }

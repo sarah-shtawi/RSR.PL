@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RSR.DAL.DTOs.Request.EvaluationSubmissionRequest
 {
     public class SubmitEvaluationRequest
     {
-        //اي فورم بنجاوب وشو الاجابات الي فيه
+        [Required]
         public int EvaluationFormId { get; set; }
 
-        public List<SubmitEvaluationAnswerRequest> Answers { get; set; }
-            = new List<SubmitEvaluationAnswerRequest>();
+        [Required]
+        public Guid GroupId { get; set; }
+
+        [Required]
+        public List<SubmitEvaluationAnswerRequest>
+            Answers
+        { get; set; }
+            = new();
     }
 }

@@ -26,7 +26,7 @@ namespace RSR.PL.Areas.Evaluation.Controllers
         // =========================
         [HttpPost]
         public async Task<IActionResult> Submit(
-            [FromBody] SubmitEvaluationRequest request)
+    [FromBody] SubmitEvaluationRequest request)
         {
             try
             {
@@ -44,7 +44,8 @@ namespace RSR.PL.Areas.Evaluation.Controllers
             {
                 return BadRequest(new
                 {
-                    message = ex.Message
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message
                 });
             }
         }

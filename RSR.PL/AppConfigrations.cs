@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Authentication;
 using RSR.BLL.Service.EmailSender;
+using RSR.BLL.Service.EvaluationService;
 using RSR.BLL.Service.Files;
 using RSR.BLL.Service.GroupService;
 using RSR.BLL.Service.Schedule;
@@ -12,6 +13,8 @@ using RSR.BLL.Service.Thesis;
 using RSR.BLL.Service.ThesisVersions;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
+using RSR.BLL.Services.EvaluationService;
+ using RSR.DAL.Repository.EvaluationRepository;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ProjectRepo;
 using RSR.DAL.Repository.ScheduleRepo;
@@ -40,7 +43,7 @@ namespace RSR.PL
 
             Services.AddScoped<IEmailSenderService, EmailSenderService>();
 
-            Services.AddScoped<IUserService , UserService>();
+            Services.AddScoped<IUserService, UserService>();
 
             Services.AddScoped<IFileService, FileService>();
 
@@ -75,6 +78,21 @@ namespace RSR.PL
             Services.AddScoped<IScheduleRepository, ScheduleRepository>();
             Services.AddScoped<IScheduleService, ScheduleService>();
 
+            // Evaluation Services
+            Services.AddScoped<IEvaluationFieldService, EvaluationFieldService>();
+            Services.AddScoped<IEvaluationFormService, EvaluationFormService>();
+            Services.AddScoped<IEvaluationSubmissionService, EvaluationSubmissionService>();
+
+
+            // Evaluation Repositories
+            Services.AddScoped<IEvaluationFieldRepository, EvaluationFieldRepository>();
+            Services.AddScoped<IEvaluationFormRepository, EvaluationFormRepository>();
+            Services.AddScoped<IEvaluationSubmissionRepository, EvaluationSubmissionRepository>();
+
+  
+            //final grades
+            Services.AddScoped<IFinalEvaluationResultRepository, FinalEvaluationResultRepository>();
+            Services.AddScoped<IFinalEvaluationResultService, FinalEvaluationResultService>();
 
         }
     }

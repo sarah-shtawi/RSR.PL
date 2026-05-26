@@ -292,7 +292,7 @@ namespace RSR.BLL.Service.TaskSubmission
                 return new TaskSubmissionCommentResponse
                 {
                     Success = false,
-                    Message = "Parent Comment Is Not Found"
+                    message = "Parent Comment Is Not Found"
                 };
             }
             var submission = await _taskSubmissionRepository.GetSubmissionById(parent.TaskSubmissionId);
@@ -301,7 +301,7 @@ namespace RSR.BLL.Service.TaskSubmission
                 return new TaskSubmissionCommentResponse
                 {
                     Success = false,
-                    Message = "Submission Is Not Found"
+                    message = "Submission Is Not Found"
                 };
             }
             if(userId != submission.StudentId && userId != submission.Task.SupervisorId)
@@ -309,7 +309,7 @@ namespace RSR.BLL.Service.TaskSubmission
                 return new TaskSubmissionCommentResponse
                 {
                     Success = false,
-                    Message = "You Can't reply to this comment."
+                    message = "You Can't reply to this comment."
                 };
             }
             var user = await _userManager.FindByIdAsync(userId);

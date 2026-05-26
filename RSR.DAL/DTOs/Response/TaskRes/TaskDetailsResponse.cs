@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.TaskRes
 {
-    public class TaskDetailsResponse :BaseResponse
+    public class TaskDetailsResponse 
     {
         public Guid TaskId { get; set; }
         public string Title { get; set; }
@@ -17,6 +17,8 @@ namespace RSR.DAL.DTOs.Response.TaskRes
         public string? TaskFileURL { get; set; }
         public string SupervisorName { get; set; }
         public List<TaskSubmissionResponse> TaskSubmissions { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; }
 
     }
 }

@@ -31,5 +31,8 @@ namespace RSR.BLL.Services.EvaluationService
 
         //Get Form By Role
         Task<List<CreateEvaluationFormResponse>> GetMyFormsAsync();
+
+        // Dashboard statistics
+        Task<DashboardStatisticsResponse>  GetDashboardStatisticsAsync();
     }
 }

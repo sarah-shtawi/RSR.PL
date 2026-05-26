@@ -18,10 +18,11 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
         {
             _context = context;
         }
-        public async System.Threading.Tasks.Task CreateComment(TaskSubmissionComment comment)
+        public async System.Threading.Tasks.Task <TaskSubmissionComment>? CreateComment(TaskSubmissionComment comment)
         {
-            await _context.TaskSubmissionComments.AddAsync(comment);
-            await _context.SaveChangesAsync();
+           var commentReply =  await _context.TaskSubmissionComments.AddAsync(comment);
+             await _context.SaveChangesAsync();
+            return comment;
         }
         public async Task <TaskSubmissionComment?> GetParentComment(Guid  parentcomment)
         {
@@ -45,8 +46,6 @@ namespace RSR.DAL.Repository.SubmissionCommentRepo
            _context.TaskSubmissionComments.Remove(comment);
             await _context.SaveChangesAsync();
         }
-
-
         public async System.Threading.Tasks.Task RemoveComments(List<TaskSubmissionComment> comments)
         {
              _context.TaskSubmissionComments.RemoveRange(comments);
