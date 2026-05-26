@@ -1,9 +1,4 @@
-﻿using RSR.DAL.Models.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RSR.DAL.Models.ProjectGroupModel;
 using RSR.DAL.Models.User;
 
 namespace RSR.DAL.Models.Evaluation
@@ -12,18 +7,42 @@ namespace RSR.DAL.Models.Evaluation
     {
         public int Id { get; set; }
 
+        // =========================
+        // FORM
+        // =========================
         public int EvaluationFormId { get; set; }
 
         public EvaluationForm EvaluationForm { get; set; }
 
-        public DateTime SubmittedAt { get; set; }
+        // =========================
+        // GROUP
+        // =========================
+        public Guid GroupId { get; set; }
 
-        public ICollection<EvaluationSubmissionAnswer> Answers { get; set; }
-            = new List<EvaluationSubmissionAnswer>();
+        public Group Group { get; set; }
 
-
+        // =========================
+        // USER
+        // =========================
         public string? SubmittedByUserId { get; set; }
 
         public ApplicationUser? SubmittedByUser { get; set; }
+
+        // =========================
+        // SCORE
+        // =========================
+        public float TotalScore { get; set; }
+
+        // =========================
+        // DATE
+        // =========================
+        public DateTime SubmittedAt { get; set; }
+
+        // =========================
+        // ANSWERS
+        // =========================
+        public ICollection<EvaluationSubmissionAnswer> Answers
+        { get; set; }
+            = new List<EvaluationSubmissionAnswer>();
     }
 }

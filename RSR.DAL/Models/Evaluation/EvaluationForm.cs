@@ -23,8 +23,10 @@ namespace RSR.DAL.Models.Evaluation
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
+        public int GroupId { get; set; } 
 
- 
+
+
         // One-to-Many relation
         public ICollection<EvaluationField> Fields { get; set; }
             = new List<EvaluationField>();
