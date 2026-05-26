@@ -17,5 +17,6 @@ namespace RSR.BLL.Service.Schedule
         Task<List<ScheduleResponse>> GetSchedulesForSupervisor(string supervisorId);
         Task<ScheduleResponse> GetScheduleStudent(string studentId);
         Task<List<ScheduleResponse>> GetSchedulesExaminer(string examinerId);
+        Task<BaseResponse> RemoveSchedule(Guid scheduleId);
     }
 }

@@ -89,6 +89,19 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", result });
         }
 
+        [Authorize(Roles = ("Coordinator"))]
+        [HttpDelete("remove-schedule/scheduleId/{scheduleId}")]
+        public async Task<IActionResult> RemoveSchedule([FromRoute] Guid scheduleId)
+        {
+            var result = await _scheduleService.RemoveSchedule(scheduleId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(new { message = "success", result });
+        }
+
+
 
 
 

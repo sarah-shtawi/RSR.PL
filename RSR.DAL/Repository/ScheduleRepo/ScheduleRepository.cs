@@ -63,7 +63,6 @@ namespace RSR.DAL.Repository.ScheduleRepo
                 }).ToListAsync();
             return schedules;
         }
-
         public async Task <List<ScheduleResponse>> getSchedulesForSupervisor(string supervisorId)
         {
             var schedules = await _context.Schedules.Where(s=>s.Group.SupervisorId == supervisorId)
@@ -82,8 +81,6 @@ namespace RSR.DAL.Repository.ScheduleRepo
                 }).ToListAsync();
             return schedules;
         }
-
-
         public async Task <ScheduleResponse?> GetScheduleForStudent(string studentId)
         {
             var schedule = await _context.Schedules.Where(s=>s.Group.Students.Any(s=>s.UserId == studentId)).Select(s=> new ScheduleResponse
@@ -120,5 +117,11 @@ namespace RSR.DAL.Repository.ScheduleRepo
             return schedules;
         }
 
+
+        public async Task DeleteSchedule(Schedule schedule)
+        {
+            _context.Schedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+        }
     }
 }

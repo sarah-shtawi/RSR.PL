@@ -171,5 +171,25 @@ namespace RSR.BLL.Service.Schedule
             var Schedules = await _scheduleRepository.GetSchedulesForExaminer(examinerId);
             return Schedules;
         }
+
+
+        public async Task <BaseResponse> RemoveSchedule (Guid scheduleId)
+        {
+            var schedule = await _scheduleRepository.GetScheduleById(scheduleId);
+            if(schedule == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Schedule not found"
+                };
+            }
+            await _scheduleRepository.DeleteSchedule(schedule);
+            return new BaseResponse
+            {
+                Success = true ,
+                Message = "Schedule deleted Successfully"
+            };
+        }
     }
 }

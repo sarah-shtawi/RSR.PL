@@ -229,7 +229,7 @@ namespace RSR.DAL.Data
                .HasOne(d => d.Examiner)
                .WithMany(e=>e.DefenseExaminers)
                .HasForeignKey(d=>d.ExaminerId)
-               .OnDelete(DeleteBehavior.Restrict); 
+               .OnDelete(DeleteBehavior.Cascade); 
                 
 
 
