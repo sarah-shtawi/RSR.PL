@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Schedule;
 using RSR.DAL.DTOs.Request.ScheduleReq;

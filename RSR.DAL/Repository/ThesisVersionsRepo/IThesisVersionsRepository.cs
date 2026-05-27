@@ -16,6 +16,7 @@ namespace RSR.DAL.Repository.ThesisVersionsRepo
         Task<ThesisVersions?> GetVersionById(Guid VersionId);
         Task<ThesisVersions?> GetVersionByIdWithSupervisor(Guid VersionId);
         Task<List<ThesisVersions>> GetPublishedThesis();
+        Task<ThesisVersions?> GetThesisWithProject(Guid versionId);
     }
 
 }

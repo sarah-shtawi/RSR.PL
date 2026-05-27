@@ -4,17 +4,13 @@ using RSR.DAL.Data;
 using RSR.DAL.DTOs.Request.ThesisReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.ThesisRes;
+using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.ThesisModel;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ThesisFeedBackRepo;
 using RSR.DAL.Repository.ThesisRepo;
 using RSR.DAL.Repository.ThesisVersionsRepo;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RSR.BLL.Service.ThesisVersions
 {
@@ -311,13 +307,21 @@ namespace RSR.BLL.Service.ThesisVersions
 
         public async Task <BaseResponse> FreezeThesis(Guid ThesisVersionId)
         {
-            var version = await _versionsRepository.GetVersionById(ThesisVersionId);
+            var version = await _versionsRepository.GetThesisWithProject(ThesisVersionId);
             if (version == null) 
             {
                 return new BaseResponse
                 {
                     Success = false,
                     Message = "version is fot found"
+                };
+            }
+            if (version.IsFrozen)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "This version is already frozen"
                 };
             }
             var lastFeedback = await _thesisFeedBack.GetLastFeedback(ThesisVersionId);
@@ -337,8 +341,11 @@ namespace RSR.BLL.Service.ThesisVersions
                     Message = "Only approved thesis can be frozen"
                 };
             }
+
             version.IsFrozen = true;
             version.VisibleByExaminer = true;
+            version.Thesis.Group.Project.ProjectStatus = Status.Completed;
+
             await _versionsRepository.UpdateThesisVersion(version);
             return new BaseResponse
             {

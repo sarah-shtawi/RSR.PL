@@ -42,8 +42,17 @@ namespace RSR.BLL.Service.Schedule
                    Message = "group is not found"
                };
             }
+            var hasFrozenThesis = await _context.ThesisVersions.AnyAsync(v => v.Thesis.GroupId == request.GroupId && v.IsFrozen);
+            if (!hasFrozenThesis)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "This group does not have a frozen thesis yet"
+                };
+            }
 
-            if(group.Schedule != null)
+            if (group.Schedule != null)
             {
                 return new BaseResponse
                 {
@@ -51,8 +60,15 @@ namespace RSR.BLL.Service.Schedule
                     Message = "This group already has a schedule"
                 };
             }
-            var project = group.Project.ProjectStatus;
-        
+            if (request.Date <= DateTime.UtcNow)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Defense date must be in the future"
+                };
+            }
+
 
             var examiners = await _userManager.Users.Where(u => request.ExaminersIds.Contains(u.Id) && u.ExaminerProfile != null).CountAsync();
             if(examiners != request.ExaminersIds.Count)

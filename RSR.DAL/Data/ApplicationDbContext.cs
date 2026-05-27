@@ -216,7 +216,7 @@ namespace RSR.DAL.Data
                .HasOne(s => s.Coordinator)
                .WithMany(c=>c.Schedules)
                .HasForeignKey(s => s.CoordinatorId)
-              .OnDelete(DeleteBehavior.Restrict); ;
+              .OnDelete(DeleteBehavior.Restrict); 
 
             // relation with schedule - DefenseExaminer 1 : M 
             modelBuilder.Entity<DefenseExaminer>()
@@ -230,8 +230,8 @@ namespace RSR.DAL.Data
                .WithMany(e=>e.DefenseExaminers)
                .HasForeignKey(d=>d.ExaminerId)
                .OnDelete(DeleteBehavior.Cascade); 
-                
 
+                
 
 
 

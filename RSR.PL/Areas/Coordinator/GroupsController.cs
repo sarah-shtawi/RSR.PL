@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.GroupService;
 using RSR.BLL.Service.Users;
+using RSR.DAL.DTOs.Request.GroupRequest;
 using RSR.DAL.DTOs.Response.GroupRes;
 using System.Security.Claims;
 
@@ -41,6 +42,19 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(new { message = "success", group });
         }
+
+        [Authorize(Roles = "Coordinator")]
+        [HttpPost("Change-supervisor/groupId/{groupId}")]
+        public async Task<IActionResult> ChangeSupervisorForGroup([FromBody] ChangeSupervisorRequest request ,[FromRoute] Guid groupId)
+        {
+            var result = await _groupService.ChangeSupervisorForGroup(request,groupId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok( new { message= "success" ,  result });
+        }
+
 
     }
 }
