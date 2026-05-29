@@ -406,8 +406,7 @@ namespace RSR.PL.Areas.Coordinator
             try
             {
                 var result =
-                    await _formService
-                        .GetDashboardStatisticsAsync();
+                    await _formService.GetDashboardStatisticsAsync();
 
                 return Ok(result);
             }

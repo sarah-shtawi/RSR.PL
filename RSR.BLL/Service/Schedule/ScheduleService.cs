@@ -42,8 +42,17 @@ namespace RSR.BLL.Service.Schedule
                    Message = "group is not found"
                };
             }
+            var hasFrozenThesis = await _context.ThesisVersions.AnyAsync(v => v.Thesis.GroupId == request.GroupId && v.IsFrozen);
+            if (!hasFrozenThesis)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "This group does not have a frozen thesis yet"
+                };
+            }
 
-            if(group.Schedule != null)
+            if (group.Schedule != null)
             {
                 return new BaseResponse
                 {
@@ -51,8 +60,15 @@ namespace RSR.BLL.Service.Schedule
                     Message = "This group already has a schedule"
                 };
             }
-            var project = group.Project.ProjectStatus;
-        
+            if (request.Date <= DateTime.UtcNow)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Defense date must be in the future"
+                };
+            }
+
 
             var examiners = await _userManager.Users.Where(u => request.ExaminersIds.Contains(u.Id) && u.ExaminerProfile != null).CountAsync();
             if(examiners != request.ExaminersIds.Count)
@@ -86,7 +102,6 @@ namespace RSR.BLL.Service.Schedule
                 Message = "Schedule created successfully"
             };
         }
-
 
         public async System.Threading.Tasks.Task<BaseResponse> UpdateSchedule(ScheduleRequest request, string coordinatorId, Guid scheduleId)
         {
@@ -156,11 +171,41 @@ namespace RSR.BLL.Service.Schedule
             return allSchedules;
         }
 
-
         public async Task <List<ScheduleResponse>> GetSchedulesForSupervisor(string supervisorId)
         {         
             var Schedules = await _scheduleRepository.getSchedulesForSupervisor(supervisorId);
             return Schedules;
+        }
+        public async Task <ScheduleResponse> GetScheduleStudent(string studentId)
+        {
+            var schedule = await _scheduleRepository.GetScheduleForStudent(studentId);
+            return schedule;
+        }
+
+        public async Task <List<ScheduleResponse>> GetSchedulesExaminer(string examinerId)
+        {
+            var Schedules = await _scheduleRepository.GetSchedulesForExaminer(examinerId);
+            return Schedules;
+        }
+
+
+        public async Task <BaseResponse> RemoveSchedule (Guid scheduleId)
+        {
+            var schedule = await _scheduleRepository.GetScheduleById(scheduleId);
+            if(schedule == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Schedule not found"
+                };
+            }
+            await _scheduleRepository.DeleteSchedule(schedule);
+            return new BaseResponse
+            {
+                Success = true ,
+                Message = "Schedule deleted Successfully"
+            };
         }
     }
 }

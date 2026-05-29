@@ -11,16 +11,12 @@ namespace RSR.DAL.Models.Evaluation
     {
         public int Id { get; set; }
 
-        // =========================
         // GROUP
-        // =========================
         public Guid GroupId { get; set; }
 
         public Group Group { get; set; }
 
-        // =========================
         // GRADES
-        // =========================
         public double SupervisorGrade { get; set; }
 
         public double ExaminerGrade { get; set; }

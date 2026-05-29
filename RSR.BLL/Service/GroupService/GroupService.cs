@@ -25,14 +25,17 @@ namespace RSR.BLL.Service.GroupService
         private readonly ISemesterRepository _semesterRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public GroupService(IGroupRepository groupRepository , IStudentRepository studentRepository , ISemesterRepository semesterRepository , IProjectRepository projectRepository , ApplicationDbContext _context)
+        public GroupService(IGroupRepository groupRepository , IStudentRepository studentRepository , 
+            ISemesterRepository semesterRepository , IProjectRepository projectRepository , ApplicationDbContext _context , UserManager<ApplicationUser> userManager)
         {
             _groupRepository = groupRepository;
             _studentRepository = studentRepository;
             _semesterRepository = semesterRepository;
             _projectRepository = projectRepository;
             this._context = _context;
+            _userManager = userManager;
         }
 
         public async Task<List<GetAllSupervisorsWithGroups>> GetCoordinatersGroups()
@@ -304,7 +307,6 @@ namespace RSR.BLL.Service.GroupService
             };
             return GroupResponse;
         }
-
         public async Task<GroupResponse> GetGroupByStudent(string studentId)
         {
             var group = await _groupRepository.GetGroupByStudent(studentId);
@@ -334,6 +336,71 @@ namespace RSR.BLL.Service.GroupService
             };
             return groupResponse;
 
+        }
+
+
+
+
+        public async Task<BaseResponse> ChangeSupervisorForGroup( ChangeSupervisorRequest request , Guid GroupId)
+        {
+            var group = await _groupRepository.GroupByIdRepo(GroupId);
+
+            if (group == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Group not found"
+                };
+            }
+
+            var supervisor = await _userManager.FindByIdAsync(request.supervisorId);
+            if (supervisor == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Supervisor not found"
+                };
+            }
+            var supervisorProfile = await _context.Supervisors.FirstOrDefaultAsync(s => s.UserId == request.supervisorId);
+
+            if (supervisorProfile == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Supervisor hasn't a profile"
+                };
+            }
+
+            if (!supervisor.IsActive)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Supervisor is inactive"
+                };
+            }
+
+            if (group.SupervisorId == request.supervisorId)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "This supervisor is already assigned to the group"
+                };
+            }
+
+            group.SupervisorId = request.supervisorId;
+
+            await _groupRepository.UpdateGroup(group);
+
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Supervisor changed successfully"
+            };
         }
 
     }

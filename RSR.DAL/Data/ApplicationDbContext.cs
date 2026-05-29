@@ -37,7 +37,6 @@ namespace RSR.DAL.Data
         public DbSet<ThesisFeedback> ThesisFeedbacks { get; set; }
 
         public DbSet<EvaluationField> EvaluationFields { get; set; }
-
         public DbSet<EvaluationForm> EvaluationForms { get; set; }
         public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
         public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
@@ -45,21 +44,10 @@ namespace RSR.DAL.Data
         public DbSet<Schedule> Schedules { get; set; }
 
         public DbSet<DefenseExaminer> DefenseExaminers { get; set; }
-        public ApplicationDbContext(DbContextOptions <ApplicationDbContext> options):base(options)
-        public DbSet<EvaluationSubmission> EvaluationSubmissions { get; set; }
 
-        public DbSet<EvaluationForm> EvaluationForms { get; set; }
-
-        public DbSet<EvaluationField> EvaluationFields { get; set; }
-
-        public DbSet<FinalEvaluationResult>
-         FinalEvaluationResults
-        { get; set; }
-
-
+        public DbSet<FinalEvaluationResult> FinalEvaluationResults { get; set; }
 
         // ADD THIS
-        public DbSet<EvaluationSubmissionAnswer> EvaluationSubmissionAnswers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -228,7 +216,7 @@ namespace RSR.DAL.Data
                .HasOne(s => s.Coordinator)
                .WithMany(c=>c.Schedules)
                .HasForeignKey(s => s.CoordinatorId)
-              .OnDelete(DeleteBehavior.Restrict); ;
+              .OnDelete(DeleteBehavior.Restrict); 
 
             // relation with schedule - DefenseExaminer 1 : M 
             modelBuilder.Entity<DefenseExaminer>()
@@ -241,9 +229,9 @@ namespace RSR.DAL.Data
                .HasOne(d => d.Examiner)
                .WithMany(e=>e.DefenseExaminers)
                .HasForeignKey(d=>d.ExaminerId)
-               .OnDelete(DeleteBehavior.Restrict); 
-                
+               .OnDelete(DeleteBehavior.Cascade); 
 
+                
 
 
 

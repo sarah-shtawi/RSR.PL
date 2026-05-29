@@ -43,19 +43,16 @@ namespace RSR.DAL.Repository.EvaluationRepository
         // =========================
         // GET FORMS BY ROLE
         // =========================
-        Task<List<EvaluationForm>>
-            GetPublishedFormsByRoleAsync(string role);
+        Task<List<EvaluationForm>> GetPublishedFormsByRoleAsync(string role);
 
         // =========================
         // COUNT ALL FORMS
         // =========================
-        Task<int>
-            CountAsync();
+        Task<int>CountAsync();
 
         // =========================
         // COUNT PUBLISHED FORMS
         // =========================
-        Task<int>
-            CountPublishedAsync();
+        Task<int> CountPublishedAsync();
     }
 }

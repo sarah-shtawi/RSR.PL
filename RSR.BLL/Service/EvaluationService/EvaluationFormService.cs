@@ -368,16 +368,13 @@ namespace RSR.BLL.Services.EvaluationService
             GetDashboardStatisticsAsync()
         {
             var totalForms =
-                await _repository
-                    .CountAsync();
+                await _repository.CountAsync();
 
             var publishedForms =
-                await _repository
-                    .CountPublishedAsync();
+                await _repository.CountPublishedAsync();
 
             var totalEvaluations =
-                await _submissionRepository
-                    .CountAsync();
+                await _submissionRepository.CountAsync();
 
             return new DashboardStatisticsResponse
             {
