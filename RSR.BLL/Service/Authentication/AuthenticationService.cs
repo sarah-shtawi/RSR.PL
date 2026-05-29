@@ -29,60 +29,52 @@ namespace RSR.BLL.Service.Authentication
             _emailSender = emailSender;
         }
 
-        // =========================
-        // LOGIN
-        // =========================
-        public async Task<LoginResponse> Login(
-            LoginRequest Request)
+        public async Task<LoginResponse> Login(LoginRequest Request)
         {
             try
             {
-                var user = await _userManager
-                    .FindByEmailAsync(Request.Email);
+                var user =
+                    await _userManager.FindByEmailAsync(Request.Email);
 
                 if (user is null)
                 {
-                    return new LoginResponse()
+                    return new LoginResponse
                     {
                         Success = false,
-                        Message = "In Valied Email"
+                        Message = "Invalid Email"
                     };
                 }
 
-                if (await _userManager
-                    .IsLockedOutAsync(user))
+                if (await _userManager.IsLockedOutAsync(user))
                 {
-                    return new LoginResponse()
+                    return new LoginResponse
                     {
                         Success = false,
-                        Message =
-                            "Your Account is Locked , try again later "
+                        Message = "Your Account is Locked, try again later"
                     };
                 }
 
                 var result =
-                    await _signInManager
-                        .CheckPasswordSignInAsync(
-                            user,
-                            Request.Password,
-                            true);
+                    await _signInManager.CheckPasswordSignInAsync(
+                        user,
+                        Request.Password,
+                        true);
 
                 if (result.IsLockedOut)
                 {
-                    return new LoginResponse()
+                    return new LoginResponse
                     {
                         Success = false,
-                        Message =
-                            "Account Locked due to multiple falied attempts"
+                        Message = "Account Locked due to multiple failed attempts"
                     };
                 }
 
                 if (!result.Succeeded)
                 {
-                    return new LoginResponse()
+                    return new LoginResponse
                     {
                         Success = false,
-                        Message = "InValied Password"
+                        Message = "Invalid Password"
                     };
                 }
 
@@ -95,13 +87,29 @@ namespace RSR.BLL.Service.Authentication
                 // =========================
                 // CHECK SELECTED ROLE
                 // =========================
-                if (!roles.Contains(Request.LoginAs))
+                if (string.IsNullOrWhiteSpace(Request.LoginAs))
                 {
-                    return new LoginResponse()
+                    return new LoginResponse
                     {
                         Success = false,
-                        Message =
-                            "You are not authorized for this role"
+                        Message = "Role is required",
+                        roles = roles.ToList()
+                    };
+                }
+
+                var selectedRole =
+                    roles.FirstOrDefault(r =>
+                        r.Equals(
+                            Request.LoginAs.Trim(),
+                            StringComparison.OrdinalIgnoreCase));
+
+                if (selectedRole is null)
+                {
+                    return new LoginResponse
+                    {
+                        Success = false,
+                        Message = "You are not authorized for this role",
+                        roles = roles.ToList()
                     };
                 }
 
@@ -109,40 +117,34 @@ namespace RSR.BLL.Service.Authentication
                 // GENERATE TOKEN
                 // =========================
                 var accessToken =
-                    await _tokenService
-                        .GeneraterAccessToken(
-                            user,
-                            Request.LoginAs);
+                    await _tokenService.GeneraterAccessToken(
+                        user,
+                        selectedRole);
 
                 var refreshToken =
                     _tokenService.GenerateRefreshToken();
 
+                user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryTime =
                     DateTime.UtcNow.AddDays(7);
 
-                user.RefreshToken = refreshToken;
-
                 await _userManager.UpdateAsync(user);
 
-                return new LoginResponse()
+                return new LoginResponse
                 {
                     Success = true,
                     Message = "Login Successfully",
-
                     AccessToken = accessToken,
-
                     RefreshToken = refreshToken,
-
-                    roles = (List<string>)roles
+                    roles = roles.ToList()
                 };
             }
             catch (Exception ex)
             {
-                return new LoginResponse()
+                return new LoginResponse
                 {
                     Success = false,
                     Message = "An unexpected error",
-
                     Errors = new List<string>
                     {
                         ex.Message
@@ -151,22 +153,18 @@ namespace RSR.BLL.Service.Authentication
             }
         }
 
-        // =========================
-        // SEND CODE
-        // =========================
         public async Task<BaseResponse> SendCode(
             ForgetPasswordRequest Request)
         {
             var user =
-                await _userManager
-                    .FindByEmailAsync(Request.Email);
+                await _userManager.FindByEmailAsync(Request.Email);
 
             if (user is null)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
-                    Message = "In Valied Email"
+                    Message = "Invalid Email"
                 };
             }
 
@@ -176,7 +174,6 @@ namespace RSR.BLL.Service.Authentication
                 random.Next(1000, 9999).ToString();
 
             user.CodeResetPassword = code;
-
             user.PasswordResetCodeExpiry =
                 DateTime.UtcNow.AddMinutes(15);
 
@@ -187,22 +184,18 @@ namespace RSR.BLL.Service.Authentication
                 "forget password",
                 $"<p> code is {code}</p>");
 
-            return new BaseResponse()
+            return new BaseResponse
             {
                 Success = true,
                 Message = "code sent to your email"
             };
         }
 
-        // =========================
-        // RESET PASSWORD
-        // =========================
         public async Task<BaseResponse> ResetPassword(
             ResetPasswordRequest request)
         {
             var user =
-                await _userManager
-                    .FindByEmailAsync(request.Email);
+                await _userManager.FindByEmailAsync(request.Email);
 
             if (user is null)
             {
@@ -212,19 +205,19 @@ namespace RSR.BLL.Service.Authentication
                     Message = "user is not found"
                 };
             }
-            else if (user.CodeResetPassword != request.code)
+
+            if (user.CodeResetPassword != request.code)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
                     Message = "code invalid"
                 };
             }
-            else if (
-                user.PasswordResetCodeExpiry <
-                DateTime.UtcNow)
+
+            if (user.PasswordResetCodeExpiry < DateTime.UtcNow)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
                     Message = "code expired"
@@ -232,8 +225,7 @@ namespace RSR.BLL.Service.Authentication
             }
 
             var token =
-                await _userManager
-                    .GeneratePasswordResetTokenAsync(user);
+                await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var result =
                 await _userManager.ResetPasswordAsync(
@@ -246,8 +238,7 @@ namespace RSR.BLL.Service.Authentication
                 return new BaseResponse
                 {
                     Success = false,
-                    Message = "reset passwprd Invalid",
-
+                    Message = "reset password invalid",
                     Errors = result.Errors
                         .Select(e => e.Description)
                         .ToList()
@@ -255,24 +246,22 @@ namespace RSR.BLL.Service.Authentication
             }
 
             user.CodeResetPassword = null;
-
             user.PasswordResetCodeExpiry = null;
+
+            await _userManager.UpdateAsync(user);
 
             await _emailSender.sendEmail(
                 request.Email,
                 "Reset Password",
                 "<p> your password is changed successfully </p>");
 
-            return new BaseResponse()
+            return new BaseResponse
             {
                 Success = true,
-                Message = "Password Reset Successfully "
+                Message = "Password Reset Successfully"
             };
         }
 
-        // =========================
-        // CHANGE PASSWORD
-        // =========================
         public async Task<BaseResponse> ChangePassword(
             ChangePasswordRequest request,
             string userId)
@@ -282,17 +271,16 @@ namespace RSR.BLL.Service.Authentication
 
             if (user is null)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
                     Message = "user not found"
                 };
             }
 
-            if (request.NewPassword !=
-                request.ConfirmPassword)
+            if (request.NewPassword != request.ConfirmPassword)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
                     Message = "Passwords don't match"
@@ -307,11 +295,10 @@ namespace RSR.BLL.Service.Authentication
 
             if (!result.Succeeded)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
-                    Message = "Change Password failed ",
-
+                    Message = "Change Password failed",
                     Errors = result.Errors
                         .Select(e => e.Description)
                         .ToList()
@@ -323,46 +310,36 @@ namespace RSR.BLL.Service.Authentication
                 "Password Changed",
                 "Your password has been changed successfully.");
 
-            return new BaseResponse()
+            return new BaseResponse
             {
                 Success = true,
                 Message = "Your Password is changed"
             };
         }
 
-        // =========================
-        // REFRESH TOKEN
-        // =========================
         public async Task<LoginResponse> RefreshToken(
             TokenApiModel request)
         {
-            var accessToken = request.AccessToken;
-
-            var refreshToken = request.RefreshToken;
-
             var principal =
-                _tokenService
-                    .GetPrincipalFromExpiredToken(
-                        accessToken);
+                _tokenService.GetPrincipalFromExpiredToken(
+                    request.AccessToken);
 
-            var UserName = principal.Identity.Name;
+            var userName = principal.Identity?.Name;
 
             var user =
-                await _userManager.FindByNameAsync(
-                    UserName);
+                await _userManager.FindByNameAsync(userName);
 
             if (user is null ||
-                refreshToken != request.RefreshToken ||
+                user.RefreshToken != request.RefreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                return new LoginResponse()
+                return new LoginResponse
                 {
                     Success = false,
                     Message = "Invalid Client request"
                 };
             }
 
-            // GET ROLE FROM TOKEN
             var loginAs =
                 principal.Claims
                     .FirstOrDefault(c =>
@@ -370,10 +347,9 @@ namespace RSR.BLL.Service.Authentication
                     ?.Value;
 
             var newAccessToken =
-                await _tokenService
-                    .GeneraterAccessToken(
-                        user,
-                        loginAs);
+                await _tokenService.GeneraterAccessToken(
+                    user,
+                    loginAs);
 
             var newRefreshToken =
                 _tokenService.GenerateRefreshToken();
@@ -382,14 +358,12 @@ namespace RSR.BLL.Service.Authentication
 
             await _userManager.UpdateAsync(user);
 
-            return new LoginResponse()
+            return new LoginResponse
             {
                 Success = true,
                 Message = "Token Refreshed",
-
                 AccessToken = newAccessToken,
-
-                RefreshToken = newRefreshToken,
+                RefreshToken = newRefreshToken
             };
         }
     }
