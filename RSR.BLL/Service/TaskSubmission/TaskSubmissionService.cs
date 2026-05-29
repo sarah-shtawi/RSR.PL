@@ -42,6 +42,7 @@ namespace RSR.BLL.Service.TaskSubmission
 
         public async Task<BaseResponse> AddTaskSubmission(TaskSubmissionRequest TaskSubmission, string StudentId , Guid TaskId )
         {
+            try{
             var Task = await _taskRepository.GetTaskById(TaskId);
             if (Task == null)
             {
@@ -51,8 +52,6 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "This Task is not found",
                 };
             }
-           
-
             var group = await _groupRepository.GroupByIdRepo(Task.GroupId);
             if(group is null)
             {
@@ -62,7 +61,6 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "This Group is not found",
                 };
             }
-
             var student = await _studentRepository.GetStudentById(StudentId);
             if (student is null) 
             {
@@ -80,7 +78,17 @@ namespace RSR.BLL.Service.TaskSubmission
                     Message = "The student does not belong to this group",
                 };
             }
-            string? submissionTaskName = null;
+                var firstSubmission = await _taskSubmissionRepository.GetFirstSubmission(TaskId);
+
+                if (firstSubmission != null && firstSubmission.StudentId != StudentId)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "Only the student who uploaded the first version can upload new versions"
+                    };
+                }
+                string? submissionTaskName = null;
             if (TaskSubmission.TaskSubmission is not null)
             {
                 try
@@ -101,7 +109,15 @@ namespace RSR.BLL.Service.TaskSubmission
             var LastSubmissiommn = await _taskSubmissionRepository.GetLastSubmission(TaskId);
             if (LastSubmissiommn != null)
             {
-                LastSubmissiommn.IsLatest = false;
+                    if (LastSubmissiommn.Status == SubmissionStatus.Submitted)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "You cannot upload a new version until the previous submission has been evaluated"
+                        };
+                    }
+                    LastSubmissiommn.IsLatest = false;
                 await _taskSubmissionRepository.UpdateTaskSubmission(LastSubmissiommn);
 
                 newVersion = LastSubmissiommn.VersionNumber + 1;
@@ -124,81 +140,99 @@ namespace RSR.BLL.Service.TaskSubmission
                 Success = true,
                 Message = $"Submission Uploaded Successfully version {newVersion}"
             };
-
+            }catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
         public async Task <BaseResponse> UpdateTaskSubmission(TaskSubmissionRequest Request , string StudentId , Guid SubmissionTaskId)
         {
-            var Submission = await _taskSubmissionRepository.GetSubmissionById(SubmissionTaskId);
-            if (Submission is null) 
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Submission Not Found"
-                };
-            }
-            var Student = await _studentRepository.GetStudentById(StudentId);
-            if (Student == null)
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Student not found."
-                };
-            }
-            if ( Student.GroupId != Submission.GroupId)
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "You can't update this submission."
-                };
-            }
-            if (Submission.Status != SubmissionStatus.Submitted) 
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Only submitted submissions can be updated."
-                };
-            }
-            if (Request.TaskSubmission?.Length > 0) 
-            {
-                try
-                {
-                    var oldFileName = Submission.SubmissionTaskFileURL;
-                    var newFileName = await _fileService.UploadTaskFile(Request.TaskSubmission);
-                    Submission.SubmissionTaskFileURL = newFileName;
-                    if (!string.IsNullOrEmpty(oldFileName))
-                    {
-                        var oldFilePath = Path.Combine( _env.WebRootPath,"files","Tasks",oldFileName);
-                        if (File.Exists(oldFilePath))
-                        {
-                            File.Delete(oldFilePath);
-                        }
-                    }
-                }
-                catch (Exception ex) 
+            try{
+                var Submission = await _taskSubmissionRepository.GetSubmissionById(SubmissionTaskId);
+                if (Submission is null)
                 {
                     return new BaseResponse
                     {
                         Success = false,
-                        Message = ex.Message
+                        Message = "Submission Not Found"
                     };
                 }
-            }
-            Submission.StudentNotes = Request.StudentNotes;
-            Submission.SubmittedAt = DateTime.UtcNow;
+                var Student = await _studentRepository.GetStudentById(StudentId);
+                if (Student == null)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "Student not found."
+                    };
+                }
+                if (Student.GroupId != Submission.GroupId)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "You can't update this submission."
+                    };
+                }
+                if (Submission.Status != SubmissionStatus.Submitted)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "Only submitted submissions can be updated."
+                    };
+                }
+                if (Request.TaskSubmission?.Length > 0)
+                {
+                    try
+                    {
+                        var oldFileName = Submission.SubmissionTaskFileURL;
+                        var newFileName = await _fileService.UploadTaskFile(Request.TaskSubmission);
+                        Submission.SubmissionTaskFileURL = newFileName;
+                        if (!string.IsNullOrEmpty(oldFileName))
+                        {
+                            var oldFilePath = Path.Combine(_env.WebRootPath, "files", "Tasks", oldFileName);
+                            if (File.Exists(oldFilePath))
+                            {
+                                File.Delete(oldFilePath);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = ex.Message
+                        };
+                    }
+                }
+                Submission.StudentNotes = Request.StudentNotes;
+                Submission.SubmittedAt = DateTime.UtcNow;
 
-            await _taskSubmissionRepository.UpdateTaskSubmission(Submission);
-            return new BaseResponse
+                await _taskSubmissionRepository.UpdateTaskSubmission(Submission);
+                return new BaseResponse
+                {
+                    Success = true,
+                    Message = "Task Submission Updated Successfully"
+                };
+            }catch (Exception ex)
             {
-                Success = true,
-                Message = "Task Submission Updated Successfully"
-            };
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
         public async Task <BaseResponse> ReviewForSubmission(Guid submissionId , string supervisorId , ReviewTaskSubmission request)
         {
+            try
+            { 
             // get submission
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
             if (submission == null) 
@@ -281,11 +315,20 @@ namespace RSR.BLL.Service.TaskSubmission
                 Success = true ,
                 Message = request.status == SubmissionStatus.Approved ? "Submission Approved Successfully" : "Submission Rejected With Feedback"
             };
-
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
 
         public async Task<TaskSubmissionCommentResponse> ReplyToComment(string userId , Guid parentCommentId , ReplyToCommentRequest Request  )
         {
+            try{
             var parent = await _commentRepository.GetParentComment(parentCommentId);
             if (parent == null) 
             {
@@ -349,10 +392,19 @@ namespace RSR.BLL.Service.TaskSubmission
                 role = reply.Role,
                 CreatedAt = reply.CreatedAt,
             };
+            }catch (Exception ex)
+            {
+                return new TaskSubmissionCommentResponse
+                {
+                    Success = false,
+                    message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
 
         public async Task<BaseResponse> UpdateComment(Guid commentId , string userId , ReplyToCommentRequest request )
         {
+            try{
             var comment = await _commentRepository.GetCommentById(commentId);
             if(comment == null)
             {
@@ -385,10 +437,21 @@ namespace RSR.BLL.Service.TaskSubmission
                 Success = true,
                 Message = "Comment updated successfully"
             };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
 
         public async Task<BaseResponse> DeleteComment(Guid commentId, string userId)
         {
+            try
+            {
             var comment = await _commentRepository.GetCommentById(commentId);
             if( comment == null)
             {
@@ -420,11 +483,20 @@ namespace RSR.BLL.Service.TaskSubmission
                 Success = true,
                 Message = "comment deleted successfully"
             };
-
-
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
         public async Task <BaseResponse> DeleteSubmission(Guid submissionId , string studentId)
         {
+            try
+            {
             var submission = await _taskSubmissionRepository.GetSubmissionById(submissionId);
             if (submission is null) 
             {
@@ -456,6 +528,14 @@ namespace RSR.BLL.Service.TaskSubmission
                 Success = true , 
                 Message = "Submission Removed Successfully"
             };
+            }catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
         }
     }
 }

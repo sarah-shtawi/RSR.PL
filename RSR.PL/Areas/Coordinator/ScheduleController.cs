@@ -100,9 +100,5 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", result });
         }
 
-
-
-
-
     }
 }
