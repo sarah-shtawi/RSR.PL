@@ -90,7 +90,6 @@ namespace RSR.PL
                 app.MapOpenApi();
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseCors("AllowAll");
             app.UseStaticFiles();
 

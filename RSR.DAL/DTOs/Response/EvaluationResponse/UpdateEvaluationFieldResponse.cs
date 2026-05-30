@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.EvaluationResponse
 {
-    public class UpdateEvaluationFieldResponse
+    public class UpdateEvaluationFieldResponse : BaseResponse
     {
         public int Id { get; set; }
 

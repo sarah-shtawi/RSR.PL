@@ -43,242 +43,272 @@ namespace RSR.BLL.Service.EvaluationService
                 httpContextAccessor;
         }
 
-        // =========================
         // SUBMIT EVALUATION
-        // =========================
-        public async Task<SubmitEvaluationResponse?>
-            SubmitAsync(
-            SubmitEvaluationRequest request)
+        public async Task<SubmitEvaluationResponse?> SubmitAsync( SubmitEvaluationRequest request)
         {
-            // =========================
-            // REQUEST VALIDATION
-            // =========================
-            if (request == null)
+            try
             {
-                throw new Exception(
-                    "Request cannot be null");
-            }
-
-            if (request.EvaluationFormId <= 0)
-            {
-                throw new Exception(
-                    "Invalid evaluation form id");
-            }
-
-            // =========================
-            // GET USER ID
-            // =========================
-            var userId = _httpContextAccessor
-                .HttpContext?
-                .User?
-                .FindFirst(ClaimTypes.NameIdentifier)?
-                .Value;
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new Exception(
-                    "User not found");
-            }
-
-            // =========================
-            // EMPTY ANSWERS VALIDATION
-            // =========================
-            if (request.Answers == null
-                || !request.Answers.Any())
-            {
-                throw new Exception(
-                    "At least one answer is required");
-            }
-
-            // =========================
-            // CHECK FORM
-            // =========================
-            var form = await _formRepository
-                .GetByIdWithFieldsAsync(
-                    request.EvaluationFormId);
-
-            if (form == null)
-            {
-                throw new Exception(
-                    "Evaluation form not found");
-            }
-
-            // =========================
-            // LOCK SUBMISSION
-            // =========================
-            var publishedResult =
-                await _finalResultRepository
-                    .GetPublishedByGroupIdAsync(
-                        request.GroupId);
-
-            if (publishedResult != null)
-            {
-                throw new Exception(
-                    "Final result is published. Submissions are locked.");
-            }
-
-            // =========================
-            // FORM MUST CONTAIN FIELDS
-            // =========================
-            if (form.Fields == null
-                || !form.Fields.Any())
-            {
-                throw new Exception(
-                    "This evaluation form has no fields");
-            }
-
-            // =========================
-            // ONLY PUBLISHED FORMS
-            // =========================
-            if (form.Status != FormStatus.Published)
-            {
-                throw new Exception(
-                    "Only published forms can receive submissions");
-            }
-
-            // =========================
-            // ROLE VALIDATION
-            // =========================
-            var userRole = _httpContextAccessor
-                .HttpContext?
-                .User?
-                .FindFirst(ClaimTypes.Role)?
-                .Value;
-
-            if (string.IsNullOrEmpty(userRole))
-            {
-                throw new Exception(
-                    "User role not found");
-            }
-
-            if (form.AssignTo.ToString()
-                != userRole)
-            {
-                throw new Exception(
-                    $"This form is assigned to {form.AssignTo} only");
-            }
-
-            // =========================
-            // PREVENT DUPLICATE SUBMISSION
-            // =========================
-            var alreadySubmitted =
-                await _submissionRepository
-                .HasUserSubmittedAsync(
-                    request.EvaluationFormId,
-                    userId);
-
-            if (alreadySubmitted)
-            {
-                throw new Exception(
-                    "You already submitted this form");
-            }
-
-            // =========================
-            // DUPLICATE FIELD VALIDATION
-            // =========================
-            var duplicateFields =
-                request.Answers
-                .GroupBy(a => a.EvaluationFieldId)
-                .Any(g => g.Count() > 1);
-
-            if (duplicateFields)
-            {
-                throw new Exception(
-                    "Duplicate evaluation fields are not allowed");
-            }
-
-            // =========================
-            // REQUIRED FIELDS VALIDATION
-            // =========================
-            foreach (var field in form.Fields)
-            {
-                if (field.IsRequired)
+                // REQUEST VALIDATION
+                if (request == null)
                 {
-                    var hasAnswer =
-                        request.Answers
-                        .Any(a =>
-                            a.EvaluationFieldId
-                            == field.Id);
+                    throw new Exception(
+                        "Request cannot be null");
+                }
 
-                    if (!hasAnswer)
+                if (request.EvaluationFormId <= 0)
+                {
+                    throw new Exception(
+                        "Invalid evaluation form id");
+                }
+
+                // =========================
+                // GET USER ID
+                // =========================
+                var userId = _httpContextAccessor
+                    .HttpContext?
+                    .User?
+                    .FindFirst(ClaimTypes.NameIdentifier)?
+                    .Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new Exception(
+                        "User not found");
+                }
+
+                // =========================
+                // EMPTY ANSWERS VALIDATION
+                // =========================
+                if (request.Answers == null
+                    || !request.Answers.Any())
+                {
+                    throw new Exception(
+                        "At least one answer is required");
+                }
+
+                // =========================
+                // CHECK FORM
+                // =========================
+                var form = await _formRepository
+                    .GetByIdWithFieldsAsync(
+                        request.EvaluationFormId);
+
+                if (form == null)
+                {
+                    throw new Exception(
+                        "Evaluation form not found");
+                }
+
+                // =========================
+                // LOCK SUBMISSION
+                // =========================
+                var publishedResult =
+                    await _finalResultRepository
+                        .GetPublishedByGroupIdAsync(
+                            request.GroupId);
+
+                if (publishedResult != null)
+                {
+                    throw new Exception(
+                        "Final result is published. Submissions are locked.");
+                }
+
+                // =========================
+                // FORM MUST CONTAIN FIELDS
+                // =========================
+                if (form.Fields == null
+                    || !form.Fields.Any())
+                {
+                    throw new Exception(
+                        "This evaluation form has no fields");
+                }
+
+                // =========================
+                // ONLY PUBLISHED FORMS
+                // =========================
+                if (form.Status != FormStatus.Published)
+                {
+                    throw new Exception(
+                        "Only published forms can receive submissions");
+                }
+
+                // =========================
+                // ROLE VALIDATION
+                // =========================
+                var userRole = _httpContextAccessor
+                    .HttpContext?
+                    .User?
+                    .FindFirst(ClaimTypes.Role)?
+                    .Value;
+
+                if (string.IsNullOrEmpty(userRole))
+                {
+                    throw new Exception(
+                        "User role not found");
+                }
+
+                if (form.AssignTo.ToString()
+                    != userRole)
+                {
+                    throw new Exception(
+                        $"This form is assigned to {form.AssignTo} only");
+                }
+
+                // =========================
+                // PREVENT DUPLICATE SUBMISSION
+                // =========================
+                var alreadySubmitted =
+                    await _submissionRepository
+                    .HasUserSubmittedAsync(
+                        request.EvaluationFormId,
+                        userId);
+
+                if (alreadySubmitted)
+                {
+                    throw new Exception(
+                        "You already submitted this form");
+                }
+
+                // =========================
+                // DUPLICATE FIELD VALIDATION
+                // =========================
+                var duplicateFields =
+                    request.Answers
+                    .GroupBy(a => a.EvaluationFieldId)
+                    .Any(g => g.Count() > 1);
+
+                if (duplicateFields)
+                {
+                    throw new Exception(
+                        "Duplicate evaluation fields are not allowed");
+                }
+
+                // =========================
+                // REQUIRED FIELDS VALIDATION
+                // =========================
+                foreach (var field in form.Fields)
+                {
+                    if (field.IsRequired)
                     {
-                        throw new Exception(
-                            $"{field.FieldName} is required");
+                        var hasAnswer =
+                            request.Answers
+                            .Any(a =>
+                                a.EvaluationFieldId
+                                == field.Id);
+
+                        if (!hasAnswer)
+                        {
+                            throw new Exception(
+                                $"{field.FieldName} is required");
+                        }
                     }
                 }
-            }
 
-            // =========================
-            // ANSWERS VALIDATION
-            // =========================
-            foreach (var answer in request.Answers)
-            {
-                if (answer.EvaluationFieldId <= 0)
+                // =========================
+                // ANSWERS VALIDATION
+                // =========================
+                foreach (var answer in request.Answers)
                 {
-                    throw new Exception(
-                        "Invalid evaluation field id");
+                    if (answer.EvaluationFieldId <= 0)
+                    {
+                        throw new Exception(
+                            "Invalid evaluation field id");
+                    }
+
+                    var field = form.Fields
+                        .FirstOrDefault(f =>
+                            f.Id
+                            == answer.EvaluationFieldId);
+
+                    if (field == null)
+                    {
+                        throw new Exception(
+                            $"Field with ID {answer.EvaluationFieldId} not found in this form");
+                    }
+
+                    if (answer.Value < 0)
+                    {
+                        throw new Exception(
+                            $"{field.FieldName} value cannot be negative");
+                    }
+
+                    if (answer.Value < field.MinValue)
+                    {
+                        throw new Exception(
+                            $"{field.FieldName} value cannot be less than {field.MinValue}");
+                    }
+
+                    if (answer.Value > field.MaxValue)
+                    {
+                        throw new Exception(
+                            $"{field.FieldName} value cannot be greater than {field.MaxValue}");
+                    }
                 }
 
-                var field = form.Fields
-                    .FirstOrDefault(f =>
-                        f.Id
-                        == answer.EvaluationFieldId);
+                // =========================
+                // CALCULATE TOTAL SCORE
+                // =========================
+                var totalScore = request.Answers
+                    .Sum(a => a.Value);
 
-                if (field == null)
+                // =========================
+                // CREATE SUBMISSION
+                // =========================
+                var submission =
+                    new EvaluationSubmission
+                    {
+                        EvaluationFormId =
+                            request.EvaluationFormId,
+
+                        GroupId =
+                            request.GroupId,
+
+                        SubmittedByUserId =
+                            userId,
+
+                        SubmittedAt =
+                            DateTime.UtcNow,
+
+                        TotalScore =
+                            totalScore,
+
+                        Answers = request.Answers
+                            .Select(a =>
+                                new EvaluationSubmissionAnswer
+                                {
+                                    EvaluationFieldId =
+                                        a.EvaluationFieldId,
+
+                                    Value =
+                                        a.Value
+                                }).ToList()
+                    };
+
+                // =========================
+                // SAVE
+                // =========================
+                var createdSubmission =
+                    await _submissionRepository
+                    .CreateAsync(submission);
+
+                // =========================
+                // RESPONSE
+                // =========================
+                return new SubmitEvaluationResponse
                 {
-                    throw new Exception(
-                        $"Field with ID {answer.EvaluationFieldId} not found in this form");
-                }
+                    SubmissionId =
+                        createdSubmission.Id,
 
-                if (answer.Value < 0)
-                {
-                    throw new Exception(
-                        $"{field.FieldName} value cannot be negative");
-                }
-
-                if (answer.Value < field.MinValue)
-                {
-                    throw new Exception(
-                        $"{field.FieldName} value cannot be less than {field.MinValue}");
-                }
-
-                if (answer.Value > field.MaxValue)
-                {
-                    throw new Exception(
-                        $"{field.FieldName} value cannot be greater than {field.MaxValue}");
-                }
-            }
-
-            // =========================
-            // CALCULATE TOTAL SCORE
-            // =========================
-            var totalScore = request.Answers
-                .Sum(a => a.Value);
-
-            // =========================
-            // CREATE SUBMISSION
-            // =========================
-            var submission =
-                new EvaluationSubmission
-                {
                     EvaluationFormId =
-                        request.EvaluationFormId,
-
-                    GroupId =
-                        request.GroupId,
-
-                    SubmittedByUserId =
-                        userId,
+                        createdSubmission.EvaluationFormId,
 
                     SubmittedAt =
-                        DateTime.UtcNow,
+                        createdSubmission.SubmittedAt,
 
-                    TotalScore =
-                        totalScore,
-
-                    Answers = request.Answers
+                    Answers =
+                        createdSubmission.Answers
                         .Select(a =>
-                            new EvaluationSubmissionAnswer
+                            new SubmitEvaluationAnswerResponse
                             {
                                 EvaluationFieldId =
                                     a.EvaluationFieldId,
@@ -287,47 +317,20 @@ namespace RSR.BLL.Service.EvaluationService
                                     a.Value
                             }).ToList()
                 };
-
-            // =========================
-            // SAVE
-            // =========================
-            var createdSubmission =
-                await _submissionRepository
-                .CreateAsync(submission);
-
-            // =========================
-            // RESPONSE
-            // =========================
-            return new SubmitEvaluationResponse
+            }
+            catch (Exception ex)
             {
-                SubmissionId =
-                    createdSubmission.Id,
-
-                EvaluationFormId =
-                    createdSubmission.EvaluationFormId,
-
-                SubmittedAt =
-                    createdSubmission.SubmittedAt,
-
-                Answers =
-                    createdSubmission.Answers
-                    .Select(a =>
-                        new SubmitEvaluationAnswerResponse
-                        {
-                            EvaluationFieldId =
-                                a.EvaluationFieldId,
-
-                            Value =
-                                a.Value
-                        }).ToList()
-            };
+                return new SubmitEvaluationResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
-        // =========================
         // GET MY FORMS
-        // =========================
-        public async Task<List<CreateEvaluationFormResponse>>
-            GetMyFormsAsync()
+        public async Task<List<CreateEvaluationFormResponse>> GetMyFormsAsync()
         {
             var userRole = _httpContextAccessor
                 .HttpContext?

@@ -29,17 +29,11 @@ namespace RSR.BLL.Service.Authentication
             _emailSender = emailSender;
         }
 
-        // =========================
-        // LOGIN
-        // =========================
-        public async Task<LoginResponse> Login(
-            LoginRequest Request)
-        {
-            try
-            {
-                var user = await _userManager
-                    .FindByEmailAsync(Request.Email);
 
+        public async Task<LoginResponse> Login(LoginRequest Request)
+        {
+            try{
+                var user = await _userManager.FindByEmailAsync(Request.Email);
                 if (user is null)
                 {
                     return new LoginResponse()
@@ -48,7 +42,6 @@ namespace RSR.BLL.Service.Authentication
                         Message = "In Valied Email"
                     };
                 }
-
                 if (await _userManager
                     .IsLockedOutAsync(user))
                 {
@@ -59,13 +52,7 @@ namespace RSR.BLL.Service.Authentication
                             "Your Account is Locked , try again later "
                     };
                 }
-
-                var result =
-                    await _signInManager
-                        .CheckPasswordSignInAsync(
-                            user,
-                            Request.Password,
-                            true);
+                var result = await _signInManager.CheckPasswordSignInAsync( user, Request.Password, true);
 
                 if (result.IsLockedOut)
                 {
@@ -117,22 +104,17 @@ namespace RSR.BLL.Service.Authentication
                 var refreshToken =
                     _tokenService.GenerateRefreshToken();
 
-                user.RefreshTokenExpiryTime =
-                    DateTime.UtcNow.AddDays(7);
+                user.RefreshTokenExpiryTime =DateTime.UtcNow.AddDays(7);
 
                 user.RefreshToken = refreshToken;
 
                 await _userManager.UpdateAsync(user);
-
                 return new LoginResponse()
                 {
                     Success = true,
                     Message = "Login Successfully",
-
                     AccessToken = accessToken,
-
                     RefreshToken = refreshToken,
-
                     roles = (List<string>)roles
                 };
             }

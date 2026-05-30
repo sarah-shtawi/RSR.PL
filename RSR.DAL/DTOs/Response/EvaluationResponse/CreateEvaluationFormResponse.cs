@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RSR.DAL.DTOs.Response.EvaluationResponse
 {
-    public class CreateEvaluationFormResponse
+    public class CreateEvaluationFormResponse : BaseResponse
     {
         public int Id { get; set; }
 
