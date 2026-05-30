@@ -25,20 +25,16 @@ namespace RSR.BLL.Service.EvaluationService
                 finalRepository;
         }
 
-        // =========================
         // GENERATE FINAL RESULT
-        // =========================
-        public async Task<FinalEvaluationResultResponse>
-            GenerateAsync(Guid groupId)
+        public async Task<FinalEvaluationResultResponse> GenerateAsync(Guid groupId)
         {
-            var submissions =
-                await _submissionRepository
-                    .GetGroupSubmissionsAsync(groupId);
+            try
+            {
+            var submissions = await _submissionRepository.GetGroupSubmissionsAsync(groupId);
 
             if (!submissions.Any())
             {
-                throw new Exception(
-                    "No evaluations found for this group");
+                throw new Exception("No evaluations found for this group");
             }
 
             double supervisorGrade =
@@ -104,13 +100,22 @@ namespace RSR.BLL.Service.EvaluationService
                 Status =
                     created.Status
             };
+            }
+            catch (Exception ex)
+            {
+                return new FinalEvaluationResultResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
         // =========================
         // PUBLISH RESULT
         // =========================
-        public async Task<bool>
-            PublishAsync(int id)
+        public async Task<bool>PublishAsync(int id)
         {
             var result =
                 await _finalRepository
@@ -134,8 +139,7 @@ namespace RSR.BLL.Service.EvaluationService
         // =========================
         // SET DRAFT
         // =========================
-        public async Task<bool>
-            SetDraftAsync(int id)
+        public async Task<bool> SetDraftAsync(int id)
         {
             var result =
                 await _finalRepository
@@ -159,8 +163,7 @@ namespace RSR.BLL.Service.EvaluationService
         // =========================
         // GET PUBLISHED RESULT
         // =========================
-        public async Task<FinalEvaluationResultResponse>
-            GetPublishedResultAsync(Guid groupId)
+        public async Task<FinalEvaluationResultResponse> GetPublishedResultAsync(Guid groupId)
         {
             var result =
                 await _finalRepository
@@ -197,8 +200,7 @@ namespace RSR.BLL.Service.EvaluationService
         // =========================
         // GET STUDENT FINAL GRADE
         // =========================
-        public async Task<StudentFinalGradeResponse>
-            GetStudentFinalGradeAsync(Guid groupId)
+        public async Task<StudentFinalGradeResponse> GetStudentFinalGradeAsync(Guid groupId)
         {
             var result =
                 await _finalRepository
@@ -221,9 +223,7 @@ namespace RSR.BLL.Service.EvaluationService
         // GET SUPERVISOR GROUPS
         // FINAL GRADES
         // =========================
-        public async Task<List<SupervisorFinalGradeResponse>>
-            GetSupervisorGroupsFinalGradesAsync(
-                string supervisorId)
+        public async Task<List<SupervisorFinalGradeResponse>> GetSupervisorGroupsFinalGradesAsync( string supervisorId)
         {
             var results =
                 await _finalRepository
@@ -245,8 +245,7 @@ namespace RSR.BLL.Service.EvaluationService
                     })
                 .ToList();
         }
-        public async Task<List<CoordinatorFinalResultResponse>>
-    GetAllFinalResultsAsync()
+        public async Task<List<CoordinatorFinalResultResponse>> GetAllFinalResultsAsync()
         {
             var results =
                 await _finalRepository

@@ -34,80 +34,80 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // CREATE FORM
-         public async Task<CreateEvaluationFormResponse>
-            CreateAsync(
-            CreateEvaluationFormRequest request)
+         public async Task<CreateEvaluationFormResponse> CreateAsync( CreateEvaluationFormRequest request)
         {
-            var form = new EvaluationForm
+            try
             {
-                Title = request.Title,
-                AssignTo = request.AssignTo,
-                Description = request.Description,
-                Status = FormStatus.Draft,
-                CreatedAt = DateTime.UtcNow,
-                Fields = new List<EvaluationField>()
-            };
-
-            if (request.Fields != null
-                && request.Fields.Any())
-            {
-                foreach (var field in request.Fields)
+                var form = new EvaluationForm
                 {
-                    form.Fields.Add(
-                        new EvaluationField
+                    Title = request.Title,
+                    AssignTo = request.AssignTo,
+                    Description = request.Description,
+                    Status = FormStatus.Draft,
+                    CreatedAt = DateTime.UtcNow,
+                    Fields = new List<EvaluationField>()
+                };
+
+                if (request.Fields != null && request.Fields.Any())
+                {
+                    foreach (var field in request.Fields)
+                    {
+                        form.Fields.Add(new EvaluationField
                         {
-                            FieldName =
-                                field.FieldName,
+                            FieldName = field.FieldName,
 
-                            MinValue =
-                                field.MinValue,
+                            MinValue = field.MinValue,
 
-                            MaxValue =
-                                field.MaxValue,
+                            MaxValue = field.MaxValue,
 
-                            IsRequired =
-                                field.IsRequired
+                            IsRequired = field.IsRequired
                         });
+                    }
                 }
+
+                var createdForm = await _repository.CreateAsync(form);
+
+                return new CreateEvaluationFormResponse
+                {
+                    Id = createdForm.Id,
+                    Title = createdForm.Title,
+                    AssignTo = createdForm.AssignTo,
+                    Description = createdForm.Description,
+                    Status = createdForm.Status,
+                    CreatedAt = createdForm.CreatedAt,
+                    Fields = createdForm.Fields
+                        .Select(f =>
+                            new CreateEvaluationFieldResponse
+                            {
+                                Id = f.Id,
+                                FieldName = f.FieldName,
+                                MinValue = f.MinValue,
+                                MaxValue = f.MaxValue,
+                                IsRequired = f.IsRequired
+                            }).ToList()
+                };
             }
-
-            var createdForm =
-                await _repository.CreateAsync(form);
-
-            return new CreateEvaluationFormResponse
+            catch (Exception ex)
             {
-                Id = createdForm.Id,
-                Title = createdForm.Title,
-                AssignTo = createdForm.AssignTo,
-                Description = createdForm.Description,
-                Status = createdForm.Status,
-                CreatedAt = createdForm.CreatedAt,
-
-                Fields = createdForm.Fields
-                    .Select(f =>
-                        new CreateEvaluationFieldResponse
-                        {
-                            Id = f.Id,
-                            FieldName = f.FieldName,
-                            MinValue = f.MinValue,
-                            MaxValue = f.MaxValue,
-                            IsRequired = f.IsRequired
-                        }).ToList()
-            };
+                return new CreateEvaluationFormResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
          // GET FORM WITH FIELDS
-         public async Task<CreateEvaluationFormResponse>
-            GetByIdAsync(int id)
-        {
-            var form =
-                await _repository
-                    .GetByIdWithFieldsAsync(id);
+         public async Task<CreateEvaluationFormResponse> GetByIdAsync(int id)
+           {
+            try
+            {
+            var form = await _repository.GetByIdWithFieldsAsync(id);
 
             if (form == null)
             {
-                throw new Exception(
-                    "Evaluation Form not found");
+                throw new Exception("Evaluation Form not found");
             }
 
             return new CreateEvaluationFormResponse
@@ -130,32 +130,36 @@ namespace RSR.BLL.Services.EvaluationService
                             IsRequired = f.IsRequired
                         }).ToList()
             };
+            }
+            catch (Exception ex)
+            {
+                return new CreateEvaluationFormResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
          // PUBLISH FORM
-         public async Task<bool>
-            PublishAsync(int id)
+         public async Task<bool> PublishAsync(int id)
         {
-            var form =
-                await _repository
-                    .GetByIdAsync(id);
+            var form = await _repository.GetByIdAsync(id);
 
             if (form == null)
             {
                 return false;
             }
 
-            if (form.Status
-                == FormStatus.Archived)
+            if (form.Status == FormStatus.Archived)
             {
                 return false;
             }
 
-            form.Status =
-                FormStatus.Published;
+            form.Status = FormStatus.Published;
 
-            await _repository
-                .UpdateAsync(form);
+            await _repository.UpdateAsync(form);
 
             return true;
         }
@@ -190,8 +194,7 @@ namespace RSR.BLL.Services.EvaluationService
 
          // ARCHIVE FORM
         
-        public async Task<bool>
-            ArchiveAsync(int id)
+        public async Task<bool> ArchiveAsync(int id)
         {
             var form =
                 await _repository
@@ -218,43 +221,35 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // UPDATE FORM
-         public async Task<UpdateEvaluationFormResponse?>
-            UpdateAsync(
-            int id,
-            UpdateEvaluationFormRequest request)
+         public async Task<UpdateEvaluationFormResponse?> UpdateAsync(int id, UpdateEvaluationFormRequest request)
         {
-            var form =
-                await _repository
-                    .GetByIdAsync(id);
+            try
+            {
+            var form = await _repository.GetByIdAsync(id);
 
             if (form == null)
             {
                 return null;
             }
 
-            if (form.Status
-                == FormStatus.Archived)
+            if (form.Status == FormStatus.Archived)
             {
                 return null;
             }
 
-            if (string.IsNullOrWhiteSpace(
-                request.Title))
+            if (string.IsNullOrWhiteSpace( request.Title))
             {
                 return null;
             }
 
-            if (string.IsNullOrWhiteSpace(
-                request.AssignTo))
+            if (string.IsNullOrWhiteSpace( request.AssignTo))
             {
                 return null;
             }
 
-            form.Title =
-                request.Title;
+            form.Title = request.Title;
 
-            form.AssignTo =
-                request.AssignTo;
+            form.AssignTo = request.AssignTo;
 
             form.Description =
                 request.Description;
@@ -271,15 +266,23 @@ namespace RSR.BLL.Services.EvaluationService
                 Description = updatedForm.Description,
                 Status = updatedForm.Status
             };
+            }
+            catch (Exception ex)
+            {
+                return new UpdateEvaluationFormResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
+
          // GET ALL PUBLISHED FORMS
-         public async Task<List<CreateEvaluationFormResponse>>
-            GetPublishedFormsAsync()
+         public async Task<List<CreateEvaluationFormResponse>> GetPublishedFormsAsync()
         {
-            var forms =
-                await _repository
-                    .GetPublishedFormsAsync();
+            var forms = await _repository.GetPublishedFormsAsync();
 
             return forms.Select(form =>
                 new CreateEvaluationFormResponse
@@ -294,13 +297,9 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // GET MY FORMS
-         public async Task<List<CreateEvaluationFormResponse>>
-            GetMyFormsAsync()
+         public async Task<List<CreateEvaluationFormResponse>>  GetMyFormsAsync()
         {
-            var userRole =
-                _httpContextAccessor
-                .HttpContext?
-                .User
+            var userRole = _httpContextAccessor.HttpContext?.User
                 .Claims
                 .FirstOrDefault(c =>
                     c.Type == ClaimTypes.Role)
@@ -341,8 +340,7 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // DELETE FORM
-         public async Task<bool>
-            DeleteAsync(int id)
+         public async Task<bool>DeleteAsync(int id)
         {
             var form =
                 await _repository
@@ -364,8 +362,7 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // DASHBOARD STATISTICS
-         public async Task<DashboardStatisticsResponse>
-            GetDashboardStatisticsAsync()
+         public async Task<DashboardStatisticsResponse> GetDashboardStatisticsAsync()
         {
             var totalForms =
                 await _repository.CountAsync();

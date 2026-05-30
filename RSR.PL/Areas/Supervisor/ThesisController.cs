@@ -92,6 +92,8 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(new { message = "success", projects });
         }
 
+
+
         [Authorize(Roles = "Supervisor,Coordinator")]
         [HttpPost("publish-thesis/versionId/{versionId}")]
         public async Task<IActionResult> PublishThesis([FromRoute] Guid versionId)
@@ -103,6 +105,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(new { message = "success", result });
         }
+
+
 
         [HttpGet("thesis-homepage")]
         public async Task<IActionResult> ThesisHomePage()

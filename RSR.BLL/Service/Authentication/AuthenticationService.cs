@@ -29,13 +29,12 @@ namespace RSR.BLL.Service.Authentication
             _emailSender = emailSender;
         }
 
+   
+
         public async Task<LoginResponse> Login(LoginRequest Request)
         {
-            try
-            {
-                var user =
-                    await _userManager.FindByEmailAsync(Request.Email);
-
+            try{
+                var user = await _userManager.FindByEmailAsync(Request.Email);
                 if (user is null)
                 {
                     return new LoginResponse
@@ -44,7 +43,6 @@ namespace RSR.BLL.Service.Authentication
                         Message = "Invalid Email"
                     };
                 }
-
                 if (await _userManager.IsLockedOutAsync(user))
                 {
                     return new LoginResponse
@@ -53,12 +51,7 @@ namespace RSR.BLL.Service.Authentication
                         Message = "Your Account is Locked, try again later"
                     };
                 }
-
-                var result =
-                    await _signInManager.CheckPasswordSignInAsync(
-                        user,
-                        Request.Password,
-                        true);
+                var result = await _signInManager.CheckPasswordSignInAsync( user, Request.Password, true);
 
                 if (result.IsLockedOut)
                 {
@@ -136,7 +129,7 @@ namespace RSR.BLL.Service.Authentication
                     Message = "Login Successfully",
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
-                    roles = roles.ToList()
+                    roles = (List<string>)roles
                 };
             }
             catch (Exception ex)

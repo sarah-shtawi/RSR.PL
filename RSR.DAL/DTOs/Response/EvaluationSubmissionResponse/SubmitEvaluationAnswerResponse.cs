@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.EvaluationSubmissionResponse
 {
-    public class SubmitEvaluationAnswerResponse
+    public class SubmitEvaluationAnswerResponse 
     {
-        //الاجابة الواحدة بعد الحفظ
         public int EvaluationFieldId { get; set; }
 
         public int Value { get; set; }
