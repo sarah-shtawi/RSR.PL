@@ -31,6 +31,9 @@ namespace RSR.BLL.Service.Authentication
 
         public async Task<LoginResponse> Login(LoginRequest Request)
         {
+            Console.WriteLine($"Email: {Request.Email}");
+            Console.WriteLine($"Password: {Request.Password}");
+            Console.WriteLine($"LoginAs: {Request.LoginAs}");
             try
             {
                 var user =
