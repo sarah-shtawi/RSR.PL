@@ -22,11 +22,14 @@ namespace RSR.DAL.Repository.TaskSubmissionRepo
             await _context.TaskSubmissions.AddAsync(taskSubmission);
             await _context.SaveChangesAsync();
         }
-        public async System.Threading.Tasks.Task <TaskSubmission?> GetLastSubmission(Guid TaskId )
+        public async System.Threading.Tasks.Task <TaskSubmission?> GetLastSubmission(Guid TaskId)
         {
-            var LastSubmission = await _context.TaskSubmissions.Where(ls =>ls.TaskId == TaskId  && ls.IsLatest).FirstOrDefaultAsync();
-            return LastSubmission; 
+            return await _context.TaskSubmissions
+                        .Where(x => x.TaskId == TaskId)
+                        .OrderByDescending(x => x.VersionNumber)
+                        .FirstOrDefaultAsync(); 
         }
+  
         public async Task<TaskSubmission> UpdateTaskSubmission(TaskSubmission taskSubmission)
         {
             _context.Update(taskSubmission);

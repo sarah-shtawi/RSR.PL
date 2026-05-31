@@ -165,8 +165,7 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
          // SET DRAFT
-         public async Task<bool>
-            SetDraftAsync(int id)
+         public async Task<bool> SetDraftAsync(int id)
         {
             var form =
                 await _repository
