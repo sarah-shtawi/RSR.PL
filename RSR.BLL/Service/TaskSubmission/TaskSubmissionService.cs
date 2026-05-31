@@ -11,6 +11,7 @@ using RSR.DAL.Repository.StudentRepo;
 using RSR.DAL.Repository.SubmissionCommentRepo;
 using RSR.DAL.Repository.TaskRepo;
 using RSR.DAL.Repository.TaskSubmissionRepo;
+using System.Collections.Generic;
 using System.Data;
 
 namespace RSR.BLL.Service.TaskSubmission
@@ -109,6 +110,7 @@ namespace RSR.BLL.Service.TaskSubmission
             var LastSubmissiommn = await _taskSubmissionRepository.GetLastSubmission(TaskId);
             if (LastSubmissiommn != null)
             {
+                    Console.WriteLine(LastSubmissiommn.Status);
                     if (LastSubmissiommn.Status == SubmissionStatus.Submitted)
                     {
                         return new BaseResponse
@@ -117,10 +119,19 @@ namespace RSR.BLL.Service.TaskSubmission
                             Message = "You cannot upload a new version until the previous submission has been evaluated"
                         };
                     }
-                    LastSubmissiommn.IsLatest = false;
+                    if ( LastSubmissiommn.Status == SubmissionStatus.Approved)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "This submission has already been approved. You cannot upload a new version."
+                        };
+                    }
+                LastSubmissiommn.IsLatest = false;
                 await _taskSubmissionRepository.UpdateTaskSubmission(LastSubmissiommn);
 
-                newVersion = LastSubmissiommn.VersionNumber + 1;
+                    // newVersion = LastSubmissiommn.VersionNumber + 1;
+                    newVersion = (LastSubmissiommn?.VersionNumber ?? 0) + 1;
             }
             var Submission = new RSR.DAL.Models.TaskModel.TaskSubmission
             {
