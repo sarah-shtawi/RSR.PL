@@ -28,7 +28,7 @@ namespace RSR.PL.Areas.Student
             _finalResultService = finalResultService;
         }
 
-         // UPLOAD PROFILE IMAGE
+         // UPLOAD PROFILE IMAGEeeee
          [HttpPost("image-profile-student")]
         public async Task<IActionResult>
             AssignImageStudent(

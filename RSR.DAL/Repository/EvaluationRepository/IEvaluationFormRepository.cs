@@ -35,6 +35,11 @@ namespace RSR.DAL.Repository.EvaluationRepository
             GetPublishedFormsAsync();
 
         // =========================
+        // GET ALL FORMS
+        // =========================
+        Task<List<EvaluationForm>> GetAllFormsAsync();
+
+        // =========================
         // DELETE
         // =========================
         Task<bool>
