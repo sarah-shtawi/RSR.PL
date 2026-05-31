@@ -1,7 +1,9 @@
-﻿using System;
+﻿using RSR.DAL.Models.TaskModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.TaskRes
@@ -12,6 +14,8 @@ namespace RSR.DAL.DTOs.Response.TaskRes
         public string Title { get; set; }
         public string Description { get; set; }
         public string? SupervisorNotes { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public SubmissionStatus Status { get; set; } 
         public DateTime CreatedAt { get; set; }
         public DateTime DeadLine { get; set; }
         public string? TaskFileURL { get; set; }

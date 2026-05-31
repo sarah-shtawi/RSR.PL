@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RSR.DAL.Models.ScheduleModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace RSR.DAL.Models.User
         public string ExaminerNumber { get; set; }
         public string Department { get; set; }
         public string? PictureProfileURL { get; set; }
+
+        public List<DefenseExaminer> DefenseExaminers { get; set; }
 
     }
 }

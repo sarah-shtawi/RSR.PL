@@ -3,6 +3,7 @@ using RSR.DAL.DTOs.Response.EvaluationResponse;
 using RSR.DAL.Models.Evaluation;
 using RSR.DAL.Enums;
 using RSR.DAL.Repository.EvaluationRepository;
+using RSR.DAL.DTOs.Response;
 
 namespace RSR.BLL.Services.EvaluationService
 {
@@ -19,61 +20,65 @@ namespace RSR.BLL.Services.EvaluationService
             _formRepository = formRepository;
         }
 
-        // =========================
         // HELPER
-        // =========================
         private bool IsEditable(FormStatus status)
         {
             return status == FormStatus.Draft;
         }
 
-        // =========================
+       
         // CREATE FIELD
-        // =========================
-        public async Task<CreateEvaluationFieldResponse?> CreateAsync(
-            CreateEvaluationFieldRequest request,
-            int evaluationFormId)
+        public async Task<CreateEvaluationFieldResponse?> CreateAsync(CreateEvaluationFieldRequest request, int evaluationFormId)
         {
-            var form = await _formRepository.GetByIdAsync(evaluationFormId);
-
-            if (form == null)
-                return null;
-
-            // ❌ Only Draft allowed
-            if (!IsEditable(form.Status))
-                return null;
-
-            // VALIDATION
-            if (string.IsNullOrWhiteSpace(request.FieldName))
-                return null;
-
-            if (request.MinValue > request.MaxValue)
-                return null;
-
-            var field = new EvaluationField
+            try
             {
-                FieldName = request.FieldName,
-                MinValue = request.MinValue,
-                MaxValue = request.MaxValue,
-                IsRequired = request.IsRequired,
-                EvaluationFormId = evaluationFormId
-            };
+                var form = await _formRepository.GetByIdAsync(evaluationFormId);
+                if (form == null)
+                    return null;
 
-            var createdField = await _repository.CreateAsync(field);
+                // Only Draft allowed
+                if (!IsEditable(form.Status))
+                    return null;
 
-            return new CreateEvaluationFieldResponse
+                // VALIDATION
+                if (string.IsNullOrWhiteSpace(request.FieldName))
+                    return null;
+
+                if (request.MinValue > request.MaxValue)
+                    return null;
+
+                var field = new EvaluationField
+                {
+                    FieldName = request.FieldName,
+                    MinValue = request.MinValue,
+                    MaxValue = request.MaxValue,
+                    IsRequired = request.IsRequired,
+                    EvaluationFormId = evaluationFormId
+                };
+
+                var createdField = await _repository.CreateAsync(field);
+
+                return new CreateEvaluationFieldResponse
+                {
+                    Id = createdField.Id,
+                    FieldName = createdField.FieldName,
+                    MinValue = createdField.MinValue,
+                    MaxValue = createdField.MaxValue,
+                    IsRequired = createdField.IsRequired
+                };
+            }
+            catch (Exception ex)
             {
-                Id = createdField.Id,
-                FieldName = createdField.FieldName,
-                MinValue = createdField.MinValue,
-                MaxValue = createdField.MaxValue,
-                IsRequired = createdField.IsRequired
-            };
+                return new CreateEvaluationFieldResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
-        // =========================
         // DELETE FIELD
-        // =========================
         public async Task<bool> DeleteAsync(int id)
         {
             var field = await _repository.GetByIdAsync(id);
@@ -86,20 +91,18 @@ namespace RSR.BLL.Services.EvaluationService
             if (form == null)
                 return false;
 
-            // ❌ Only Draft allowed
+            // ❌--- Only Draft allowed
             if (!IsEditable(form.Status))
                 return false;
 
             return await _repository.DeleteAsync(id);
         }
 
-        // =========================
         // UPDATE FIELD
-        // =========================
-        public async Task<UpdateEvaluationFieldResponse?> UpdateAsync(
-            int id,
-            UpdateEvaluationFieldRequest request)
+        public async Task<UpdateEvaluationFieldResponse?> UpdateAsync( int id,UpdateEvaluationFieldRequest request)
         {
+            try
+            {
             var existingField = await _repository.GetByIdAsync(id);
 
             if (existingField == null)
@@ -110,7 +113,7 @@ namespace RSR.BLL.Services.EvaluationService
             if (form == null)
                 return null;
 
-            // ❌ Only Draft allowed
+            // Only Draft allowed
             if (!IsEditable(form.Status))
                 return null;
 
@@ -140,6 +143,16 @@ namespace RSR.BLL.Services.EvaluationService
                 MaxValue = updatedField.MaxValue,
                 IsRequired = updatedField.IsRequired
             };
+            }
+            catch (Exception ex)
+            {
+                return new UpdateEvaluationFieldResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
     }
 }

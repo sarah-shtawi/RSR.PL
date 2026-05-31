@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.EvaluationSubmissionResponse
 {
-    public class SubmitEvaluationResponse
+    public class SubmitEvaluationResponse : BaseResponse
     {
         //النتيجة الكاملة بعد إرسال التقييم
 

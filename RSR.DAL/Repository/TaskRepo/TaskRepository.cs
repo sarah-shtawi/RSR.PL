@@ -40,6 +40,7 @@ namespace RSR.DAL.Repository.TaskRepo
             var Tasks = await _context.Tasks
                 .Include(t=>t.Supervisor).ThenInclude(s=>s.User)
                 .Include(t=>t.Group).ThenInclude(g=>g.Students)
+                .Include(t=>t.TaskSubmissions)
                 .Where(t=>t.GroupId == GroupId).ToListAsync();
             return Tasks;
         }

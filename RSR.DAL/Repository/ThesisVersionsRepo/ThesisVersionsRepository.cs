@@ -61,6 +61,11 @@ namespace RSR.DAL.Repository.ThesisVersionsRepo
               return publishedVersions;
         }
 
+        public async Task <ThesisVersions?> GetThesisWithProject(Guid versionId)
+        {
+            var thesis = await _context.ThesisVersions.Include(v=>v.Thesis).ThenInclude(th=>th.Group).ThenInclude(g=>g.Project).FirstOrDefaultAsync(v=>v.VersionId==versionId);
+            return thesis;
+        }
 
     }
 }

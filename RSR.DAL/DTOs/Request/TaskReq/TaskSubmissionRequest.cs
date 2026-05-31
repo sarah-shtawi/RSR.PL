@@ -9,7 +9,7 @@ namespace RSR.DAL.DTOs.Request.TaskReq
 {
     public  class TaskSubmissionRequest
     {
-        public IFormFile TaskSubmission {  get; set; }
+        public IFormFile? TaskSubmission {  get; set; }
         public string? StudentNotes { get; set; }
     }
 }

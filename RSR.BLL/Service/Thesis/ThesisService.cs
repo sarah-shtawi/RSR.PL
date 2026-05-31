@@ -29,6 +29,7 @@ namespace RSR.BLL.Service.Thesis
 
         public async System.Threading.Tasks.Task<BaseResponse> CreateThesis(ThesisRequest request , string supervisorId , Guid GroupId)
         {
+            try{    
             var group = await _groupRepository.GroupByIdRepo(GroupId);
             if (group == null) 
             {
@@ -82,11 +83,20 @@ namespace RSR.BLL.Service.Thesis
                 Success = true,
                 Message = "Thesis Created Successfully"
             };
-
+            }catch(Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
         public async System.Threading.Tasks.Task<BaseResponse> UpdateThesis(ThesisRequest request, string supervisorId , Guid ThesisId)
         {
+            try{
             var thesisDB = await _thesisRepository.GetThesisById(ThesisId);
             if (thesisDB == null)
             {
@@ -96,7 +106,6 @@ namespace RSR.BLL.Service.Thesis
                     Message = "Thesis Not Found"
                 };
             }
-
             var group = await _groupRepository.GroupByIdRepo(thesisDB.GroupId);
             if (group == null)
             {
@@ -139,9 +148,16 @@ namespace RSR.BLL.Service.Thesis
                 Success = true,
                 Message = "Thesis Updated Successfully"
             };
-
+        }catch(Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
-
         public async Task <ThesisResponse> GetThesisByGroupId(Guid GroupId , string userId , string Role)
         {
             var thesis = await _thesisRepository.GetThesisByGroupId(GroupId);

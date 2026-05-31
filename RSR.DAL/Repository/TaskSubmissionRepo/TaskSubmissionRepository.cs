@@ -38,7 +38,13 @@ namespace RSR.DAL.Repository.TaskSubmissionRepo
             var taskSubmision = await _context.TaskSubmissions.Include(s=>s.Task).FirstOrDefaultAsync(s => s.TaskSubmissionId == TaskSubmissionId);
             return taskSubmision;
         }
-
+        public async Task<TaskSubmission?> GetFirstSubmission(Guid taskId)
+        {
+            return await _context.TaskSubmissions
+                .Where(x => x.TaskId == taskId)
+                .OrderBy(x => x.VersionNumber)
+                .FirstOrDefaultAsync();
+        }
         public async Task<TaskSubmission> DeleteSubmission(TaskSubmission taskSubmission)
         {
             _context.TaskSubmissions.Remove(taskSubmission);

@@ -64,8 +64,6 @@ namespace RSR.DAL.Repository.SemesterRepo
             await _context.SaveChangesAsync();
             return semester;
         }
-
-
         public async Task<List<Semester>> GetSemesterWithProjectsForArchive()
         {
             var AllThesis = await _context.Semesters

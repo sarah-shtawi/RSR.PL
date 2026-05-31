@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RSR.DAL.DTOs.Response.TaskRes
 {
-    public  class TaskSubmissionCommentResponse
+    public  class TaskSubmissionCommentResponse 
     {
         public bool Success { get; set; }
         public string message { get; set; }

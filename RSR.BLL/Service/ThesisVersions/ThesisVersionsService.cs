@@ -4,17 +4,13 @@ using RSR.DAL.Data;
 using RSR.DAL.DTOs.Request.ThesisReq;
 using RSR.DAL.DTOs.Response;
 using RSR.DAL.DTOs.Response.ThesisRes;
+using RSR.DAL.Models.ProjectModel;
 using RSR.DAL.Models.ThesisModel;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ThesisFeedBackRepo;
 using RSR.DAL.Repository.ThesisRepo;
 using RSR.DAL.Repository.ThesisVersionsRepo;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace RSR.BLL.Service.ThesisVersions
 {
@@ -40,109 +36,120 @@ namespace RSR.BLL.Service.ThesisVersions
         }
         public async Task<BaseResponse> AddThesisVersion(ThesisVersionRequest request, string studentId, Guid ThesisId)
         {
-            var Thesis = await _thesisRepository.GetThesisById(ThesisId);
-            if (Thesis == null)
+            try
             {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Thesis not found"
-                };
-            }
-            var group = await _groupRepository.GroupByIdRepo(Thesis.GroupId);
-            if (group == null)
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Group Not Found"
-                };
-            }
-            if (!group.Students.Any(s => s.User.Id == studentId))
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Student Not member in this group"
-                };
-            }
-            if (request.ThesisVersionFile == null)
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "File is required"
-                };
-            }
-            var HasFrozenThesis = await _versionsRepository.HasFrozenThesis(ThesisId);
-            if (HasFrozenThesis) 
-            {
-                return new BaseResponse
-                {
-                    Success = false,
-                    Message = "Can't upload new version after final submission"
-                };
-            }
-           
-            var LastVersion = await _versionsRepository.GetLastVersion(Thesis.ThesisId);
-            int newVersion = 1;
-            if(LastVersion is not null)
-            {
-                var LastFeedBack = await _thesisFeedBack.GetLastFeedback(LastVersion.VersionId);
-              // no feedback
-                if (LastFeedBack is null)
+                var Thesis = await _thesisRepository.GetThesisById(ThesisId);
+                if (Thesis == null)
                 {
                     return new BaseResponse
                     {
                         Success = false,
-                        Message = "Previous Version has not been reviewd yet "
+                        Message = "Thesis not found"
                     };
                 }
-                // feedback is  Approved
-                else if (LastFeedBack.Decision == Decision.Approved)
+                var group = await _groupRepository.GroupByIdRepo(Thesis.GroupId);
+                if (group == null)
                 {
                     return new BaseResponse
                     {
                         Success = false,
-                        Message = "Cannot upload new version after acceptance"
+                        Message = "Group Not Found"
                     };
                 }
-                LastVersion.IsLatest = false;
-                await _versionsRepository.UpdateThesisVersion(LastVersion);
-                newVersion = LastVersion.VersionNumber +  1;
-            }
-            string? ThesisFileName = null;
-            if (request.ThesisVersionFile != null)
-            {
-                try
-                {
-                    var ThesisName = await _fileService.UploadThesisFile(request.ThesisVersionFile);
-                    ThesisFileName = ThesisName;
-                }
-                catch (Exception ex)
+                if (!group.Students.Any(s => s.User.Id == studentId))
                 {
                     return new BaseResponse
                     {
                         Success = false,
-                        Message = ex.Message,
+                        Message = "Student Not member in this group"
                     };
                 }
+                if (request.ThesisVersionFile == null)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "File is required"
+                    };
+                }
+                var HasFrozenThesis = await _versionsRepository.HasFrozenThesis(ThesisId);
+                if (HasFrozenThesis)
+                {
+                    return new BaseResponse
+                    {
+                        Success = false,
+                        Message = "Can't upload new version after final submission"
+                    };
+                }
+
+                var LastVersion = await _versionsRepository.GetLastVersion(Thesis.ThesisId);
+                int newVersion = 1;
+                if (LastVersion is not null)
+                {
+                    var LastFeedBack = await _thesisFeedBack.GetLastFeedback(LastVersion.VersionId);
+                    // no feedback
+                    if (LastFeedBack is null)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "Previous Version has not been reviewd yet "
+                        };
+                    }
+                    // feedback is  Approved
+                    else if (LastFeedBack.Decision == Decision.Approved)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = "Cannot upload new version after acceptance"
+                        };
+                    }
+                    LastVersion.IsLatest = false;
+                    await _versionsRepository.UpdateThesisVersion(LastVersion);
+                    newVersion = LastVersion.VersionNumber + 1;
+                }
+                string? ThesisFileName = null;
+                if (request.ThesisVersionFile != null)
+                {
+                    try
+                    {
+                        var ThesisName = await _fileService.UploadThesisFile(request.ThesisVersionFile);
+                        ThesisFileName = ThesisName;
+                    }
+                    catch (Exception ex)
+                    {
+                        return new BaseResponse
+                        {
+                            Success = false,
+                            Message = ex.Message,
+                        };
+                    }
+                }
+                var version = new RSR.DAL.Models.ThesisModel.ThesisVersions
+                {
+                    FileURL = ThesisFileName,
+                    VersionNumber = newVersion,
+                    IsLatest = true,
+                    UploadedAt = DateTime.UtcNow,
+                    studentId = studentId,
+                    ThesisId = Thesis.ThesisId,
+                };
+                await _versionsRepository.AddThesisVersion(version);
+                return new BaseResponse
+                {
+                    Success = true,
+                    Message = "Thesis Uploaded Successfully"
+                };
+            }catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
             }
-            var version = new RSR.DAL.Models.ThesisModel.ThesisVersions
-            {
-                FileURL = ThesisFileName,
-                VersionNumber = newVersion,
-                IsLatest = true ,
-                UploadedAt = DateTime.UtcNow,
-                studentId = studentId,
-                ThesisId = Thesis.ThesisId,
-            };
-            await _versionsRepository.AddThesisVersion(version);
-            return new BaseResponse
-            {
-                Success = true , 
-                Message = "Thesis Uploaded Successfully"
-            };
         }
 
         public async Task<BaseResponse> UpdateThesisVersion(ThesisVersionRequest request, string studentId, Guid ThesisVersionId)
@@ -214,6 +221,8 @@ namespace RSR.BLL.Service.ThesisVersions
 
         public async Task<BaseResponse> ReviewThesisVersion(string supervisorId , Guid VersionId , ReviewThesisRequest request)
         {
+            try
+            {
             var version = await _versionsRepository.GetVersionByIdWithSupervisor(VersionId);
             if (version == null) 
             {
@@ -262,11 +271,23 @@ namespace RSR.BLL.Service.ThesisVersions
             {
                 Success = true,
                 Message = " feedBack added Successfully"
-            }; 
+            };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
          public async Task<BaseResponse> PublishThesisVersion(Guid versionId)
          {
+            try
+            {
             var version = await _versionsRepository.GetVersionById(versionId);
             if(version == null)
             {
@@ -300,6 +321,15 @@ namespace RSR.BLL.Service.ThesisVersions
                 Success = true,
                 Message = "Thesis published Successfully"
             };
+            }catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
         public async Task <List<ThesisArchiveHomePageResponse>> GetThesisHomePage()
@@ -308,5 +338,67 @@ namespace RSR.BLL.Service.ThesisVersions
             var HomePageThesis = publishedThesis.Adapt<List<ThesisArchiveHomePageResponse>>();
             return HomePageThesis;
         }
+
+        public async Task <BaseResponse> FreezeThesis(Guid ThesisVersionId)
+        {
+            try
+            {
+            var version = await _versionsRepository.GetThesisWithProject(ThesisVersionId);
+            if (version == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "version is fot found"
+                };
+            }
+            if (version.IsFrozen)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "This version is already frozen"
+                };
+            }
+            var lastFeedback = await _thesisFeedBack.GetLastFeedback(ThesisVersionId);
+            if (lastFeedback == null) 
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "No FeedBack Found"
+                };
+            }
+            if(lastFeedback.Decision != Decision.Approved)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Only approved thesis can be frozen"
+                };
+            }
+
+            version.IsFrozen = true;
+            version.VisibleByExaminer = true;
+            version.Thesis.Group.Project.ProjectStatus = Status.Completed;
+
+            await _versionsRepository.UpdateThesisVersion(version);
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Thesis frozen successfully"
+            };
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
     }
 }
