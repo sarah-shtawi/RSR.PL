@@ -296,8 +296,40 @@ namespace RSR.BLL.Services.EvaluationService
                 }).ToList();
         }
 
-         // GET MY FORMS
-         public async Task<List<CreateEvaluationFormResponse>>  GetMyFormsAsync()
+        // =========================
+        // GET ALL FORMS
+        // =========================
+        public async Task<List<CreateEvaluationFormResponse>>
+            GetAllFormsAsync()
+        {
+            var forms =
+                await _repository
+                    .GetAllFormsAsync();
+
+            return forms.Select(form =>
+                new CreateEvaluationFormResponse
+                {
+                    Id = form.Id,
+                    Title = form.Title,
+                    AssignTo = form.AssignTo,
+                    Description = form.Description,
+                    Status = form.Status,
+                    CreatedAt = form.CreatedAt,
+
+                    Fields = form.Fields
+                        .Select(f =>
+                            new CreateEvaluationFieldResponse
+                            {
+                                Id = f.Id,
+                                FieldName = f.FieldName,
+                                MinValue = f.MinValue,
+                                MaxValue = f.MaxValue,
+                                IsRequired = f.IsRequired
+                            }).ToList()
+                }).ToList();
+        } 
+        // GET MY FORMS
+        public async Task<List<CreateEvaluationFormResponse>>  GetMyFormsAsync()
         {
             var userRole = _httpContextAccessor.HttpContext?.User
                 .Claims

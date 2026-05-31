@@ -26,6 +26,8 @@ namespace RSR.BLL.Services.EvaluationService
         //get all published forms 
         Task<List<CreateEvaluationFormResponse>> GetPublishedFormsAsync();
 
+        Task<List<CreateEvaluationFormResponse>>  GetAllFormsAsync();
+
         //Delete Draft Forms
         Task<bool> DeleteAsync(int id);
 
