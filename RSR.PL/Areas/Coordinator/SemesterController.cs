@@ -8,7 +8,6 @@ namespace RSR.PL.Areas.Coordinator
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Coordinator")]
     public class SemesterController : ControllerBase
     {
         private readonly ISemesterService _semesterService;
@@ -18,6 +17,7 @@ namespace RSR.PL.Areas.Coordinator
             _semesterService = semesterService;
         }
 
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("CreateSemester")]
         public async Task<IActionResult> CreateSemester([FromBody] CreateSemesterRequest request)
         {
@@ -29,6 +29,7 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("ActiveSemester")]
         public async Task<IActionResult> GetActiveSemester()
         {
@@ -40,6 +41,7 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new {message="success" , semester });
         }
 
+        [Authorize(Roles = "Coordinator,Supervisor")]
         [HttpGet("AllSemesters")]
         public async Task<IActionResult> AllSemesters()
         {
@@ -51,6 +53,7 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message="success" , semesters });
         }
 
+        [Authorize(Roles = "Coordinator")]
         [HttpPatch("UpdateSemester/{Id}")]
         public async Task <IActionResult> updateSemester([FromRoute] Guid Id , [FromBody] CreateSemesterRequest request)
         {

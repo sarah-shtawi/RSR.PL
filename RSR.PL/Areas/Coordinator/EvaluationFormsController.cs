@@ -440,5 +440,19 @@ namespace RSR.PL.Areas.Coordinator
                 });
             }
         }
+
+
+        // GET ALL FORMS
+        // =========================
+        [HttpGet]
+        public async Task<IActionResult>GetAllForms()
+        {
+            var result =
+                await _formService
+                    .GetAllFormsAsync();
+
+            return Ok(result);
+        }
+
     }
 }

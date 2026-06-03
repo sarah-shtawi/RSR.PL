@@ -10,7 +10,7 @@ namespace RSR.DAL.DTOs.Request.ThesisReq
 {
     public  class ThesisRequest
     {
-        public IFormFile ThesisFile { get; set; }
+        public IFormFile? ThesisFile { get; set; }
         public DateTime DeadLine { get; set; }
 
     }

@@ -337,10 +337,25 @@ namespace RSR.BLL.Service.GroupService
             return groupResponse;
 
         }
-
-
-
-
+        public async Task<List<ExaminerGroupResponse>> GetExaminerGroups(string ExaminerId)
+        {
+            var groups = await _groupRepository.GetExaminerGroups(ExaminerId);
+            var response = groups.Select(g => new ExaminerGroupResponse
+            {
+                GroupId = g.GroupId,
+                GroupName = g.GroupName,
+                ProjectName = g.Project.ProjectName,
+                ProjectIdea = g.Project.ProjectIdea,
+                SupervisorName = g.Supervisor.User.FullName,
+                Students = g.Students.Select(st => new StudentResponse
+                {
+                    StudentNumber= st.StudentNumber,
+                    FullName = st.User.FullName,
+                    GroupId = st.GroupId ?? Guid.Empty
+                }).ToList()
+            }).ToList();
+            return response;
+        }
         public async Task<BaseResponse> ChangeSupervisorForGroup( ChangeSupervisorRequest request , Guid GroupId)
         {
             var group = await _groupRepository.GroupByIdRepo(GroupId);
@@ -402,6 +417,8 @@ namespace RSR.BLL.Service.GroupService
                 Message = "Supervisor changed successfully"
             };
         }
+
+
 
     }
 }

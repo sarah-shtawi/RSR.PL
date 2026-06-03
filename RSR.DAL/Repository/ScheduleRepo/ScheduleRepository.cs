@@ -116,12 +116,13 @@ namespace RSR.DAL.Repository.ScheduleRepo
             }).ToListAsync();
             return schedules;
         }
-
-
         public async Task DeleteSchedule(Schedule schedule)
         {
             _context.Schedules.Remove(schedule);
             await _context.SaveChangesAsync();
         }
+
+
+
     }
 }

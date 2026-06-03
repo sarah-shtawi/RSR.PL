@@ -103,13 +103,22 @@ namespace RSR.DAL.Repository.EvaluationRepository
 
             return true;
         }
+        // =========================
+        // GET ALL FORMS
+        // =========================
+        public async Task<List<EvaluationForm>>
+            GetAllFormsAsync()
+        {
+            return await _context.EvaluationForms
+                .Include(f => f.Fields)
+                .OrderByDescending(f => f.CreatedAt)
+                .ToListAsync();
+        }
 
         // =========================
         // GET FORMS BY ROLE
         // =========================
-        public async Task<List<EvaluationForm>>
-            GetPublishedFormsByRoleAsync(
-                string role)
+        public async Task<List<EvaluationForm>>GetPublishedFormsByRoleAsync(string role)
         {
             return await _context.EvaluationForms
                 .Where(f =>

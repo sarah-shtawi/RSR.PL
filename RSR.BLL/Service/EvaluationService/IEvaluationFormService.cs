@@ -34,5 +34,8 @@ namespace RSR.BLL.Services.EvaluationService
 
         // Dashboard statistics
         Task<DashboardStatisticsResponse>  GetDashboardStatisticsAsync();
+
+        Task<List<CreateEvaluationFormResponse>>
+            GetAllFormsAsync();
     }
 }
