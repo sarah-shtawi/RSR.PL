@@ -89,6 +89,42 @@ namespace RSR.PL.Areas.Supervisor
             return Ok(result);
         }
 
+        [Authorize(Roles = "Supervisor")]
+        [HttpPost("Add-Student/groupId/{GroupId}")]
+        public async Task<IActionResult> AddStudentToGroup([FromRoute] Guid GroupId, [FromBody]  ManageStudentToGroup request)
+        {
+            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _groupService.AddStudentToGroup(GroupId, supervisorId , request);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, Message = result.Message });
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = "Supervisor")]
+        [HttpPost("remove-Student/groupId/{GroupId}")]
+        public async Task<IActionResult> RemoveStudentFromGroup([FromRoute] Guid GroupId, [FromBody] ManageStudentToGroup request)
+        {
+            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _groupService.RemoveStudentFromGroup(GroupId, supervisorId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, Message = result.Message });
+            }
+            return Ok(result);
+        }
+        [Authorize(Roles = "Supervisor")]
+        [HttpDelete("remove-group/groupId/{GroupId}")]
+        public async Task<IActionResult> RemoveGroup([FromRoute] Guid GroupId)
+        {
+            var supervisorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _groupService.DeleteGroup(GroupId);
+            if (!result.Success)
+            {
+                return BadRequest(new { success = false, Message = result.Message });
+            }
+            return Ok(result);
+        }
 
         [Authorize(Roles = "Student")]
         [HttpGet("my-group/{studentId}")]
@@ -101,5 +137,8 @@ namespace RSR.PL.Areas.Supervisor
             }
             return Ok(group);
         }
+
+
+
     }
 }

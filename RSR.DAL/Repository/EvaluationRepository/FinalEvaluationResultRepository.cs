@@ -74,11 +74,10 @@ namespace RSR.DAL.Repository.EvaluationRepository
         // GET BY ID
         // =========================
         public async Task<FinalEvaluationResult?>
-            GetByIdAsync(int id)
+            GetByIdAsync(Guid id)
         {
             return await _context.FinalEvaluationResults
-                .FirstOrDefaultAsync(f =>
-                    f.Id == id);
+                .FirstOrDefaultAsync(f => f.GroupId == id);
         }
 
         // =========================

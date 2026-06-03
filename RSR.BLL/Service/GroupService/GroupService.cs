@@ -14,6 +14,7 @@ using RSR.DAL.Repository.ProjectRepo;
 using RSR.DAL.Repository.SemesterRepo;
 using RSR.DAL.Repository.StudentRepo;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 
 namespace RSR.BLL.Service.GroupService
@@ -118,7 +119,7 @@ namespace RSR.BLL.Service.GroupService
                         Message = "No Active Semester Found"
                     };
                 }
-                var group = new Group
+                var group = new DAL.Models.ProjectGroupModel.Group
                 {
                     GroupName = request.GroupName,
                     SemesterId = semester.SemesterId,
@@ -418,7 +419,129 @@ namespace RSR.BLL.Service.GroupService
             };
         }
 
+        public async Task<BaseResponse>AddStudentToGroup(Guid GroupId , string supervisorId, ManageStudentToGroup request)
+        {
+            var group = await _groupRepository.GroupByIdRepo(GroupId);
+            if(group == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "group not found"
+                };
+            }
+            if(group.SupervisorId != supervisorId)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You Can't Added Student For This Group"
+                };
+            }
+            var student = await _studentRepository.GetStudentById(request.StudentId);
+            if(student == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "student not found"
+                };
+            }
+            if (student.GroupId != null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Student already assigned to another group"
+                };
+            }
+            student.GroupId = GroupId;
+            await _context.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Student added successfully"
+            };
+        }
 
+        public async Task<BaseResponse> RemoveStudentFromGroup(Guid GroupId, string supervisorId, ManageStudentToGroup request)
+        {
+            var group = await _groupRepository.GroupByIdRepo(GroupId);
+            if (group == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "group not found"
+                };
+            }
+            if (group.SupervisorId != supervisorId)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "You Can't delete Student For This Group"
+                };
+            }
+            var student = await _studentRepository.GetStudentById(request.StudentId);
+            if (student == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "student not found"
+                };
+            }
+            if (student.GroupId != GroupId)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Student is not in this group"
+                };
+            }
+            student.GroupId = null;
+            await _context.SaveChangesAsync();
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Student Deleted successfully"
+            };
+        }
 
+        public async Task<BaseResponse> DeleteGroup(Guid groupId)
+        {
+            var group = await _context.Groups
+                .Include(g => g.Students)
+                .FirstOrDefaultAsync(g => g.GroupId == groupId);
+
+            if (group == null)
+            {
+                return new BaseResponse
+                {
+                    Success = false,
+                    Message = "Group not found"
+                };
+            }
+
+            // فك ارتباط الطلاب
+            foreach (var student in group.Students)
+            {
+                student.GroupId = null;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // حذف الجروب بعد فك العلاقة
+            _context.Groups.Remove(group);
+
+            await _context.SaveChangesAsync();
+
+            return new BaseResponse
+            {
+                Success = true,
+                Message = "Group deleted successfully"
+            };
+        }
     }
 }

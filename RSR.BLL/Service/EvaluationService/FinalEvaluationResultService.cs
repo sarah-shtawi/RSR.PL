@@ -115,7 +115,7 @@ namespace RSR.BLL.Service.EvaluationService
         // =========================
         // PUBLISH RESULT
         // =========================
-        public async Task<bool>PublishAsync(int id)
+        public async Task<bool>PublishAsync(Guid  id)
         {
             var result =
                 await _finalRepository
@@ -139,7 +139,7 @@ namespace RSR.BLL.Service.EvaluationService
         // =========================
         // SET DRAFT
         // =========================
-        public async Task<bool> SetDraftAsync(int id)
+        public async Task<bool> SetDraftAsync(Guid id)
         {
             var result =
                 await _finalRepository

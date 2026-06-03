@@ -328,7 +328,7 @@ namespace RSR.PL.Areas.Coordinator
         // =========================
         [HttpPost("final-grade/publish/{id}")]
         public async Task<IActionResult>
-            PublishFinalGrade(int id)
+            PublishFinalGrade(Guid id)
         {
             var result =
                 await _finalResultService
@@ -353,7 +353,7 @@ namespace RSR.PL.Areas.Coordinator
          // SET FINAL GRADE AS DRAFT
          [HttpPost("final-grade/draft/{id}")]
         public async Task<IActionResult>
-            SetFinalGradeDraft(int id)
+            SetFinalGradeDraft(Guid id)
         {
             var result =
                 await _finalResultService
