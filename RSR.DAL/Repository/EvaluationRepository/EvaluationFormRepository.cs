@@ -82,6 +82,18 @@ namespace RSR.DAL.Repository.EvaluationRepository
         }
 
         // =========================
+        // GET ALL FORMS
+        // =========================
+        public async Task<List<EvaluationForm>>
+            GetAllFormsAsync()
+        {
+            return await _context.EvaluationForms
+                .Include(f => f.Fields)
+                .OrderByDescending(f => f.CreatedAt)
+                .ToListAsync();
+        } 
+
+        // =========================
         // DELETE DRAFT FORM
         // =========================
         public async Task<bool>
