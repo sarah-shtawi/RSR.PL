@@ -5,39 +5,19 @@ namespace RSR.BLL.Services.EvaluationService
 {
     public interface IEvaluationFormService
     {
-        // CREATE FORM
         Task<CreateEvaluationFormResponse> CreateAsync(CreateEvaluationFormRequest request);
-
-        // GET FORM WITH FIELDS
         Task<CreateEvaluationFormResponse> GetByIdAsync(int id);
-
-        //publish
         Task<bool> PublishAsync(int id);
-        //draft
-         Task<bool> SetDraftAsync(int id);
-        //Archive
+        Task<bool> SetDraftAsync(int id);
         Task<bool> ArchiveAsync(int id);
-
-        //update form
-        Task<UpdateEvaluationFormResponse?> UpdateAsync(
-                  int id,
-            UpdateEvaluationFormRequest request);
-
-        //get all published forms 
+        Task<UpdateEvaluationFormResponse?> UpdateAsync(int id, UpdateEvaluationFormRequest request);
         Task<List<CreateEvaluationFormResponse>> GetPublishedFormsAsync();
-
-        Task<List<CreateEvaluationFormResponse>>  GetAllFormsAsync();
-
-        //Delete Draft Forms
+        Task<List<CreateEvaluationFormResponse>> GetAllFormsAsync();
         Task<bool> DeleteAsync(int id);
-
-        //Get Form By Role
         Task<List<CreateEvaluationFormResponse>> GetMyFormsAsync();
+        Task<DashboardStatisticsResponse> GetDashboardStatisticsAsync();
 
-        // Dashboard statistics
-        Task<DashboardStatisticsResponse>  GetDashboardStatisticsAsync();
-
-        Task<List<CreateEvaluationFormResponse>>
-            GetAllFormsAsync();
+        // NEW - check if coordinator can still create forms
+        Task<(bool canCreateSupervisor, bool canCreateExaminer)> GetFormCreationStatusAsync();
     }
 }

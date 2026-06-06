@@ -4,62 +4,20 @@ namespace RSR.DAL.Repository.EvaluationRepository
 {
     public interface IEvaluationFormRepository
     {
-        // =========================
-        // CREATE
-        // =========================
-        Task<EvaluationForm>
-            CreateAsync(EvaluationForm form);
-
-        // =========================
-        // GET BY ID
-        // =========================
-        Task<EvaluationForm?>
-            GetByIdAsync(int id);
-
-        // =========================
-        // GET WITH FIELDS
-        // =========================
-        Task<EvaluationForm?>
-            GetByIdWithFieldsAsync(int id);
-
-        // =========================
-        // UPDATE
-        // =========================
-        Task<EvaluationForm>
-            UpdateAsync(EvaluationForm form);
-
-        // =========================
-        // GET ALL PUBLISHED
-        // =========================
-        Task<List<EvaluationForm>>
-            GetPublishedFormsAsync();
-
-        // =========================
-        // GET ALL FORMS
-        // =========================
+        Task<EvaluationForm> CreateAsync(EvaluationForm form);
+        Task<EvaluationForm?> GetByIdAsync(int id);
+        Task<EvaluationForm?> GetByIdWithFieldsAsync(int id);
+        Task<EvaluationForm> UpdateAsync(EvaluationForm form);
+        Task<List<EvaluationForm>> GetPublishedFormsAsync();
         Task<List<EvaluationForm>> GetAllFormsAsync();
-
-        // =========================
-        // DELETE
-        // =========================
-        Task<bool>
-            DeleteAsync(int id);
-
-        // =========================
-        // GET FORMS BY ROLE
-        // =========================
+        Task<bool> DeleteAsync(int id);
         Task<List<EvaluationForm>> GetPublishedFormsByRoleAsync(string role);
-
-        // =========================
-        // COUNT ALL FORMS
-        // =========================
-        Task<int>CountAsync();
-
-        // =========================
-        // COUNT PUBLISHED FORMS
-        // =========================
+        Task<int> CountAsync();
         Task<int> CountPublishedAsync();
 
-        Task<List<EvaluationForm>>GetAllFormsAsync();
+        // NEW - filter by semester
+        Task<List<EvaluationForm>> GetFormsBySemesterAsync(Guid semesterId);
+        Task<List<EvaluationForm>> GetPublishedFormsBySemesterAsync(Guid semesterId);
+        Task<List<EvaluationForm>> GetPublishedFormsByRoleAndSemesterAsync(string role, Guid semesterId);
     }
 }

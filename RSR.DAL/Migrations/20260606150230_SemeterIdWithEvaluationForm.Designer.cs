@@ -12,8 +12,8 @@ using RSR.DAL.Data;
 namespace RSR.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260530163015_FixSync")]
-    partial class FixSync
+    [Migration("20260606150230_SemeterIdWithEvaluationForm")]
+    partial class SemeterIdWithEvaluationForm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,6 +207,9 @@ namespace RSR.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("SemesterId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -218,6 +221,8 @@ namespace RSR.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SemesterId");
 
                     b.ToTable("EvaluationForms");
                 });
@@ -380,6 +385,61 @@ namespace RSR.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.DefenseExaminer", b =>
+                {
+                    b.Property<Guid>("DefenseExaminerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ExaminerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("ScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("DefenseExaminerId");
+
+                    b.HasIndex("ExaminerId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("DefenseExaminers");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.Schedule", b =>
+                {
+                    b.Property<Guid>("ScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CoordinatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ScheduleId");
+
+                    b.HasIndex("CoordinatorId");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique();
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
@@ -880,6 +940,17 @@ namespace RSR.DAL.Migrations
                     b.Navigation("EvaluationForm");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationForm", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.SemesterModel.Semester", "Semester")
+                        .WithMany("EvaluationForms")
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Semester");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
                 {
                     b.HasOne("RSR.DAL.Models.Evaluation.EvaluationForm", "EvaluationForm")
@@ -961,6 +1032,44 @@ namespace RSR.DAL.Migrations
                         .HasForeignKey("RSR.DAL.Models.ProjectModel.Project", "GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.DefenseExaminer", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.User.ExaminerProfile", "Examiner")
+                        .WithMany("DefenseExaminers")
+                        .HasForeignKey("ExaminerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RSR.DAL.Models.ScheduleModel.Schedule", "Schedule")
+                        .WithMany("DefenseExaminers")
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Examiner");
+
+                    b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.Schedule", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.User.CoordinatorProfile", "Coordinator")
+                        .WithMany("Schedules")
+                        .HasForeignKey("CoordinatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RSR.DAL.Models.ProjectGroupModel.Group", "Group")
+                        .WithOne("Schedule")
+                        .HasForeignKey("RSR.DAL.Models.ScheduleModel.Schedule", "GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coordinator");
 
                     b.Navigation("Group");
                 });
@@ -1143,6 +1252,9 @@ namespace RSR.DAL.Migrations
                     b.Navigation("Project")
                         .IsRequired();
 
+                    b.Navigation("Schedule")
+                        .IsRequired();
+
                     b.Navigation("Students");
 
                     b.Navigation("Tasks");
@@ -1151,8 +1263,15 @@ namespace RSR.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.ScheduleModel.Schedule", b =>
+                {
+                    b.Navigation("DefenseExaminers");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
                 {
+                    b.Navigation("EvaluationForms");
+
                     b.Navigation("Groups");
                 });
 
@@ -1194,6 +1313,16 @@ namespace RSR.DAL.Migrations
                     b.Navigation("TaskSubmissionComments");
 
                     b.Navigation("ThesisFeedbacks");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.User.CoordinatorProfile", b =>
+                {
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("RSR.DAL.Models.User.ExaminerProfile", b =>
+                {
+                    b.Navigation("DefenseExaminers");
                 });
 
             modelBuilder.Entity("RSR.DAL.Models.User.StudentProfile", b =>

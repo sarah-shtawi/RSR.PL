@@ -242,9 +242,11 @@ namespace RSR.DAL.Data
                .HasForeignKey(d=>d.ExaminerId)
                .OnDelete(DeleteBehavior.NoAction);
 
-
-
-
+            modelBuilder.Entity<EvaluationForm>()
+               .HasOne(f => f.Semester)
+               .WithMany(s => s.EvaluationForms)
+               .HasForeignKey(f => f.SemesterId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             // EvaluationSubmissionAnswer table mapping
             modelBuilder.Entity<EvaluationSubmissionAnswer>()
