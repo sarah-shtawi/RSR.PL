@@ -15,13 +15,13 @@ namespace RSR.BLL.Service.EvaluationService
         // PUBLISH RESULT
         // =========================
         Task<bool>
-            PublishAsync(int id);
+            PublishAsync(Guid id);
 
         // =========================
         // SET RESULT AS DRAFT
         // =========================
         Task<bool>
-            SetDraftAsync(int id);
+            SetDraftAsync(Guid id);
 
         // =========================
         // GET PUBLISHED RESULT

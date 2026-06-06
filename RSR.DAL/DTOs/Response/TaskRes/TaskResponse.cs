@@ -14,6 +14,7 @@ namespace RSR.DAL.DTOs.Response.TaskRes
         public string Title { get; set; }
         public string Description { get; set; }
         public string? SupervisorNotes { get; set; }
+
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public SubmissionStatus Status { get; set; } 
         public DateTime CreatedAt { get; set; }

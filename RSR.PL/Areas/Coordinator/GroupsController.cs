@@ -56,5 +56,20 @@ namespace RSR.PL.Areas.Coordinator
         }
 
 
+        [HttpGet("groups-examiner")]
+        [Authorize(Roles = ("Examiner"))]
+        public async Task<IActionResult> GetExaminerGroups ()
+        {
+            var ExaminerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var groups = await _groupService.GetExaminerGroups(ExaminerId);
+            if (groups == null)
+            {
+                return BadRequest(groups);
+            }
+            return Ok(new { message = "success", groups });
+        }
+
+
     }
 }

@@ -37,6 +37,18 @@ namespace RSR.DAL.Repository.GroupRepo
                 .ToListAsync();
             return groups;
         }
+
+        public async Task <List<Group>> GetExaminerGroups(string ExaminerId )
+        {
+            return await _context.DefenseExaminers.Where(e=>e.ExaminerId == ExaminerId)
+                                             .Include(de=>de.Schedule).ThenInclude(s=>s.Group).ThenInclude(g=>g.Project)
+                                             .Include(de => de.Schedule).ThenInclude(s => s.Group).ThenInclude(g=>g.Supervisor).ThenInclude(s=>s.User)
+                                             .Include(de => de.Schedule).ThenInclude(s => s.Group).ThenInclude(g=>g.Students).ThenInclude(s=>s.User)
+                                             .Select(de => de.Schedule.Group).ToListAsync();
+
+        }
+
+
         public async Task<Group> CreateGroup(Group group)
         {
             await _context.AddAsync(group);
@@ -62,7 +74,6 @@ namespace RSR.DAL.Repository.GroupRepo
             await _context.SaveChangesAsync();
             return group;
         }
-
         public async Task<Group> GetGroupByStudent(string studentId)
         {
             var student = await _context.Students
@@ -73,6 +84,9 @@ namespace RSR.DAL.Repository.GroupRepo
 
             return student.Group;
         }
+
+
+
 
 
     }

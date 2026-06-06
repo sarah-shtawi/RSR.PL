@@ -219,8 +219,42 @@ namespace RSR.BLL.Services.EvaluationService
             return true;
         }
 
-         // UPDATE FORM
-         public async Task<UpdateEvaluationFormResponse?> UpdateAsync(int id, UpdateEvaluationFormRequest request)
+
+        // =========================
+        // GET ALL FORMS
+        // =========================
+        public async Task<List<CreateEvaluationFormResponse>>  GetAllFormsAsync()
+        {
+            var forms = await _repository.GetAllFormsAsync();
+
+            return forms.Select(form =>
+                new CreateEvaluationFormResponse
+                {
+                    Id = form.Id,
+                    Title = form.Title,
+                    AssignTo = form.AssignTo,
+                    Description = form.Description,
+                    Status = form.Status,
+                    CreatedAt = form.CreatedAt,
+
+                    Fields = form.Fields
+                        .Select(f =>
+                            new CreateEvaluationFieldResponse
+                            {
+                                Id = f.Id,
+                                FieldName = f.FieldName,
+                                MinValue = f.MinValue,
+                                MaxValue = f.MaxValue,
+                                IsRequired = f.IsRequired
+                            }).ToList()
+                }).ToList();
+        }
+        // =========================
+        // UPDATE FORM
+        // =========================
+        public async Task<UpdateEvaluationFormResponse?> UpdateAsync(
+            int id,
+            UpdateEvaluationFormRequest request)
         {
             try
             {
@@ -278,8 +312,10 @@ namespace RSR.BLL.Services.EvaluationService
         }
 
 
-         // GET ALL PUBLISHED FORMS
-         public async Task<List<CreateEvaluationFormResponse>> GetPublishedFormsAsync()
+        // =========================
+        // GET ALL PUBLISHED FORMS
+        // =========================
+        public async Task<List<CreateEvaluationFormResponse>>GetPublishedFormsAsync()
         {
             var forms = await _repository.GetPublishedFormsAsync();
 
@@ -294,6 +330,8 @@ namespace RSR.BLL.Services.EvaluationService
                     CreatedAt = form.CreatedAt
                 }).ToList();
         }
+
+
 
         // =========================
         // GET ALL FORMS

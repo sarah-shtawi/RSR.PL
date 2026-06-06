@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RSR.BLL.Service.Authentication;
+using RSR.BLL.Service.Dashbored;
 using RSR.BLL.Service.EmailSender;
 using RSR.BLL.Service.EvaluationService;
 using RSR.BLL.Service.Files;
@@ -14,7 +15,8 @@ using RSR.BLL.Service.ThesisVersions;
 using RSR.BLL.Service.Token;
 using RSR.BLL.Service.Users;
 using RSR.BLL.Services.EvaluationService;
- using RSR.DAL.Repository.EvaluationRepository;
+using RSR.DAL.Repository.Dashboared;
+using RSR.DAL.Repository.EvaluationRepository;
 using RSR.DAL.Repository.GroupRepo;
 using RSR.DAL.Repository.ProjectRepo;
 using RSR.DAL.Repository.ScheduleRepo;
@@ -77,6 +79,11 @@ namespace RSR.PL
 
             Services.AddScoped<IScheduleRepository, ScheduleRepository>();
             Services.AddScoped<IScheduleService, ScheduleService>();
+
+            Services.AddScoped<IDashboredService, DashboredService>();
+
+            Services.AddScoped<IDashboardRepo, DashboardRepo>();
+
 
             // Evaluation Services
             Services.AddScoped<IEvaluationFieldService, EvaluationFieldService>();

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RSR.BLL.Service.Task;
 using RSR.DAL.DTOs.Request.TaskReq;
+using RSR.DAL.DTOs.Response;
+using RSR.DAL.Repository.GroupRepo;
 using System.Security.Claims;
 
 namespace RSR.PL.Areas.Supervisor
@@ -12,10 +14,12 @@ namespace RSR.PL.Areas.Supervisor
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
+        private readonly IGroupRepository _groupRepository;
 
-        public TaskController(ITaskService taskService)
+        public TaskController(ITaskService taskService , IGroupRepository groupRepository)
         {
             _taskService = taskService;
+            _groupRepository = groupRepository;
         }
         [Authorize(Roles = "Supervisor")]
         [HttpPost("create/{GroupId}")]
@@ -36,6 +40,16 @@ namespace RSR.PL.Areas.Supervisor
         [HttpGet("tasks-group/{GroupId}")]
         public async Task <IActionResult> GetTasksByGroup([FromRoute] Guid GroupId)
         {
+            var group = await _groupRepository.GroupByIdRepo(GroupId);
+
+            if (group == null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    Success = false,
+                    Message = "Group not found"
+                });
+            }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var role = User.FindFirstValue(ClaimTypes.Role);
             var Tasks = await _taskService.GetTasksByGroupForSupervisor(GroupId ,userId , role);

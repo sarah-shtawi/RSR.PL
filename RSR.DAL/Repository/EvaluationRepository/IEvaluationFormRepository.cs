@@ -59,5 +59,7 @@ namespace RSR.DAL.Repository.EvaluationRepository
         // COUNT PUBLISHED FORMS
         // =========================
         Task<int> CountPublishedAsync();
+
+        Task<List<EvaluationForm>>GetAllFormsAsync();
     }
 }

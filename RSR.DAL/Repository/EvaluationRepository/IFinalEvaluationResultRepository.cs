@@ -10,6 +10,8 @@ namespace RSR.DAL.Repository.EvaluationRepository
         Task<FinalEvaluationResult>
             CreateAsync(FinalEvaluationResult result);
 
+
+
         // =========================
         // GET BY GROUP ID
         // =========================
@@ -32,7 +34,7 @@ namespace RSR.DAL.Repository.EvaluationRepository
         // GET BY ID
         // =========================
         Task<FinalEvaluationResult?>
-            GetByIdAsync(int id);
+            GetByIdAsync(Guid id);
 
         // =========================
         // SAVE CHANGES

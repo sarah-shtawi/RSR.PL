@@ -18,5 +18,9 @@ namespace RSR.BLL.Service.GroupService
         Task<GroupResponse> GetGroupById(Guid groupId , string userId , string role);
         Task<GroupResponse> GetGroupByStudent(string studentId);
         Task<BaseResponse> ChangeSupervisorForGroup(ChangeSupervisorRequest request, Guid GroupId);
+        Task<List<ExaminerGroupResponse>> GetExaminerGroups(string ExaminerId);
+        Task<BaseResponse> AddStudentToGroup(Guid GroupId,string supervisorId , ManageStudentToGroup request);
+        Task<BaseResponse> RemoveStudentFromGroup(Guid GroupId, string supervisorId, ManageStudentToGroup request);
+        Task<BaseResponse> DeleteGroup(Guid groupId);
     }
 }
