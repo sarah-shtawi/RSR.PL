@@ -59,6 +59,14 @@ namespace RSR.DAL.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // hide when the semester ended 
+            modelBuilder.Entity<Group>().HasQueryFilter(g => g.Semester.IsActive);
+            modelBuilder.Entity<Task>().HasQueryFilter(t => t.Group.Semester.IsActive);
+            modelBuilder.Entity<TaskSubmission>().HasQueryFilter(ts => ts.Task.Group.Semester.IsActive);
+            modelBuilder.Entity<Schedule>().HasQueryFilter(s => s.Group.Semester.IsActive);
+            modelBuilder.Entity<StudentProfile>().HasQueryFilter(s => s.Group.Semester.IsActive);
+
+
             // Change Names of Identity Tables
             modelBuilder.Entity<ApplicationUser>().ToTable("Users");
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
