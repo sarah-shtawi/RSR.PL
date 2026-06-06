@@ -204,6 +204,9 @@ namespace RSR.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("SemesterId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -215,6 +218,8 @@ namespace RSR.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SemesterId");
 
                     b.ToTable("EvaluationForms");
                 });
@@ -932,6 +937,17 @@ namespace RSR.DAL.Migrations
                     b.Navigation("EvaluationForm");
                 });
 
+            modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationForm", b =>
+                {
+                    b.HasOne("RSR.DAL.Models.SemesterModel.Semester", "Semester")
+                        .WithMany("EvaluationForms")
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Semester");
+                });
+
             modelBuilder.Entity("RSR.DAL.Models.Evaluation.EvaluationSubmission", b =>
                 {
                     b.HasOne("RSR.DAL.Models.Evaluation.EvaluationForm", "EvaluationForm")
@@ -1251,6 +1267,8 @@ namespace RSR.DAL.Migrations
 
             modelBuilder.Entity("RSR.DAL.Models.SemesterModel.Semester", b =>
                 {
+                    b.Navigation("EvaluationForms");
+
                     b.Navigation("Groups");
                 });
 

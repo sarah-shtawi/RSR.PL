@@ -1,9 +1,5 @@
-﻿using RSR.DAL.Models.ProjectGroupModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RSR.DAL.Models.Evaluation;
+using RSR.DAL.Models.ProjectGroupModel;
 
 namespace RSR.DAL.Models.SemesterModel
 {
@@ -13,7 +9,11 @@ namespace RSR.DAL.Models.SemesterModel
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public bool IsActive { get; set; } 
+        public bool IsActive { get; set; }
+
         public List<Group> Groups { get; set; }
+
+        // EVALUATION FORMS
+        public List<EvaluationForm> EvaluationForms { get; set; } = new();
     }
 }
