@@ -83,7 +83,7 @@ namespace RSR.DAL.Repository.ScheduleRepo
         }
         public async Task <ScheduleResponse?> GetScheduleForStudent(string studentId)
         {
-            var schedule = await _context.Schedules.Where(s=>s.Group.Students.Any(s=>s.UserId == studentId)).Select(s=> new ScheduleResponse
+            var schedule = await _context.Schedules.Where(s=> s.Group.Students.Any(s=>s.UserId == studentId)).Select(s=> new ScheduleResponse
             {
                 ScheduleId = s.ScheduleId,
                 GroupName = s.Group.GroupName,
@@ -101,7 +101,7 @@ namespace RSR.DAL.Repository.ScheduleRepo
         }
         public async Task <List<ScheduleResponse?>> GetSchedulesForExaminer(string ExaminerId)
         {
-            var schedules = await _context.Schedules.Where(s => s.DefenseExaminers.Any(e => e.ExaminerId == ExaminerId)).Select(s => new ScheduleResponse
+            var schedules = await _context.Schedules.Where(s =>   s.DefenseExaminers.Any(e => e.ExaminerId == ExaminerId)).Select(s => new ScheduleResponse
             {
                 ScheduleId = s.ScheduleId,
                 GroupName = s.Group.GroupName,

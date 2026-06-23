@@ -24,6 +24,21 @@ namespace RSR.PL.Areas.Evaluation.Controllers
         // =========================
         // SUBMIT EVALUATION
         // =========================
+
+        [HttpGet("my-submissions/{formId}")]
+        public async Task<IActionResult> GetMySubmissions(int formId)
+        {
+            try
+            {
+                var result = await _submissionService
+                    .GetMySubmissionsAsync(formId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> Submit(
     [FromBody] SubmitEvaluationRequest request)

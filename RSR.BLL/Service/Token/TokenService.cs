@@ -36,9 +36,9 @@ namespace RSR.BLL.Service.Token
                 await _userManager.GetRolesAsync(user);
 
             // CHECK ROLE
-            if (!roles.Contains(loginAs))
+            if (!roles.Any(r => r.Equals(loginAs, StringComparison.OrdinalIgnoreCase)))
             {
-                throw new Exception("Invalid role");
+                return null;
             }
 
             // CLAIMS

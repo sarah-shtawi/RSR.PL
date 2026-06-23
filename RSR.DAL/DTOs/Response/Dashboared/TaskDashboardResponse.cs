@@ -8,6 +8,7 @@ namespace RSR.DAL.DTOs.Response.Dashboared
 {
     public  class TaskDashboardResponse
     {
+        public Guid TaskId { get; set; }
         public Guid TaskSubmissionId { get; set; }
         public string title { get; set; }
         public string GroupName { get; set; }

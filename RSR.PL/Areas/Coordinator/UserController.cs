@@ -16,7 +16,6 @@ namespace RSR.PL.Areas.Coordinator
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Coordinator")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -25,6 +24,7 @@ namespace RSR.PL.Areas.Coordinator
             _userService = userService;
         }
 
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("AssignStudent")]
         public async Task <IActionResult> AssignStudent([FromForm] AssignStudentRequest Request)
         {
@@ -37,6 +37,7 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("AssignSupervisor")]
         public async Task<IActionResult> AssignSupervisor([FromForm] AssignSupervisorRequest Request)
         {
@@ -48,6 +49,8 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("AssignCoordinater")]
         public async Task<IActionResult> AssignCoordinater([FromForm] AssignCoordinaterRequest Request)
         {
@@ -60,6 +63,8 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+       
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("AssignExaminer")]
         public async Task<IActionResult> AssignExaminer([FromForm] AssignExaminerRequest Request)
         {
@@ -71,6 +76,8 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+     
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("students")]
         public async Task<IActionResult> getStudent()
         {
@@ -83,6 +90,9 @@ namespace RSR.PL.Areas.Coordinator
             return Ok( new { message = "success", students } );
         }
 
+
+      
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("coordinaters")]
         public async Task<IActionResult> getCoordinaters()
         {
@@ -95,6 +105,10 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(new { message = "success", coordinaters });
         }
+       
+        
+
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("supervisors")]
         public async Task<IActionResult> getSupervisors()
         {
@@ -107,6 +121,10 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", supervisors });
         }
 
+
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("examiners")]
         public async Task<IActionResult> getExaminers()
         {
@@ -119,6 +137,10 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", examiners });
         }
 
+
+
+
+        [Authorize(Roles = "Coordinator,Student")]
         [HttpGet("student/{Id}")]
         public async Task<IActionResult> getStudentById([FromRoute] string id)
         {
@@ -128,9 +150,11 @@ namespace RSR.PL.Areas.Coordinator
                 return NotFound();
             }
             return Ok(new { message = "success", student });
-
         }
 
+
+
+        [Authorize(Roles = "Coordinator,Supervisor")]
         [HttpGet("supervisor/{Id}")]
         public async Task<IActionResult> getSupervisorById([FromRoute] string id)
         {
@@ -142,6 +166,9 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", supervisor });
         }
 
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpGet("coordinater/{Id}")]
         public async Task<IActionResult> getCoordinater([FromRoute] string id)
         {
@@ -153,6 +180,9 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", coordinater });
         }
 
+
+
+        [Authorize(Roles = "Coordinator,Examiner")]
         [HttpGet("examiner/{Id}")]
         public async Task<IActionResult> getExaminer([FromRoute] string id)
         {
@@ -164,6 +194,10 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(new { message = "success", Examiner });
         }
 
+
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPost("image-profile-coordinater")]
         public async Task<IActionResult> AssignImageCoordinator([FromForm] UploadImageRequest image)
         {
@@ -176,6 +210,9 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPatch("update-student/{studentId}")]
         public async Task<IActionResult> UpdateStudent([FromBody] UpdateStudentRequest request , [FromRoute] string studentId)
         {
@@ -186,7 +223,11 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(result);
         }
+       
+        
+
         [HttpPatch("update-supervisor/{supervisorId}")]
+        [Authorize(Roles = "Coordinator")]
         public async Task<IActionResult> UpdateSupervisor([FromBody] UpdateSupervisorRequest request, [FromRoute] string supervisorId)
         {
             var result = await _userService.UpdateUserWithProfile(supervisorId, request);
@@ -196,7 +237,12 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(result);
         }
+      
+
+
+        
         [HttpPatch("update-examiner/{examinerId}")]
+        [Authorize(Roles = "Coordinator")]
         public async Task<IActionResult> UpdateExaminer([FromBody] UpdateExaminerRequest request, [FromRoute] string examinerId)
         {
             var result = await _userService.UpdateUserWithProfile(examinerId, request);
@@ -206,6 +252,10 @@ namespace RSR.PL.Areas.Coordinator
             }
             return Ok(result);
         }
+
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPatch("update-coordinater/{coordinaterId}")]
         public async Task<IActionResult> UpdateCoordinater([FromBody] UpdateCoordinaterRequest request, [FromRoute] string coordinaterId)
         {
@@ -217,6 +267,9 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPatch("block/{userId}")]
         public async Task <IActionResult> BlockUser([FromRoute] string userId)
         {
@@ -228,6 +281,8 @@ namespace RSR.PL.Areas.Coordinator
             return Ok(result);
         }
 
+
+        [Authorize(Roles = "Coordinator")]
         [HttpPatch("unblock/{userId}")]
         public async Task<IActionResult> unBlockUser([FromRoute] string userId)
         {

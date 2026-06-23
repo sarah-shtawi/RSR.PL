@@ -41,8 +41,6 @@ namespace RSR.DAL.Models.Evaluation
         // =========================
         // ANSWERS
         // =========================
-        public ICollection<EvaluationSubmissionAnswer> Answers
-        { get; set; }
-            = new List<EvaluationSubmissionAnswer>();
+        public ICollection<EvaluationSubmissionAnswer> Answers{ get; set; }= new List<EvaluationSubmissionAnswer>();
     }
 }

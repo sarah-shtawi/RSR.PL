@@ -47,8 +47,6 @@ namespace RSR.DAL.Repository.GroupRepo
                                              .Select(de => de.Schedule.Group).ToListAsync();
 
         }
-
-
         public async Task<Group> CreateGroup(Group group)
         {
             await _context.AddAsync(group);
@@ -57,7 +55,8 @@ namespace RSR.DAL.Repository.GroupRepo
         }
         public async Task<Group> GroupByIdRepo(Guid GroupId)
         {
-            var group = await  _context.Groups.Include(g=>g.Project)
+            var group = await  _context.Groups
+                .Include(g=>g.Project)
                 .Include(g=>g.Students).ThenInclude(s=>s.User)
                 .Include(g=>g.Thesis)
                 .Include(g=>g.Schedule)

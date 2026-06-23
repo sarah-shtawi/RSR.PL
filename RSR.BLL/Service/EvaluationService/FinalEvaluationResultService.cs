@@ -118,8 +118,7 @@ namespace RSR.BLL.Service.EvaluationService
         public async Task<bool>PublishAsync(Guid  id)
         {
             var result =
-                await _finalRepository
-                    .GetByIdAsync(id);
+                await _finalRepository.GetByIdAsync(id);
 
             if (result == null)
             {

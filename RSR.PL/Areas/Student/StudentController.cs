@@ -16,53 +16,36 @@ namespace RSR.PL.Areas.Student
     {
         private readonly IUserService _userService;
 
-        private readonly IFinalEvaluationResultService
-            _finalResultService;
+        private readonly IFinalEvaluationResultService _finalResultService;
 
-        public StudentController(
-            IUserService userService,
-            IFinalEvaluationResultService finalResultService)
+        public StudentController(IUserService userService,IFinalEvaluationResultService finalResultService)
         {
             _userService = userService;
-
             _finalResultService = finalResultService;
         }
-
-         // UPLOAD PROFILE IMAGEeeee
          [HttpPost("image-profile-student")]
-        public async Task<IActionResult>
-            AssignImageStudent(
-            [FromForm] UploadImageRequest image)
+        public async Task<IActionResult>AssignImageStudent([FromForm] UploadImageRequest image)
         {
-            var userId =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
-
-            var result =
-                await _userService
-                    .AssignImage<StudentProfile>(
-                        image,
-                        userId);
-
+            var userId =User.FindFirstValue( ClaimTypes.NameIdentifier);
+            var result = await _userService.AssignImage<StudentProfile>(image,userId);
             if (!result.Success)
             {
                 return BadRequest();
             }
-
             return Ok(result);
         }
+     
+        
 
-         // GET FINAL GRADE
-         [HttpGet("final-grade/{groupId}")]
-        public async Task<IActionResult>
-            GetFinalGrade(Guid groupId)
+
+        
+        
+        [HttpGet("final-grade/{groupId}")]
+        public async Task<IActionResult> GetFinalGrade(Guid groupId)
         {
             try
             {
-                var result =
-                    await _finalResultService
-                        .GetStudentFinalGradeAsync(groupId);
-
+                var result =await _finalResultService.GetStudentFinalGradeAsync(groupId);
                 return Ok(result);
             }
             catch (Exception ex)

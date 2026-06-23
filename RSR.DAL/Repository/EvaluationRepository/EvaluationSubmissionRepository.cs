@@ -15,50 +15,60 @@ namespace RSR.DAL.Repository.EvaluationRepository
             _context = context;
         }
 
-        public async Task<EvaluationSubmission>
-            CreateAsync(EvaluationSubmission submission)
+        public async Task<EvaluationSubmission>CreateAsync(EvaluationSubmission submission)
         {
-            await _context.EvaluationSubmissions
-                .AddAsync(submission);
-
+            await _context.EvaluationSubmissions.AddAsync(submission);
             await _context.SaveChangesAsync();
-
             return submission;
         }
 
-        // =========================
-        // NO DUPLICATE SUBMISSION
-        // =========================
         public async Task<bool>
-            HasUserSubmittedAsync(
-                int formId,
-                string userId)
+         HasUserSubmittedAsync(
+             int formId,
+             Guid groupId,
+             string userId)
         {
             return await _context.EvaluationSubmissions
                 .AnyAsync(s =>
                     s.EvaluationFormId == formId &&
+                    s.GroupId == groupId &&
+                    s.SubmittedByUserId == userId);
+        }
+        // GET GROUP SUBMISSIONS
+
+        public async Task<EvaluationSubmission?> GetUserSubmissionAsync(int formId, string userId)
+        {
+            return await _context.EvaluationSubmissions
+                .Include(s => s.Answers)
+                .FirstOrDefaultAsync(s =>
+                    s.EvaluationFormId == formId &&
                     s.SubmittedByUserId == userId);
         }
 
-         // GET GROUP SUBMISSIONS
- 
-        
-        public async Task<List<EvaluationSubmission>>
-            GetGroupSubmissionsAsync(Guid groupId)
+
+        public async Task<List<EvaluationSubmission>>GetGroupSubmissionsAsync(Guid groupId)
         {
             return await _context.EvaluationSubmissions
                 .Include(s => s.EvaluationForm)
-                .Where(s =>
-                    s.GroupId == groupId)
+                .Where(s => s.GroupId == groupId)
                 .ToListAsync();
         }
 
          // COUNT SUBMISSIONS
          public async Task<int> CountAsync()
         {
-            return await _context
-                .EvaluationSubmissions
-                .CountAsync();
+            return await _context.EvaluationSubmissions.CountAsync();
+        }
+
+
+        public async Task<List<EvaluationSubmission>> GetUserSubmissionsByFormAsync(
+    int formId, string userId)
+        {
+            return await _context.EvaluationSubmissions
+                .Where(s =>
+                    s.EvaluationFormId == formId &&
+                    s.SubmittedByUserId == userId)
+                .ToListAsync();
         }
     }
 }

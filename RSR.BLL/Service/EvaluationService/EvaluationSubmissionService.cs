@@ -158,10 +158,11 @@ namespace RSR.BLL.Service.EvaluationService
                 // PREVENT DUPLICATE SUBMISSION
                 // =========================
                 var alreadySubmitted =
-                    await _submissionRepository
-                    .HasUserSubmittedAsync(
-                        request.EvaluationFormId,
-                        userId);
+       await _submissionRepository
+           .HasUserSubmittedAsync(
+               request.EvaluationFormId,
+               request.GroupId,
+               userId);
 
                 if (alreadySubmitted)
                 {
@@ -406,6 +407,49 @@ namespace RSR.BLL.Service.EvaluationService
                 SupervisorGrade = supervisorGrade,
                 ExaminerGrade = examinerGrade,
                 FinalGrade = finalGrade
+            };
+        }
+
+        public async Task<List<SubmissionGroupTotalResponse>> GetMySubmissionsAsync(int formId)
+        {
+            var userId = _httpContextAccessor
+                .HttpContext?.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var submissions = await _submissionRepository
+                .GetUserSubmissionsByFormAsync(formId, userId);
+
+            return submissions.Select(s => new SubmissionGroupTotalResponse
+            {
+                GroupId = s.GroupId,
+                Total = s.TotalScore
+            }).ToList();
+        }
+        public async Task<SubmitEvaluationResponse?> GetMySubmissionAsync(int formId)
+        {
+            var userId = _httpContextAccessor
+                .HttpContext?.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                throw new Exception("User not found");
+
+            var submission = await _submissionRepository
+                .GetUserSubmissionAsync(formId, userId);
+
+            if (submission == null) return null;
+
+            return new SubmitEvaluationResponse
+            {
+                SubmissionId = submission.Id,
+                EvaluationFormId = submission.EvaluationFormId,
+                SubmittedAt = submission.SubmittedAt,
+                Answers = submission.Answers
+                    .Select(a => new SubmitEvaluationAnswerResponse
+                    {
+                        EvaluationFieldId = a.EvaluationFieldId,
+                        Value = a.Value
+                    }).ToList()
             };
         }
     }
