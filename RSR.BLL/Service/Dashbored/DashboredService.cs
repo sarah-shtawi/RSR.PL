@@ -64,6 +64,7 @@ namespace RSR.BLL.Service.Dashbored
             var response = submissions
                  .Select(ts => new TaskDashboardResponse
                    {
+                     TaskId = ts.TaskId,
                     TaskSubmissionId = ts.TaskSubmissionId,
                     title = ts.Task.Title,
                     GroupName = ts.Task.Group.GroupName,
@@ -78,7 +79,9 @@ namespace RSR.BLL.Service.Dashbored
             var versions = await _coordinatorRepoDash.ThesisVersionsNeedFeedback(supervisorId);
             var response = versions.Select(v => new ThesisDashboardResponse
             {
+                ThesisId = v.ThesisId,
                 ThesisVersionId = v.VersionId,
+                GroupId = v.Thesis.GroupId,
                 ProjectName = v.Thesis.Group.Project.ProjectName,
                 GroupName = v.Thesis.Group.GroupName,
                 UploadedAt = v.UploadedAt,

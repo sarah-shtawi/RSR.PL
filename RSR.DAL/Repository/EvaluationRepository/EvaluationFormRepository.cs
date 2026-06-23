@@ -23,14 +23,13 @@ namespace RSR.DAL.Repository.EvaluationRepository
 
         public async Task<EvaluationForm?> GetByIdAsync(int id)
         {
-            return await _context.EvaluationForms
-                .FirstOrDefaultAsync(f => f.Id == id);
+            return await _context.EvaluationForms.FirstOrDefaultAsync(f => f.Id == id);
         }
 
         public async Task<EvaluationForm?> GetByIdWithFieldsAsync(int id)
         {
             return await _context.EvaluationForms
-                .Include(f => f.Fields)
+                 .Include(f => f.Fields)
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
@@ -72,7 +71,7 @@ namespace RSR.DAL.Repository.EvaluationRepository
         public async Task<List<EvaluationForm>> GetPublishedFormsByRoleAsync(string role)
         {
             return await _context.EvaluationForms
-                .Where(f => f.Status == FormStatus.Published && f.AssignTo == role)
+                .Where(f =>  f.Status == FormStatus.Published && f.AssignTo == role)
                 .Include(f => f.Fields)
                 .ToListAsync();
         }
@@ -88,7 +87,6 @@ namespace RSR.DAL.Repository.EvaluationRepository
                 .CountAsync(f => f.Status == FormStatus.Published);
         }
 
-        // NEW
         public async Task<List<EvaluationForm>> GetFormsBySemesterAsync(Guid semesterId)
         {
             return await _context.EvaluationForms

@@ -26,7 +26,7 @@ namespace RSR.DAL.Repository.StudentRepo
         }
         public async Task <List<StudentProfile>>? GetCurrentStudentByGroupId(Guid groupId)
         {
-            var CurrentStudents = await _context.Students.Where(s =>s.GroupId == groupId).ToListAsync();
+            var CurrentStudents = await _context.Students.Where(s =>s.GroupId == groupId ).ToListAsync();
             if(CurrentStudents is null)
             {
                 return null;

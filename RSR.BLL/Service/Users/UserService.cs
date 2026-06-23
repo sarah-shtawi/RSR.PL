@@ -350,19 +350,21 @@ namespace RSR.BLL.Service.Users
         public async Task<BaseResponse> unBlockUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
-                return new BaseResponse()
+                return new BaseResponse
                 {
                     Success = false,
                     Message = "User Not Found"
                 };
             }
+
             await _userManager.SetLockoutEnabledAsync(user, false);
             await _userManager.SetLockoutEndDateAsync(user, null);
             user.IsActive = true;
             await _userManager.UpdateAsync(user);
-            return new BaseResponse()
+            return new BaseResponse
             {
                 Success = true,
                 Message = "User Is unBlocked"

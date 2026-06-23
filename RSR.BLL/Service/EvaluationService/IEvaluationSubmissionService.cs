@@ -16,5 +16,8 @@ namespace RSR.BLL.Service.EvaluationService
         // FIXED HERE
         Task<FinalGradeResponse>
             GetFinalGradeAsync(Guid groupId);
+
+        Task<List<SubmissionGroupTotalResponse>> GetMySubmissionsAsync(int formId);
+        Task<SubmitEvaluationResponse?> GetMySubmissionAsync(int formId); 
     }
 }

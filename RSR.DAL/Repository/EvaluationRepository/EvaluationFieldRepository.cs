@@ -15,39 +15,35 @@ namespace RSR.DAL.Repository.EvaluationRepository
 
          // CREATE FIELD
          public async Task<EvaluationField> CreateAsync(EvaluationField field)
-        {
+         {
             await _context.EvaluationFields.AddAsync(field);
             await _context.SaveChangesAsync();
-
             return field;
-        }
+         }
 
          // GET FIELD BY ID
          public async Task<EvaluationField?> GetByIdAsync(int id)
         {
             return await _context.EvaluationFields
-                .FirstOrDefaultAsync(f => f.Id == id);
+           .FirstOrDefaultAsync(f => f.Id == id);
         }
 
          // DELETE FIELD
          public async Task<bool> DeleteAsync(int id)
         {
-            var field = await _context.EvaluationFields
-                .FirstOrDefaultAsync(f => f.Id == id);
+            var field = await _context.EvaluationFields.FirstOrDefaultAsync(f => f.Id == id);
 
             if (field == null)
                 return false;
 
             _context.EvaluationFields.Remove(field);
-
             await _context.SaveChangesAsync();
-
             return true;
         }
 
          // UPDATE FIELD
          public async Task<EvaluationField?> UpdateAsync(EvaluationField field)
-        {
+          {
             var existingField = await _context.EvaluationFields
                 .FirstOrDefaultAsync(f => f.Id == field.Id);
 
@@ -62,6 +58,6 @@ namespace RSR.DAL.Repository.EvaluationRepository
             await _context.SaveChangesAsync();
 
             return existingField;
-        }
+         }
     }
 }
