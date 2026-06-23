@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSR — Seed Users</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #6366f1;
+      --primary-light: #eef2ff;
+
+      --coordinator: #0ea5e9;
+      --coordinator-bg: #e0f2fe;
+      --supervisor: #10b981;
+      --supervisor-bg: #d1fae5;
+      --examiner: #f59e0b;
+      --examiner-bg: #fef3c7;
+      --student: #ec4899;
+      --student-bg: #fce7f3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 32px 24px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .password-global {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+
+    .password-global strong { color: var(--primary); }
+    .password-global code {
+      font-family: monospace;
+      font-size: 15px;
+      background: var(--primary-light);
+      padding: 3px 10px;
+      border-radius: 6px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .section { margin-bottom: 36px; }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .badge-Coordinator { background: var(--coordinator-bg); color: var(--coordinator); }
+    .badge-Supervisor  { background: var(--supervisor-bg);  color: var(--supervisor);  }
+    .badge-Examiner    { background: var(--examiner-bg);    color: var(--examiner);    }
+    .badge-Student     { background: var(--student-bg);     color: var(--student);     }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-Coordinator { background: var(--coordinator); }
+    .dot-Supervisor  { background: var(--supervisor);  }
+    .dot-Examiner    { background: var(--examiner);    }
+    .dot-Student     { background: var(--student);     }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .card-number {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .field-label {
+      color: var(--muted);
+      width: 68px;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    .field-value {
+      font-family: monospace;
+      font-size: 13px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .copy-btn {
+      border: none;
+      background: #f1f5f9;
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover { background: var(--primary-light); color: var(--primary); }
+    .copy-btn.copied { background: #d1fae5; color: #065f46; }
+
+    .copy-row-btn {
+      align-self: flex-end;
+      border: none;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background .15s;
+    }
+
+    .copy-row-btn:hover { background: #c7d2fe; }
+    .copy-row-btn.copied { background: #d1fae5; color: #065f46; }
+  </style>
+</head>
+<body>
+
+  <h1>RSR — Seed Users</h1>
+  <p class="subtitle">All seeded accounts and their credentials for testing.</p>
+
+  <div class="password-global">
+    🔑 All accounts share the password:
+    <code id="global-pw">Admin@123456</code>
+    <button class="copy-btn" onclick="copyText('Admin@123456', this)">Copy</button>
+  </div>
+
+  <div id="root"></div>
+
+  <script>
+    const PASSWORD = "Admin@123456";
+
+    const users = [
+      // Coordinators
+      { role: "Coordinator", name: "Sarah Jalal Shtawi",  userName: "SarahJalal123",   email: "sarah.sht03@gmail.com",      number: "201055223", extra: "Computer Science" },
+      { role: "Coordinator", name: "Layla Hassan Nasser", userName: "LaylaHassan456",   email: "layla.hassan@university.edu", number: "201055224", extra: "Information Technology" },
+      { role: "Coordinator", name: "Omar Khaled Younis",  userName: "OmarKhaled789",    email: "omar.younis@university.edu",  number: "201055225", extra: "Software Engineering" },
+
+      // Supervisors
+      { role: "Supervisor", name: "Ahmed Ramzi Khalil",  userName: "AhmedRamzi101",  email: "ahmed.ramzi@university.edu",    number: "SUP-1001", extra: "Computer Science" },
+      { role: "Supervisor", name: "Nour Salim Haddad",   userName: "NourSalim202",   email: "nour.haddad@university.edu",    number: "SUP-1002", extra: "Information Technology" },
+      { role: "Supervisor", name: "Rami Fouad Jaber",    userName: "RamiFouad303",   email: "rami.jaber@university.edu",     number: "SUP-1003", extra: "Software Engineering" },
+      { role: "Supervisor", name: "Hana Ziad Mustafa",   userName: "HanaZiad404",    email: "hana.mustafa@university.edu",   number: "SUP-1004", extra: "Cybersecurity" },
+      { role: "Supervisor", name: "Yousef Adel Barakat", userName: "YousefAdel505",  email: "yousef.barakat@university.edu", number: "SUP-1005", extra: "Data Science" },
+
+      // Examiners
+      { role: "Examiner", name: "Samer Wael Najjar",   userName: "SamerWael601",   email: "samer.najjar@university.edu", number: "EXM-2001", extra: "Computer Science" },
+      { role: "Examiner", name: "Dina Faris Sabbagh",  userName: "DinaFaris702",   email: "dina.sabbagh@university.edu", number: "EXM-2002", extra: "Information Technology" },
+      { role: "Examiner", name: "Khaled Mousa Issa",   userName: "KhaledMousa803", email: "khaled.issa@university.edu",  number: "EXM-2003", extra: "Software Engineering" },
+      { role: "Examiner", name: "Ruba Naji Hamdan",    userName: "RubaNaji904",    email: "ruba.hamdan@university.edu",  number: "EXM-2004", extra: "Cybersecurity" },
+
+      // Students
+      { role: "Student", name: "Ali Hassan Qasim",    userName: "AliHassan001",   email: "ali.qasim@student.edu",      number: "STU-3001", extra: "Computer Science" },
+      { role: "Student", name: "Fatima Nour Al-Din",  userName: "FatimaNour002",  email: "fatima.aldin@student.edu",   number: "STU-3002", extra: "Software Engineering" },
+      { role: "Student", name: "Bilal Samir Khalil",  userName: "BilalSamir003",  email: "bilal.khalil@student.edu",   number: "STU-3003", extra: "Information Technology" },
+      { role: "Student", name: "Rasha Tariq Mansour", userName: "RashaTariq004",  email: "rasha.mansour@student.edu",  number: "STU-3004", extra: "Cybersecurity" },
+      { role: "Student", name: "Ziad Omar Halabi",    userName: "ZiadOmar005",    email: "ziad.halabi@student.edu",    number: "STU-3005", extra: "Data Science" },
+      { role: "Student", name: "Sana Bassam Houri",   userName: "SanaBassam006",  email: "sana.houri@student.edu",     number: "STU-3006", extra: "Computer Science" },
+      { role: "Student", name: "Majd Faris Nasser",   userName: "MajdFaris007",   email: "majd.nasser@student.edu",    number: "STU-3007", extra: "Software Engineering" },
+      { role: "Student", name: "Lina Wael Saleh",     userName: "LinaWael008",    email: "lina.saleh@student.edu",     number: "STU-3008", extra: "Information Technology" },
+      { role: "Student", name: "Kareem Nabil Ayyash", userName: "KareemNabil009", email: "kareem.ayyash@student.edu",  number: "STU-3009", extra: "Computer Science" },
+      { role: "Student", name: "Hala Adnan Khatib",   userName: "HalaAdnan010",   email: "hala.khatib@student.edu",    number: "STU-3010", extra: "Data Science" },
+    ];
+
+    const extraLabel = {
+      Coordinator: "Department",
+      Supervisor:  "Department",
+      Examiner:    "Department",
+      Student:     "Major",
+    };
+
+    const roles = ["Coordinator", "Supervisor", "Examiner", "Student"];
+
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = "✓ Copied";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove("copied");
+        }, 1800);
+      });
+    }
+
+    function buildCard(u) {
+      const allText =
+        `Name: ${u.name}\nUsername: ${u.userName}\nEmail: ${u.email}\nPassword: ${PASSWORD}\nNumber: ${u.number}\n${extraLabel[u.role]}: ${u.extra}`;
+
+      return `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-name">${u.name}</div>
+              <div class="card-number">${u.number}</div>
+            </div>
+            <span class="role-badge badge-${u.role}">${u.role}</span>
+          </div>
+
+          <div class="card-fields">
+            <div class="field">
+              <span class="field-label">Username</span>
+              <span class="field-value">${u.userName}</span>
+              <button class="copy-btn" onclick="copyText('${u.userName}', this)">Copy</button>
+            </div>
+            <div class="field">
+              <span class="field-label">Email</span>
+              <span class="field-value">${u.email}</span>
+              <button class="copy-btn" onclick="copyText('${u.email}', this)">Copy</button>
+            </div>
+            <div class="field">
+              <span class="field-label">Password</span>
+              <span class="field-value">${PASSWORD}</span>
+              <button class="copy-btn" onclick="copyText('${PASSWORD}', this)">Copy</button>
+            </div>
+            <div class="field">
+              <span class="field-label">${extraLabel[u.role]}</span>
+              <span class="field-value">${u.extra}</span>
+              <button class="copy-btn" onclick="copyText('${u.extra}', this)">Copy</button>
+            </div>
+          </div>
+
+          <button class="copy-row-btn" onclick="copyText(\`${allText}\`, this)">📋 Copy All</button>
+        </div>`;
+    }
+
+    const root = document.getElementById("root");
+
+    roles.forEach(role => {
+      const group = users.filter(u => u.role === role);
+      const section = document.createElement("div");
+      section.className = "section";
+      section.innerHTML = `
+        <div class="section-title">
+          <span class="dot dot-${role}"></span>
+          ${role}s <span style="color:var(--muted);font-weight:400;font-size:13px;text-transform:none;letter-spacing:0">(${group.length} accounts)</span>
+        </div>
+        <div class="cards">${group.map(buildCard).join("")}</div>
+      `;
+      root.appendChild(section);
+    });
+  </script>
+</body>
+</html>
