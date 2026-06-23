@@ -12,7 +12,7 @@ namespace RSR.DAL.Repository.SemesterRepo
         Task<Semester> CreateSemester(Semester semester);
         Task<List<Semester>> GetAllSemesters();
         Task<Semester> GetActiveSemester();
-        Task<Semester> GetById(Guid semesterId);
+        Task<Semester?> GetById(Guid semesterId);
         Task<Semester> UpdateSemester(Semester semester);
         Task<Semester> Delete(Semester semester);
         Task<List<Semester>> GetSemesterWithProjectsForArchive();

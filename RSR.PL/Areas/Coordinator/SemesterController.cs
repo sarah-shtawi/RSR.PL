@@ -34,11 +34,7 @@ namespace RSR.PL.Areas.Coordinator
         public async Task<IActionResult> GetActiveSemester()
         {
             var semester = await _semesterService.GetActiveSemester();
-            if (semester is null)
-            {
-                return BadRequest("Semester Not Found");
-            }
-            return Ok(new {message="success" , semester });
+            return Ok(new { message = semester != null ? "success" : "no active semester", semester });
         }
 
         [Authorize(Roles = "Coordinator,Supervisor")]
@@ -55,7 +51,7 @@ namespace RSR.PL.Areas.Coordinator
 
         [Authorize(Roles = "Coordinator")]
         [HttpPatch("UpdateSemester/{Id}")]
-        public async Task <IActionResult> updateSemester([FromRoute] Guid Id , [FromBody] CreateSemesterRequest request)
+        public async Task<IActionResult> UpdateSemester([FromRoute] Guid Id, [FromBody] CreateSemesterRequest request)
         {
             var result = await _semesterService.UpdateSemester(Id , request);
             if (!result.Success)

@@ -92,12 +92,16 @@ namespace RSR.DAL.Utils
                 var user = await CreateUser(fullName, userName, email, "Coordinator", password);
                 if (user == null) continue;
 
-                await _context.Coordinators.AddAsync(new CoordinatorProfile
+                var exists = await _context.Coordinators.FindAsync(user.Id);
+                if (exists == null)
                 {
-                    UserId = user.Id,
-                    CoordinatorNumber = number,
-                    Department = department
-                });
+                    await _context.Coordinators.AddAsync(new CoordinatorProfile
+                    {
+                        UserId = user.Id,
+                        CoordinatorNumber = number,
+                        Department = department
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -121,12 +125,16 @@ namespace RSR.DAL.Utils
                 var user = await CreateUser(fullName, userName, email, "Supervisor", password);
                 if (user == null) continue;
 
-                await _context.Supervisors.AddAsync(new SupervisorProfile
+                var exists = await _context.Supervisors.FindAsync(user.Id);
+                if (exists == null)
                 {
-                    UserId = user.Id,
-                    SupervisorNumber = number,
-                    Department = department
-                });
+                    await _context.Supervisors.AddAsync(new SupervisorProfile
+                    {
+                        UserId = user.Id,
+                        SupervisorNumber = number,
+                        Department = department
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -149,12 +157,16 @@ namespace RSR.DAL.Utils
                 var user = await CreateUser(fullName, userName, email, "Examiner", password);
                 if (user == null) continue;
 
-                await _context.Examiners.AddAsync(new ExaminerProfile
+                var exists = await _context.Examiners.FindAsync(user.Id);
+                if (exists == null)
                 {
-                    UserId = user.Id,
-                    ExaminerNumber = number,
-                    Department = department
-                });
+                    await _context.Examiners.AddAsync(new ExaminerProfile
+                    {
+                        UserId = user.Id,
+                        ExaminerNumber = number,
+                        Department = department
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -183,13 +195,17 @@ namespace RSR.DAL.Utils
                 var user = await CreateUser(fullName, userName, email, "Student", password);
                 if (user == null) continue;
 
-                await _context.Students.AddAsync(new StudentProfile
+                var exists = await _context.Students.FindAsync(user.Id);
+                if (exists == null)
                 {
-                    UserId = user.Id,
-                    StudentNumber = number,
-                    College = college,
-                    Major = major
-                });
+                    await _context.Students.AddAsync(new StudentProfile
+                    {
+                        UserId = user.Id,
+                        StudentNumber = number,
+                        College = college,
+                        Major = major
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();

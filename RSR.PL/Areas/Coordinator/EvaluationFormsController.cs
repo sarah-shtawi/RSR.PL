@@ -44,6 +44,9 @@ namespace RSR.PL.Areas.Coordinator
             var result =
                 await _formService.CreateAsync(request);
 
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
             return Ok(result);
         }
 
