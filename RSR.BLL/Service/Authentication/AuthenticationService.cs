@@ -51,7 +51,7 @@ namespace RSR.BLL.Service.Authentication
                         Message = "Your Account is Locked, try again later"
                     };
                 }
-                var result = await _signInManager.CheckPasswordSignInAsync( user, Request.Password, true);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, Request.Password, false);
 
                 if (result.IsLockedOut)
                 {

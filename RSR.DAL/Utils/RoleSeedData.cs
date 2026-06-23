@@ -1,10 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RSR.DAL.Utils
 {
@@ -20,12 +14,10 @@ namespace RSR.DAL.Utils
         {
             string[] roles = ["Student", "Supervisor", "Coordinator", "Examiner"];
 
-            if (!await _roleManager.Roles.AnyAsync())
+            foreach (var role in roles)
             {
-                foreach (var role in roles)
-                {
+                if (!await _roleManager.RoleExistsAsync(role))
                     await _roleManager.CreateAsync(new IdentityRole(role));
-                }
             }
         }
     }

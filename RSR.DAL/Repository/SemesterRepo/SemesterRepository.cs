@@ -42,14 +42,9 @@ namespace RSR.DAL.Repository.SemesterRepo
             }
             return semester;
         }
-        public async Task<Semester> GetById (Guid semesterId)
+        public Task<Semester?> GetById(Guid semesterId)
         {
-            var semester = await _context.Semesters.FirstOrDefaultAsync(s=>s.SemesterId == semesterId && s.IsActive);
-            if (semester == null) 
-            {
-                return null;
-            }
-            return semester;
+            return _context.Semesters.FirstOrDefaultAsync(s => s.SemesterId == semesterId && s.IsActive);
         }
         public async Task<Semester> UpdateSemester (Semester semester )
         {

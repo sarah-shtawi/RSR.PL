@@ -84,6 +84,7 @@ namespace RSR.BLL.Services.EvaluationService
 
                 return new CreateEvaluationFormResponse
                 {
+                    Success = true,
                     Id = createdForm.Id,
                     Title = createdForm.Title,
                     AssignTo = createdForm.AssignTo,

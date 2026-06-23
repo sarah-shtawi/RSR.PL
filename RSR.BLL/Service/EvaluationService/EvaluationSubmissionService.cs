@@ -297,6 +297,8 @@ namespace RSR.BLL.Service.EvaluationService
                 // =========================
                 return new SubmitEvaluationResponse
                 {
+                    Success = true,
+
                     SubmissionId =
                         createdSubmission.Id,
 
